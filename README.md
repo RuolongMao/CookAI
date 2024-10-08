@@ -1,7 +1,6 @@
 # CookAI
-# CookAI
 
-2024.10.6
+2024.10.6-7
 -- Front-End部分
 1. 安装必要的dependencies （npm install axios）使用异步请求请求OpenAI的API
 2. 建立components和css文件夹，存放组件和对应的styles
@@ -10,6 +9,12 @@
 5. 创建Register和SignIn组件，实现注册和登录,
 6. 实现sign out功能
 7. 更新app.js
+8. 注释所有代码，提高代码可读性
+9. 简单实现AI text geneartion，同时实现能够选择关键词/种类
+10. 创建Loading Page组件，重新建立页面跳转逻辑
+11. 创建AIResponse组件，能够在新页面显示AI回复
+11. 更新app.js，home.js
+
 
 
 
@@ -21,6 +26,8 @@
 5. 在server文件夹中创建requirements.txt文件，存放依赖库信息
 6. pip install sqlalchemy pymysql
 7. 修改mainpy连接数据库配置
+8. 建立AI基础功能
+
 
 
 -- 数据库部分

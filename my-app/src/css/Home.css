@@ -1,3 +1,27 @@
 .avator{
     padding-left:100px;
 }
+
+
+/* 默认按钮样式 */
+.btn-normal {
+    background-color: white;
+    border: 1px solid #007bff;
+    color: #007bff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* 悬停时的按钮样式 */
+  .btn-normal:hover {
+    background-color: blue;
+    color: white;
+  }
+  
+  /* 被选中后的按钮样式 */
+  .btn-selected {
+    background-color: blue;
+    color: white;
+    border: 1px solid blue;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  

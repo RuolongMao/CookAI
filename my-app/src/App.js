@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Navbar from './components/NavBar';
 import Register from './components/Register';
 import SignIn from './components/SignIn';
-import Home from './components/Home';  // Home.js 替代 Chat.js
+import Home from './components/Home'; 
+import AIResponse from './components/AIResponse';
+import Loading from './components/Loading';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +40,8 @@ function App() {
         <Route path="/" element={<Home username={username} />} /> {/* Home 作为默认聊天页面 */}
         <Route path="/register" element={<Register onRegisterSuccess={handleRegisterSuccess} />} />  {/* 传递方法*/}
         <Route path="/signin" element={<SignIn onSignInSuccess={handleSignInSuccess} />} /> {/* 传递方法*/}
+        <Route path="/loading" element={<Loading />} />
+        <Route path="/response" element={<AIResponse />} />
       </Routes>
     </Router>
   );
