@@ -1,11 +1,14 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Navbar = ({ isLoggedIn, username, onLogout }) => {
+
+// 设置NavBar组件，接受方法和参数）
+const Navbar = ({ isLoggedIn, username, onLogout }) => { 
 
 
   const navigate = useNavigate();  // 在 Navbar 中使用 useNavigate
 
+  // 用户注销
   const handleLogout = () => {
     onLogout();  // 调用传递过来的 onLogout 函数
     navigate('/');  // 注销后跳转到首页

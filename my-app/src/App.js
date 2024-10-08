@@ -11,31 +11,33 @@ function App() {
 
 
 
+  // 注册逻辑
   const handleRegisterSuccess = (newUsername) => {
-    setIsLoggedIn(true);
-    setUsername(newUsername);
+    setIsLoggedIn(true); //设置登录状态
+    setUsername(newUsername); //设置username （通过Register组件的回掉函数传入userName）
   };
 
+  // 登录逻辑
   const handleSignInSuccess = (newUsername) => {
-    setIsLoggedIn(true);
-    setUsername(newUsername);
+    setIsLoggedIn(true); //设置登录状态
+    setUsername(newUsername); //设置username
   };
 
-    // 注销逻辑
-    const handleLogout = () => {
-      setIsLoggedIn(false);
-      setUsername('');  // 注销后跳转到首页
-    };
+  // 注销逻辑
+  const handleLogout = () => {
+    setIsLoggedIn(false); // 登录状态设置为False
+    setUsername('');  // 注销后跳转到首页
+  };
 
   return (
     <Router>
       {/* Navbar will always be displayed */}
-      <Navbar isLoggedIn={isLoggedIn} username={username}  onLogout={handleLogout} />
+      <Navbar isLoggedIn={isLoggedIn} username={username}  onLogout={handleLogout} />{/* 传递方法 & 传递方法*/}
       
       <Routes>
         <Route path="/" element={<Home username={username} />} /> {/* Home 作为默认聊天页面 */}
-        <Route path="/register" element={<Register onRegisterSuccess={handleRegisterSuccess} />} />
-        <Route path="/signin" element={<SignIn onSignInSuccess={handleSignInSuccess} />} />
+        <Route path="/register" element={<Register onRegisterSuccess={handleRegisterSuccess} />} />  {/* 传递方法*/}
+        <Route path="/signin" element={<SignIn onSignInSuccess={handleSignInSuccess} />} /> {/* 传递方法*/}
       </Routes>
     </Router>
   );
