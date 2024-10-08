@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends 
 from fastapi.staticfiles import StaticFiles 
 import os
+import openai
 from dotenv import load_dotenv
 # 中间件配置cors，跨域请求配置
 from fastapi.middleware.cors import CORSMiddleware
@@ -88,3 +89,30 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
     return {"message": "Login successful"}
+
+
+
+# 加载 OpenAI API 密钥
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# 定义与 AI 对话的模型
+class QueryRequest(BaseModel):
+    prompt: str
+
+class QueryResponse(BaseModel):
+    response: str
+
+# AI 对话端点
+@app.post("/query", response_model=QueryResponse)
+async def query_openai(request: QueryRequest):
+    try:
+        # 调用 OpenAI API，发送用户输入
+        chat_completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": request.prompt}]
+        )
+
+        # 返回 AI 的响应
+        return QueryResponse(response=chat_completion.choices[0].message["content"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
