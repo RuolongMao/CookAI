@@ -15,14 +15,6 @@ const AIResponse = () => {
     }
   }, [response, navigate]);
 
-  // 确保 useEffect 只运行一次
-//   useEffect(() => {
-//     // 确保 response 存在，否则导航回首页
-//     if (!response) {
-//       navigate('/');
-//     }
-    // 依赖数组为空，确保只在组件挂载时运行一次
-//   }, []);  // 这里确保 useEffect 只在组件挂载时运行一次，不会因 response 变化而重复调用
 
   // 如果 response 存在，显示它
   return (
