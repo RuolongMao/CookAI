@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-
+import json
 
 load_dotenv()
 
@@ -95,24 +95,55 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 # 加载 OpenAI API 密钥
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# 定义与 AI 对话的模型
+
+# 定义结构化输出
+class Ingredient(BaseModel):
+    name: str
+    quantity: str
+    cost: str
+
+class Step(BaseModel):
+    explanation: str
+    instruction: str
+
+class RecipeOutput(BaseModel):
+    ingredients: list[Ingredient]
+    steps: list[Step]
+    estimated_cost: str
+
 class QueryRequest(BaseModel):
     prompt: str
 
 class QueryResponse(BaseModel):
-    response: str
+    response: RecipeOutput  # 将返回的数据定义为 RecipeOutput 类型
 
 # AI 对话端点
 @app.post("/query", response_model=QueryResponse)
 async def query_openai(request: QueryRequest):
     try:
         # 调用 OpenAI API，发送用户输入
-        chat_completion = openai.ChatCompletion.create(
+        completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": request.prompt}]
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
+                {"role": "user", "content": request.prompt}
+            ]
         )
 
+        response_content = completion.choices[0].message["content"]
+                # 将返回的字符串转换为 Python 字典
+        response_data = json.loads(response_content)
+
+
+
+
+        # 在后端打印结果监测
+        print("AI generate Result:::::::: __________________",response_data)
+        print("Type of response_data:", type(response_data))
+
+
+
         # 返回 AI 的响应
-        return QueryResponse(response=chat_completion.choices[0].message["content"])
+        return QueryResponse(response=RecipeOutput(**response_data))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -13,23 +13,52 @@ const AIResponse = () => {
     if (!response) {
       navigate('/');  // 如果没有 response，返回主页
     }
+    console.log("AI Response: ", response)
   }, [response, navigate]);
 
+
+  // 解析 response 中的内容
+  const { ingredients, steps, estimated_cost } = response || {};
 
   // 如果 response 存在，显示它
   return (
     <div className="container mt-5">
-      <h1 className="text-center">AI Generated Response</h1>
-      {response ? (
-        <div className="mt-4">
-          <div className="p-3 border">
-            <h2>Response</h2>
-            <p>{response}</p>
-          </div>
-        </div>
-      ) : (
-        <div>Loading...</div>
-      )}
+      <h1 className="text-center">AI Generated Recipe</h1>
+      
+      <div className="mt-4">
+        <h2>Ingredients</h2>
+        {ingredients && ingredients.length > 0 ? (
+          <ul>
+            {ingredients.map((ingredient, index) => (
+              <li key={index}>
+                <strong>{ingredient.name}</strong>: {ingredient.quantity} (Cost: {ingredient.cost})
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No ingredients provided.</p>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <h2>Steps</h2>
+        {steps && steps.length > 0 ? (
+          <ol>
+            {steps.map((step, index) => (
+              <li key={index}>
+                <strong>{step.explanation}</strong> - {step.instruction}
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p>No steps provided.</p>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <h2>Estimated Total Cost</h2>
+        <p>{estimated_cost}</p>
+      </div>
     </div>
   );
 };
