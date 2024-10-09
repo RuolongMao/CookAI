@@ -20,7 +20,7 @@
 
 -- Back-End部分
 1. 建立后端文件夹（server），导入node_modules和必要的package.json等配置文件
-2. pip install express openai dotenv
+2. pip install openai dotenv
 3. 在server文件夹中创建main.py文件，注释挂载部分
 4. 在server文件夹中创建env文件，并确保已在gitingnore中存放
 5. 在server文件夹中创建requirements.txt文件，存放依赖库信息

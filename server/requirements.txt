@@ -7,6 +7,7 @@ attrs==24.2.0
 certifi==2023.7.22
 charset-normalizer==3.3.0
 click==8.1.7
+cryptography
 distro==1.9.0
 dnspython==2.6.1
 email_validator==2.2.0
