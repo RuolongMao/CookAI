@@ -1,0 +1,25 @@
+.fork-pic {
+    width: 100%; /* 让图片父容器占满可用宽度 */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+.fork-pic img {
+    width: 20%; /* 控制图片的大小，保持其比例 */
+    height: auto;
+}
+
+
+.name{
+    margin-left: -10px;
+    font-size:25px;
+    font-weight: bold;
+    margin-top: 10px;
+    text-decoration: none;
+    color:black;
+    
+}

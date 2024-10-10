@@ -24,10 +24,16 @@ html, body {
     background-position: center;
     transition: filter 4s ease;
     z-index: 0; /* 背景在后 */
+    filter: blur(0) brightness(0.8);
 }
 
 
-/* 定义淡出动画 */
+/* 点击后背景虚化 */
+.background-active {
+    filter: blur(8px) brightness(0.6);
+}
+
+
 /* 定义 slide-up 动画 */
 @keyframes slideup {
     from {
@@ -40,6 +46,10 @@ html, body {
     }
   }
 
+.slide-up {
+    animation: slideup 0.6s ease forwards; /* 动画持续 1.5s，向上滑动后消失 */
+  }
+
 
 .before-txt{
     text-align:center;
@@ -48,20 +58,11 @@ html, body {
     top: 50%;
     left: 50%;
     font-size: 100px;
-    color: rgb(251, 0, 151);
+    color: rgb(255, 255, 255);
     z-index: 2;
   }
 
-/* slide-up 类触发动画 */
-.slide-up {
-    animation: slideup 0.6s ease forwards; /* 动画持续 1.5s，向上滑动后消失 */
-  }
 
-
-/* 添加淡出动画效果 */
-.fade-out {
-    animation: fadeout 1s forwards; /* 淡出动画在点击后触发 */
-  }
 
 /* 定义 slidein 动画 */
 @keyframes slidein {
@@ -88,9 +89,6 @@ html, body {
 
 
 
-/* 点击后背景虚化 */
-.background-active {
-    filter: blur(8px);
-}
+
 
   
