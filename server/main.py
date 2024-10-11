@@ -138,8 +138,8 @@ async def query_openai(request: QueryRequest):
 
 
         # 在后端打印结果监测
-        print("AI generate Result:::::::: __________________",response_data)
-        print("Type of response_data:", type(response_data))
+      
+        print("success print")
 
 
 

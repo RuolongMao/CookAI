@@ -18,13 +18,12 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container">
+      <div className="container-fluid">
         {/* 第一列: 左边 */}
-        <div className="col">
-
-          <div>1</div>
-          <div>2</div>
-          <div>3</div>
+        <div className="col nav-1">
+          <a href="">About</a>
+          <a href="">Community</a>
+          <a href="">Q&A</a>
         </div>
 
         {/* 中间列: 两行 */}

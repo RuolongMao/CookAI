@@ -1,3 +1,16 @@
+.nav-1 a{
+    margin-left: 70px;
+    text-align: left;
+    text-decoration: none;
+    color: Black;
+    font-size: 23px;
+    font-weight:800;
+}
+
+.nav-1{
+    margin-left:0px;
+}
+
 .fork-pic {
     width: 100%; /* 让图片父容器占满可用宽度 */
     height: auto;
@@ -9,7 +22,7 @@
 
 
 .fork-pic img {
-    width: 20%; /* 控制图片的大小，保持其比例 */
+    width: 13%; /* 控制图片的大小，保持其比例 */
     height: auto;
 }
 
