@@ -1,14 +1,32 @@
 .nav-1 a{
-    margin-left: 70px;
     text-align: left;
     text-decoration: none;
-    color: Black;
-    font-size: 23px;
-    font-weight:800;
+    color: #000000;
+    font-size: 19px;
+    font-weight:600;
+    
+}
+
+.nav-1 a:hover{
+    color: rgb(255, 123, 0);
+
 }
 
 .nav-1{
     margin-left:0px;
+    margin-top:20px;
+}
+
+
+.about{
+    margin-left:20px;
+}
+.qa{
+    margin-left: 70px;
+}
+
+.community{
+    margin-left: 70px;
 }
 
 .fork-pic {
@@ -22,17 +40,83 @@
 
 
 .fork-pic img {
-    width: 13%; /* 控制图片的大小，保持其比例 */
+    width: 12%; /* 控制图片的大小，保持其比例 */
     height: auto;
+    margin-right: -20px;
 }
 
 
 .name{
-    margin-left: -10px;
-    font-size:25px;
-    font-weight: bold;
-    margin-top: 10px;
+    font-size:30px;
+    font-weight: 800;
     text-decoration: none;
     color:black;
     
 }
+
+
+.line-break {
+    border: none;         
+    border-top: 1px solid #000 !important;  
+    width: 10%;         
+    margin: 10px auto;  
+    color: rgb(204, 30, 30); 
+}
+
+
+
+.right-side{
+    margin-top:20px;
+    font-size: 19px;
+    color:#000000;
+    font-weight: 600;
+}
+
+.wc-txt{
+
+}
+
+.register{
+    /* font-size:20px; */
+    text-decoration: none;
+    /* font-weight: 700; */
+    color:#000000;
+}
+
+
+
+
+.signin{
+    /* font-size:20px;
+    font-weight: 700; */
+    text-decoration: none;
+    color:#000000;
+
+}
+
+
+.register:hover{
+    /* font-size:20px; */
+    text-decoration: none;
+    color:rgb(255, 123, 0);
+}
+
+.signin:hover{
+    /* font-size:20px; */
+    text-decoration: none;
+    color: rgb(255, 123, 0);
+}
+
+.logout{
+    /* font-size:19px;
+    font-weight: 700; */
+    text-decoration: none;
+    color: black;
+
+}
+
+
+.logout:hover{
+    color: rgb(255, 123, 0);
+}
+

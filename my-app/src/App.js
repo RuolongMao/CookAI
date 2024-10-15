@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/NavBar';
 import Register from './components/Register';
 import SignIn from './components/SignIn';
 import Home from './components/Home'; 
 import AIResponse from './components/AIResponse';
 import Loading from './components/Loading';
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

@@ -135,8 +135,6 @@ async def query_openai(request: QueryRequest):
         response_data = json.loads(response_content)
 
 
-
-
         # 在后端打印结果监测
       
         print("success print")

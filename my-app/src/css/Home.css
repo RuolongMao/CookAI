@@ -1,6 +1,5 @@
 
 html, body {
-    overflow: hidden;
     height: 100%; /* 使页面的高度始终是 100% */
     margin: 0; /* 确保没有额外的边距 */
   }
@@ -10,6 +9,36 @@ html, body {
     position: relative; /* 让z-index生效 */
     z-index: 10; /* 确保它比背景高 */
   }
+
+/* 定义 fade-in 动画 */
+@keyframes fadein {
+  from {
+      opacity: 0; /* 初始透明度为 0 */
+  }
+  to {
+      opacity: 1; /* 结束时透明度为 1 */
+  }
+}
+
+/* 应用于 .before-txt 的动画效果 */
+.before-txt {
+  text-align: center;
+  transform: translate(-50%, -50%);
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  font-size: 100px;
+  color: rgb(255, 255, 255);
+  z-index: 2;
+
+  opacity: 0; /* 默认透明 */
+  animation: fadein 3s ease forwards; /* 加入淡入动画，持续 2 秒 */
+}
+
+
+
+
+
 
 
 /* 背景部分的样式 */
@@ -30,7 +59,7 @@ html, body {
 
 /* 点击后背景虚化 */
 .background-active {
-    filter: blur(8px) brightness(0.6);
+    filter: blur(6px) brightness(0.6);
 }
 
 
@@ -51,16 +80,6 @@ html, body {
   }
 
 
-.before-txt{
-    text-align:center;
-    transform: translate(-50%, -50%);
-    position: absolute; 
-    top: 50%;
-    left: 50%;
-    font-size: 100px;
-    color: rgb(255, 255, 255);
-    z-index: 2;
-  }
 
 
 
@@ -87,8 +106,80 @@ html, body {
     animation-timing-function: ease-out;
   }
 
+.mainbody h1{
+  color: white;
+}
 
 
 
 
-  
+
+.selection{
+  margin-top: 400px;
+}
+
+.cd{
+  margin-top: 20px;
+}
+
+
+.card-title{
+  color: white;
+  margin-bottom: 20px;
+}
+
+.text-input-father{
+  margin-top: 60px;
+}
+
+.text-input{
+  width:1000px;
+  height:55px;
+  margin-left:100px;
+}
+
+
+.submit-button{
+  margin-top: 60px;
+  margin-left:30px;
+  margin-right: -100px;
+  height: 55px;
+  font-weight: 800;
+}
+
+
+.taste{
+  font-weight:600;
+}
+
+.method{
+  font-weight:600;
+}
+
+.time{
+  font-weight:600;
+}
+
+/* 使版权信息始终在底部 */
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  text-align: center;
+  color: #6c757d;
+  font-size: 14px;
+  z-index: 10; /* 保证在最上层 */
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom:0px;
+}
+
+.footer-fixed p {
+  margin: 0; /* 去掉 <p> 元素的默认 margin */
+}
+
+/* 确保页面内容不与版权信息重叠 */
+.home-container {
+  padding-bottom: 20px; /* 为页面内容留出空间 */
+}
