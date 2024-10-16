@@ -116,12 +116,12 @@ class QueryRequest(BaseModel):
 
 class QueryResponse(BaseModel):
     response: RecipeOutput  # 将返回的数据定义为 RecipeOutput 类型
+    image_url: str  # 新增字段，用于返回生成的图像URL
 
 # AI 对话端点
 @app.post("/query", response_model=QueryResponse)
 async def query_openai(request: QueryRequest):
     try:
-        # 调用 OpenAI API，发送用户输入
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -131,17 +131,30 @@ async def query_openai(request: QueryRequest):
         )
 
         response_content = completion.choices[0].message["content"]
-                # 将返回的字符串转换为 Python 字典
         response_data = json.loads(response_content)
 
 
+        try:
+            image_response = openai.Image.create(
+                model="dall-e-2",
+                prompt=request.prompt,
+                n=1,
+                size="1024x1024",
+                quality="standard",
+            )
+            image_url = image_response['data'][0]['url']
+
+        except Exception as e:
+            print("Image generation error:", e)
+            image_url = None
+
+
         # 在后端打印结果监测
-      
         print("success print")
 
 
 
         # 返回 AI 的响应
-        return QueryResponse(response=RecipeOutput(**response_data))
+        return QueryResponse(response=RecipeOutput(**response_data), image_url=image_url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

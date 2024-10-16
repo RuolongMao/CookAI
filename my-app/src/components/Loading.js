@@ -26,7 +26,7 @@ const Loading = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          navigate("/response", { state: { response: data.response } });
+          navigate("/response", { state: { response: data.response, image_url: data.image_url  } });
         })
         .catch((error) => {
           console.error("Error:", error);

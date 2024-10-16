@@ -7,6 +7,8 @@ const AIResponse = () => {
 
   // 从 location.state 中获取 response
   const response = location.state?.response || null;
+  const imageUrl = location.state?.image_url || null;
+
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
@@ -14,7 +16,9 @@ const AIResponse = () => {
       navigate('/');  // 如果没有 response，返回主页
     }
     console.log("AI Response: ", response)
-  }, [response, navigate]);
+    console.log("img",imageUrl)
+  }, [response, imageUrl, navigate]);
+
 
 
   // 解析 response 中的内容
@@ -25,6 +29,12 @@ const AIResponse = () => {
     <div className="container mt-5">
       <h1 className="text-center">AI Generated Recipe</h1>
       
+      {imageUrl && (
+        <div className="mt-4 text-center">
+          <img src={imageUrl} alt="Generated Recipe" style={{ maxWidth: '100%', height: 'auto' }} />
+        </div>
+      )}
+
       <div className="mt-4">
         <h2>Ingredients</h2>
         {ingredients && ingredients.length > 0 ? (
