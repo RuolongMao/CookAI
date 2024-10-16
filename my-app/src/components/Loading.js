@@ -1,5 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import loading from "../images/loading.gif";
+import "../css/Loading.css";
+
 
 const Loading = () => {
   const navigate = useNavigate();
@@ -37,23 +40,9 @@ const Loading = () => {
 
   return (
     <div className="container mt-5 text-center">
-      <h1>Generating AI Response...</h1>
+
       {/* <img src="https://via.placeholder.com/150" alt="Loading" />  */}
-      <iframe
-        src="https://giphy.com/embed/3o7bu8sRnYpTOG1p8k"
-        width="480"
-        height="480"
-        style={{ border: 'none' }} // 去除默认边框
-        frameBorder="0"
-        className="giphy-embed"
-        allowFullScreen
-        title="Loading animation"
-      ></iframe>
-      <p>
-        <a href="https://giphy.com/gifs/pizza-loading-snacks-3o7bu8sRnYpTOG1p8k">
-          via GIPHY
-        </a>
-      </p>
+     <img src={loading} alt="cook" className="loading-img"></img>
     </div>
   );
 };

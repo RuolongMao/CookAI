@@ -1,0 +1,8 @@
+.loading-img {
+    width: 60vw; /* 设置宽度为屏幕的 100% */
+    height: 60vh; /* 设置高度为屏幕的 100% */
+    margin-left:0px;
+    top: 0;
+    left: 0;
+  }
+  
