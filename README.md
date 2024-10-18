@@ -70,7 +70,7 @@
   {
     "recipe_name": "Orange"
   }
-  4. GET /get
+4. GET /get
   - 功能：获取所有食谱列表。
 
 
