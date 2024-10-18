@@ -30,9 +30,51 @@
 
 
 
--- 数据库部分
+-- 数据库介绍及使用
 1. 我是用Navicat创建数据库，用的是MySQL
-2. 数据库现在只有id, username和password
+
+-- 数据库说明
+1. `user` 数据库
+- `id`: 自增的主键，唯一标识每个用户。
+- `username`: 用户名，必须唯一。
+- `password`: 用户密码。
+2. `recipes` 数据库
+- `id`: 自增的主键，唯一标识每个食谱。
+- `user_id`: 创建该食谱的用户的唯一ID。
+- `image_url`: 食谱相关图片的URL。
+- `recipe_name`: 食谱名称，如“巧克力蛋糕”。
+- `recipe_price`: 估计的制作成本。
+- `est_calories`: 估计的热量值。
+- `created_time`: 创建该食谱的日期。
+
+-- API 端口说明
+
+1. POST /create
+- 功能: 创建新的食谱。
+- 请求体示例:
+  ```json
+  {
+    "user_id": 1,
+    "image_url": "http://example.com/image.jpg",
+    "recipe_name": "Orange Chicken",
+    "recipe_price": 50,
+    "est_calories": 500
+  }
+2. DELETE /delete
+- 功能: 根据 recipe_id 删除指定的食谱。
+- 请求示例: /delete?recipe_id=1
+3. POST /search
+- 功能：根据食谱名称搜索食谱，支持模糊搜索。
+- 请求体示例:
+  ```json
+  {
+    "recipe_name": "Orange"
+  }
+  4. GET /get
+  - 功能：获取所有食谱列表。
+
+
+
 
 
 -- 配置部分
