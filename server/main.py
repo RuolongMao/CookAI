@@ -11,6 +11,9 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import json
+from crud import dashboard_crud
+import schemas
+from typing import List
 
 load_dotenv()
 
@@ -158,3 +161,33 @@ async def query_openai(request: QueryRequest):
         return QueryResponse(response=RecipeOutput(**response_data), image_url=image_url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# recipe dashboard
+@app.post("/create")
+def create_recipe(recipe: schemas.RecipeCreate, db: Session = Depends(get_db)):
+    return dashboard_crud.create_recipe(db, recipe)
+
+@app.delete("/delete/{recipe_id}")
+def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
+    result = dashboard_crud.delete_recipe(db, recipe_id)
+    if result:
+        return {"message": "Recipe deletion succeeded!"}
+    else:
+        return {"message": "Recipe deletion failed."}
+
+@app.post("/search")
+def search_recipes(query: schemas.RecipeSearch, db: Session = Depends(get_db)):
+    return dashboard_crud.search_recipes(db, query.recipe_name)
+
+@app.get("/get", response_model=List[schemas.RecipeGet])
+def read_recipes(db: Session = Depends(get_db)):
+    recipes = dashboard_crud.get_recipes(db)
+    return recipes
+
+
+
+
+
+
+
+
