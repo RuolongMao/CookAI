@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button } from "react-bootstrap";
 
 const Home = () => {
   const [message, setMessage] = useState("");
@@ -13,22 +13,27 @@ const Home = () => {
   const [showContent, setShowContent] = useState(false);
   const [slideUp, setSlideUp] = useState(false);
 
-  const [showModal, setShowModal] = useState(false); // 控制模态框显示
-  const [customInput, setCustomInput] = useState(""); // 用于保存模态框中的输入
-  // 新增状态变量，保存自定义输入
-  // 初始化自定义输入状态变量为 null    
+  // Modal Window
+  const [showModal, setShowModal] = useState(false);
+  const [customInput, setCustomInput] = useState("");
+
+  // 自定义Cutom部分
   const [customTasteInput, setCustomTasteInput] = useState(null);
-  const [customCookingMethodInput, setCustomCookingMethodInput] = useState(null);
+  const [customCookingMethodInput, setCustomCookingMethodInput] =
+    useState(null);
   const [customMealTimeInput, setCustomMealTimeInput] = useState(null);
 
   const navigate = useNavigate();
 
-
+  // 选项点击逻辑（正常选项 & Custom选项）
   const handleKeywordClick = (category, keyword) => {
+    // Custom选项
     if (keyword === "Custom") {
       if (category === "taste") {
+        // 已选中的状态
         if (customTasteInput !== null) {
           setCustomTasteInput(null);
+          // 未选中的状态
         } else {
           setActiveCategory(category);
           setShowModal(true);
@@ -48,7 +53,10 @@ const Home = () => {
           setShowModal(true);
         }
       }
-    } else {
+    }
+
+    // 正常选项
+    else {
       if (category === "taste") {
         setTaste((prev) =>
           prev.includes(keyword)
@@ -71,6 +79,7 @@ const Home = () => {
     }
   };
 
+  // Modal Window 部分
   const handleModalSave = () => {
     const trimmedInput = customInput.trim();
     if (!trimmedInput) {
@@ -88,14 +97,12 @@ const Home = () => {
     setCustomInput("");
     setShowModal(false);
   };
-
-
   const handleModalClose = () => {
     setCustomInput(""); // 清空输入
     setShowModal(false); // 关闭模态框
   };
 
-  // 点击触发 slide-up 动画
+  // 点击触发动画部分
   const handleClick = () => {
     setSlideUp(true);
     setTimeout(() => {
@@ -138,14 +145,27 @@ const Home = () => {
     // 添加剩余的 prompt 内容
     prompt += ` Provide the ingredients, including quantity and cost. Also provide detailed steps for the recipe in the following JSON format:
     {
+      "recipe_name": "recipe name",
+      "nutrition_facts": {
+        "calories": "calories in kcal",
+        "fiber": "fiber in grams",
+        "protein": "protein in grams",
+        "carbs": "carbs in grams",
+        "fats": "fats in grams",
+        "sugar": "sugar in grams"
+    },
       "ingredients": [
         {"name": "ingredient name", "quantity": "quantity", "cost": "cost"}
       ],
       "steps": [
         {"explanation": "explanation for this step", "instruction": "step instruction"}
       ],
-      "estimated_cost": "total estimated cost"
-    }`;
+      "estimated_cost": "total estimated cost",
+      "estimate_time": "total estimated time"
+    }   
+    !! Make sure the ingredients quantity use Lb as the unit all the time!!!
+    !! I don't need any space between unit and number
+    `;
 
     // 输出检测
     console.log("Generated prompt is: ", prompt);
@@ -202,8 +222,12 @@ const Home = () => {
                     type="button"
                     className={`btn btn-outline-warning taste ${
                       t === "Custom"
-                        ? customTasteInput ? "active" : ""
-                        : taste.includes(t) ? "active" : ""
+                        ? customTasteInput
+                          ? "active"
+                          : ""
+                        : taste.includes(t)
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() => handleKeywordClick("taste", t)}
                   >
@@ -222,8 +246,12 @@ const Home = () => {
                     type="button"
                     className={`btn btn-outline-warning method ${
                       m === "Custom"
-                        ? customCookingMethodInput ? "active" : ""
-                        : cookingMethod.includes(m) ? "active" : ""
+                        ? customCookingMethodInput
+                          ? "active"
+                          : ""
+                        : cookingMethod.includes(m)
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() => handleKeywordClick("cookingMethod", m)}
                   >
@@ -242,8 +270,12 @@ const Home = () => {
                     type="button"
                     className={`btn btn-outline-warning time ${
                       meal === "Custom"
-                        ? customMealTimeInput ? "active" : ""
-                        : mealTime.includes(meal) ? "active" : ""
+                        ? customMealTimeInput
+                          ? "active"
+                          : ""
+                        : mealTime.includes(meal)
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() => handleKeywordClick("mealTime", meal)}
                   >

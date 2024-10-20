@@ -109,17 +109,29 @@ class Step(BaseModel):
     explanation: str
     instruction: str
 
+
+class NutritionFacts(BaseModel):
+    calories: str
+    fiber: str
+    protein: str
+    carbs: str
+    fats: str
+    sugar: str
+
 class RecipeOutput(BaseModel):
+    recipe_name: str
+    nutrition_facts: NutritionFacts
     ingredients: list[Ingredient]
     steps: list[Step]
     estimated_cost: str
+    estimate_time: str
 
 class QueryRequest(BaseModel):
     prompt: str
 
 class QueryResponse(BaseModel):
-    response: RecipeOutput  # 将返回的数据定义为 RecipeOutput 类型
-    image_url: str  # 新增字段，用于返回生成的图像URL
+    response: RecipeOutput 
+    image_url: str 
 
 # AI 对话端点
 @app.post("/query", response_model=QueryResponse)

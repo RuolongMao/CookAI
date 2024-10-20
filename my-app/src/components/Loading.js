@@ -43,6 +43,8 @@ const Loading = () => {
 
       {/* <img src="https://via.placeholder.com/150" alt="Loading" />  */}
      <img src={loading} alt="cook" className="loading-img"></img>
+     <div>Grabbing the freshest ingredients... just a moment!</div>
+     
     </div>
   );
 };
