@@ -53,9 +53,10 @@ const AIResponse = () => {
         )}
       </div>
 
-      <div className="row">
+      <div className="row section1">
         <div className="col ingredients-part">
           <h2>Ingredients</h2>
+          <div className="ingredients-list">
           {ingredients && ingredients.length > 0 ? (
             <ul>
               {ingredients.map((ingredient, index) => (
@@ -96,7 +97,6 @@ const AIResponse = () => {
                         <span className="ingredient-info">
                           {ingredient.quantity} ({ingredient.cost})
                         </span>
-                        xiexei
                       </label>
                     </div>
                   </div>
@@ -106,6 +106,7 @@ const AIResponse = () => {
           ) : (
             <p>No ingredients provided.</p>
           )}
+          </div>
         </div>
 
         <div className="col estimate">
@@ -129,53 +130,6 @@ const AIResponse = () => {
         </div>
       </div>
 
-      <div className="row nutrition-part">
-        <h2>Nutrition</h2>
-        {nutrition_facts && (
-          <div className="row">
-            <div className="col">
-              <div className="nutrition-card">
-                <div className="card-circle">{nutrition_facts.calories}</div>
-                <div className="card-name">Calories</div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="nutrition-card">
-                <div className="card-circle">{nutrition_facts.fiber}</div>
-                <div className="card-name">Fiber</div>
-              </div>
-            </div>
-
-            <div className="col">
-              <div className="nutrition-card">
-                <div className="card-circle">{nutrition_facts.protein}</div>
-                <div className="card-name">Protein</div>
-              </div>
-            </div>
-
-            <div className="col">
-              <div className="nutrition-card">
-                <div className="card-circle">{nutrition_facts.carbs}</div>
-                <div className="card-name">Carbs</div>
-              </div>
-            </div>
-
-            <div className="col">
-              <div className="nutrition-card">
-                <div className="card-circle">{nutrition_facts.fats}</div>
-                <div className="card-name">Fats</div>
-              </div>
-            </div>
-
-            <div className="col">
-              <div className="nutrition-card">
-                <div className="card-circle">{nutrition_facts.sugar}</div>
-                <div className="card-name">Sugar</div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
 
       <div className="row steps-part">
         <h2>Steps</h2>
@@ -191,6 +145,58 @@ const AIResponse = () => {
           <p>No steps provided.</p>
         )}
       </div>
+
+
+
+
+      <div className="row nutrition-part">
+        <h2>Nutrition</h2>
+        {nutrition_facts && (
+          <div className="row justify-content-center nutrition-section">
+            <div className="col-auto">
+              <div className="nutrition-card">
+                <div className="card-circle">{nutrition_facts.calories}</div>
+                <div className="card-name">Calories</div>
+              </div>
+            </div>
+            <div className="col-auto">
+              <div className="nutrition-card">
+                <div className="card-circle">{nutrition_facts.fiber}g</div>
+                <div className="card-name">Fiber</div>
+              </div>
+            </div>
+
+            <div className="col-auto">
+              <div className="nutrition-card">
+                <div className="card-circle">{nutrition_facts.protein}g</div>
+                <div className="card-name">Protein</div>
+              </div>
+            </div>
+
+            <div className="col-auto">
+              <div className="nutrition-card">
+                <div className="card-circle">{nutrition_facts.carbs}g</div>
+                <div className="card-name">Carbs</div>
+              </div>
+            </div>
+
+            <div className="col-auto">
+              <div className="nutrition-card">
+                <div className="card-circle">{nutrition_facts.fats}g</div>
+                <div className="card-name">Fats</div>
+              </div>
+            </div>
+
+            <div className="col-auto">
+              <div className="nutrition-card">
+                <div className="card-circle">{nutrition_facts.sugar}g</div>
+                <div className="card-name">Sugar</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 };

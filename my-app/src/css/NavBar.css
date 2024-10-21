@@ -34,23 +34,6 @@
     margin-left: 70px;
 }
 
-/* .fork-pic {
-    width: 100%; 
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
-
-.fork-pic img {
-    width: 12%; 
-    height: auto;
-    margin-right: -20px;
-} */
-
-
 .robot-icon{
     text-decoration:none;
     margin-bottom: 5px;
@@ -67,7 +50,6 @@
     display: inline-block; /* 确保文本宽度自适应内容 */
     
 }
-
 
 
 .name::after {

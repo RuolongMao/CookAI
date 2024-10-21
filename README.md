@@ -82,3 +82,13 @@
 2. 修改gitignore文件，避免前后端node_modules，以及后端pychache配置文件上传（必须保留pakcage.json和package-lock.json，不能写入！）
 3. 前端用户拉取(cd my-app)，使用npm install安装配置文件（系统会根据package提供的依赖目录安装）
 4. 后端用户拉取(cd server)，使用pip install -r requirements.txt安装需要的内容
+
+
+
+
+
+
+潜在改进内容：
+1. 存储记忆（线程），改进菜谱的时候，能有之前的记忆，让Model直接根据之前的记忆继续修改现在的菜谱，不用重新修改
+2. 大数据模型API，实现推广用户感兴趣的内容，或者使用embeddings搜索相关感兴趣的内容
+3. 
