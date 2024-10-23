@@ -10,6 +10,12 @@ const AIResponse = () => {
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
 
+
+
+  const handleGenerateClick = () => {
+    navigate("/video");  // Navigate to the video page when button is clicked
+  };
+  
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
     if (!response) {
@@ -57,55 +63,55 @@ const AIResponse = () => {
         <div className="col ingredients-part">
           <h2>Ingredients</h2>
           <div className="ingredients-list">
-          {ingredients && ingredients.length > 0 ? (
-            <ul>
-              {ingredients.map((ingredient, index) => (
-                <li key={index} className="ingredient-item">
-                  {/* 添加复选框 */}
-                  <div className="form-check d-flex justify-content-between align-items-center">
-                    <div>
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        id={`ingredient-checkbox-${index}`}
-                        checked={checkedIngredients[index] || false}
-                        onChange={() => handleCheckboxChange(index)}
-                      />
-                      <label
-                        className={`form-check-label ${
-                          checkedIngredients[index]
-                            ? "text-decoration-line-through"
-                            : ""
-                        }`}
-                        htmlFor={`ingredient-checkbox-${index}`}
-                      >
-                        <span className="ingredient-name">
-                          {ingredient.name}
-                        </span>
-                      </label>
+            {ingredients && ingredients.length > 0 ? (
+              <ul>
+                {ingredients.map((ingredient, index) => (
+                  <li key={index} className="ingredient-item">
+                    {/* 添加复选框 */}
+                    <div className="form-check d-flex justify-content-between align-items-center">
+                      <div>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value=""
+                          id={`ingredient-checkbox-${index}`}
+                          checked={checkedIngredients[index] || false}
+                          onChange={() => handleCheckboxChange(index)}
+                        />
+                        <label
+                          className={`form-check-label ${
+                            checkedIngredients[index]
+                              ? "text-decoration-line-through"
+                              : ""
+                          }`}
+                          htmlFor={`ingredient-checkbox-${index}`}
+                        >
+                          <span className="ingredient-name">
+                            {ingredient.name}
+                          </span>
+                        </label>
+                      </div>
+                      <div>
+                        <label
+                          className={`form-check-label ${
+                            checkedIngredients[index]
+                              ? "text-decoration-line-through"
+                              : ""
+                          }`}
+                          htmlFor={`ingredient-checkbox-${index}`}
+                        >
+                          <span className="ingredient-info">
+                            {ingredient.quantity} ({ingredient.cost})
+                          </span>
+                        </label>
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        className={`form-check-label ${
-                          checkedIngredients[index]
-                            ? "text-decoration-line-through"
-                            : ""
-                        }`}
-                        htmlFor={`ingredient-checkbox-${index}`}
-                      >
-                        <span className="ingredient-info">
-                          {ingredient.quantity} ({ingredient.cost})
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No ingredients provided.</p>
-          )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No ingredients provided.</p>
+            )}
           </div>
         </div>
 
@@ -130,7 +136,6 @@ const AIResponse = () => {
         </div>
       </div>
 
-
       <div className="row steps-part">
         <h2>Steps</h2>
         {steps && steps.length > 0 ? (
@@ -145,9 +150,6 @@ const AIResponse = () => {
           <p>No steps provided.</p>
         )}
       </div>
-
-
-
 
       <div className="row nutrition-part">
         <h2>Nutrition</h2>
@@ -197,6 +199,11 @@ const AIResponse = () => {
         )}
       </div>
 
+      <div className="generate_video">
+        <button className="btn btn-primary" onClick={handleGenerateClick}>
+          Generate
+        </button>
+      </div>
     </div>
   );
 };

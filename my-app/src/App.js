@@ -7,6 +7,7 @@ import SignIn from './components/SignIn';
 import Home from './components/Home'; 
 import AIResponse from './components/AIResponse';
 import Loading from './components/Loading';
+import Video from './components/Video';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/signin" element={<SignIn onSignInSuccess={handleSignInSuccess} />} /> {/* 传递方法*/}
         <Route path="/loading" element={<Loading />} />
         <Route path="/response" element={<AIResponse />} />
+        <Route path="/video" element={<Video />} />
       </Routes>
     </Router>
   );
