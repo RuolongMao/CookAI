@@ -10,12 +10,10 @@ const AIResponse = () => {
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
 
-
-
   const handleGenerateClick = () => {
-    navigate("/video");  // Navigate to the video page when button is clicked
+    navigate("/video"); // Navigate to the video page when button is clicked
   };
-  
+
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
     if (!response) {
@@ -149,6 +147,12 @@ const AIResponse = () => {
         ) : (
           <p>No steps provided.</p>
         )}
+
+        <div className="generate_video">
+          <div className="generate_video_button" onClick={handleGenerateClick}>
+            Click here for Video
+          </div>
+        </div>
       </div>
 
       <div className="row nutrition-part">
@@ -198,11 +202,9 @@ const AIResponse = () => {
           </div>
         )}
       </div>
-
-      <div className="generate_video">
-        <button className="btn btn-primary" onClick={handleGenerateClick}>
-          Generate
-        </button>
+      {/* 版权信息 */}
+      <div className="row foot text-center">
+        <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
       </div>
     </div>
   );

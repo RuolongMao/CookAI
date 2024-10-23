@@ -143,11 +143,11 @@ const Home = () => {
     }
 
     // 添加剩余的 prompt 内容
-    prompt += ` Provide the ingredients, including quantity and cost. Also provide detailed steps for the recipe in the following JSON format:
+    prompt += ` Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
     {
       "recipe_name": "recipe name",
       "nutrition_facts": {
-        "calories": "calories in kcal",
+        "calories": "calories in kCal",
         "fiber": "fiber in grams",
         "protein": "protein in grams",
         "carbs": "carbs in grams",
@@ -163,7 +163,7 @@ const Home = () => {
       "estimated_cost": "total estimated cost",
       "estimate_time": "total estimated time"
     }   
-    !! Make sure the ingredients quantity use Lb as the unit all the time!!!
+    !! Make sure there is always Unit!!!
     !! I don't need any space between unit and number
     `;
 
