@@ -165,7 +165,7 @@ async def query_openai(request: QueryRequest):
 
 
         # 在后端打印结果监测
-        print("success print")
+        print("success print", response_data)
 
 
 
@@ -196,6 +196,17 @@ def read_recipes(db: Session = Depends(get_db)):
     recipes = dashboard_crud.get_recipes(db)
     return recipes
 
+@app.post("/filter")
+def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
+    print(query.est_time_min)
+    recipes = dashboard_crud.filter_recipes(
+        db, 
+        est_time_min=query.est_time_min, 
+        est_time_max=query.est_time_max,
+        est_cost_min=query.est_cost_min, 
+        est_cost_max=query.est_cost_max
+    )
+    return recipes
 
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, JSON
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -10,6 +10,5 @@ class Recipes(Base):
     user_id = Column(Integer, nullable=False)
     image_url = Column(String, unique=True, nullable=False)
     recipe_name = Column(String, nullable=False)
-    recipe_price = Column(Integer, nullable=False)
-    est_calories = Column(Integer, nullable=False)
     created_time = Column(Date, nullable=False)
+    details = Column(JSON, nullable=False)
