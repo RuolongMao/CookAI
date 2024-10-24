@@ -60,6 +60,7 @@
       "estimate_time": "50 minutes"
     }
   }
+  ```
 2. DELETE /delete
 - 功能: 根据 recipe_id 删除指定的食谱。
 - 请求示例: /delete?recipe_id=1
@@ -70,6 +71,7 @@
   {
     "recipe_name": "Orange"
   }
+  ```
 4. GET /get
   - 功能：获取所有食谱列表。
 5. POST /filter
@@ -79,13 +81,14 @@
     "est_time_min": 0,
     "est_time_max": 100
   }
+  ```
 6. POST /dashboard
   - 功能：通过user_id筛选并返还食谱列表。
   ```json
   {
-    "est_time_min": 0,
-    "est_time_max": 100
+    "user_id": 1
   }
+  ```
 
 
 
