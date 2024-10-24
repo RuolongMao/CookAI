@@ -79,7 +79,7 @@
     "est_time_min": 0,
     "est_time_max": 100
   }
-5. POST /dashboard
+6. POST /dashboard
   - 功能：通过user_id筛选并返还食谱列表。
   ```json
   {
