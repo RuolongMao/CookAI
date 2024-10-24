@@ -43,8 +43,7 @@
 - `user_id`: 创建该食谱的用户的唯一ID。
 - `image_url`: 食谱相关图片的URL。
 - `recipe_name`: 食谱名称，如“巧克力蛋糕”。
-- `recipe_price`: 估计的制作成本。
-- `est_calories`: 估计的热量值。
+- `details`: 食谱细节信息
 - `created_time`: 创建该食谱的日期。
 
 -- API 端口说明
@@ -57,8 +56,9 @@
     "user_id": 1,
     "image_url": "http://example.com/image.jpg",
     "recipe_name": "Orange Chicken",
-    "recipe_price": 50,
-    "est_calories": 500
+    "details": {
+      "estimate_time": "50 minutes"
+    }
   }
 2. DELETE /delete
 - 功能: 根据 recipe_id 删除指定的食谱。
@@ -72,6 +72,20 @@
   }
 4. GET /get
   - 功能：获取所有食谱列表。
+5. POST /filter
+  - 功能：支持通过est_time和est_cost范围筛选所有食谱列表。
+  ```json
+  {
+    "est_time_min": 0,
+    "est_time_max": 100
+  }
+5. POST /dashboard
+  - 功能：通过user_id筛选并返还食谱列表。
+  ```json
+  {
+    "est_time_min": 0,
+    "est_time_max": 100
+  }
 
 
 

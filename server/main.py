@@ -198,15 +198,20 @@ def read_recipes(db: Session = Depends(get_db)):
 
 @app.post("/filter")
 def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
-    print(query.est_time_min)
     recipes = dashboard_crud.filter_recipes(
         db, 
         est_time_min=query.est_time_min, 
         est_time_max=query.est_time_max,
         est_cost_min=query.est_cost_min, 
-        est_cost_max=query.est_cost_max
+        est_cost_max=query.est_cost_max,
+        cal_min=query.cal_min,
+        cal_max=query.cal_max
     )
     return recipes
+
+@app.post("/dashboard")
+def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
+    return dashboard_crud.get_personal_recipes(db, query.user_id)
 
 
 

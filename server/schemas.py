@@ -23,3 +23,8 @@ class RecipeFilter(BaseModel):
     est_time_max: Optional[int] = None
     est_cost_min: Optional[float] = None
     est_cost_max: Optional[float] = None
+    cal_min: Optional[int] = None
+    cal_max: Optional[int] = None
+
+class PersonalRecipeSearch(BaseModel):
+    user_id: int
