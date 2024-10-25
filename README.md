@@ -10,7 +10,7 @@
 6. 实现sign out功能
 7. 更新app.js
 8. 注释所有代码，提高代码可读性
-9. 简单实现AI text geneartion，同时实现能够选择关键词/种类
+9. 简单实现AI text generation，同时实现能够选择关键词/种类
 10. 创建Loading Page组件，重新建立页面跳转逻辑
 11. 创建AIResponse组件，能够在新页面显示AI回复
 11. 更新app.js，home.js
@@ -76,19 +76,21 @@
   - 功能：获取所有食谱列表。
 5. POST /filter
   - 功能：支持通过est_time和est_cost范围筛选所有食谱列表。
-  ```json
-  {
-    "est_time_min": 0,
-    "est_time_max": 100
-  }
-  ```
+  - 请求体示例:
+    ```json
+    {
+      "est_time_min": 0,
+      "est_time_max": 100
+    }
+    ```
 6. POST /dashboard
   - 功能：通过user_id筛选并返还食谱列表。
-  ```json
-  {
-    "user_id": 1
-  }
-  ```
+  - 请求体示例：
+    ```json
+    {
+      "user_id": 1
+    }
+    ```
 
 
 
