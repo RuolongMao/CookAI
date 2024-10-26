@@ -14,6 +14,8 @@ import json
 from crud import dashboard_crud
 import schemas
 from typing import List
+import httpx
+
 
 load_dotenv()
 
@@ -22,6 +24,9 @@ DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:password@localhos
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+# 加载 reCAPTCHA 秘密密钥
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY")
 
 # 用户模型创建
 class User(Base):
@@ -56,6 +61,7 @@ def get_db():
 class UserRegister(BaseModel):
     username: str
     password: str
+    recaptchaToken: str 
 
 # User login model
 class UserLogin(BaseModel):
@@ -65,6 +71,18 @@ class UserLogin(BaseModel):
 # 注册
 @app.post("/register")
 async def register_user(user: UserRegister, db: Session = Depends(get_db)):
+    verification_url = 'https://www.google.com/recaptcha/api/siteverify'
+    data = {
+        'secret': RECAPTCHA_SECRET_KEY,
+        'response': user.recaptchaToken
+    }
+    async with httpx.AsyncClient() as client:
+        captcha_response = await client.post(verification_url, data=data)
+        captcha_result = captcha_response.json()
+
+    if not captcha_result.get('success'):
+        raise HTTPException(status_code=400, detail="Invalid reCAPTCHA")
+
     # Check if username exists(验重)
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:

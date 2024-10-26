@@ -18,21 +18,29 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
       <div className="container-fluid">
         {/* 第一列: 左边 */}
         <div className="col-4 nav-1">
-          <a href="" className="about">
-            About
-          </a>
-          <a href="" className="community">
-            Community
-          </a>
-          <a href="" className="qa">
-            Q&A
-          </a>
+          <div className="row">
+            <div className="col text-center">
+              <a href="" className="about">
+                About
+              </a>
+            </div>
+            <div className="col text-center">
+              <a href="" className="community">
+                Community
+              </a>
+            </div>
+            <div className="col text-center">
+              <a href="" className="qa">
+                Q&A
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* 中间列: 两行 */}
         <div className="col-4 text-center">
           <div className="row fork-pic">
-            <a href="#" className="robot-icon">
+            <a href="/" className="robot-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="30"
@@ -47,7 +55,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
             </a>
           </div>
           <div className="row">
-            <a className="name" href="#">
+            <a className="name" href="/">
               CHEFBOTX
             </a>
           </div>
@@ -56,7 +64,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
         {/* 第三列: 右边 */}
         <div className="col-4 text-right right-side">
           <div className="row">
-            <div className="col-4 text-end">
+            <div className="col-4 text-center">
               {isLoggedIn ? (
                 <span className="wc-txt">Hello, {username}!</span>
               ) : (
@@ -64,7 +72,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
               )}
             </div>
 
-            <div className="col-4 text-end">
+            <div className="col-4 text-center">
               {isLoggedIn ? (
                 <span className="DashBoard">DashBoard</span>
               ) : (
@@ -74,7 +82,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
               )}
             </div>
 
-            <div className="col-4 text-end most-right">
+            <div className="col-4 text-center most-right">
               {isLoggedIn ? (
                 <span className="logout" onClick={handleLogout}>
                   Logout

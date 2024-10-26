@@ -147,12 +147,12 @@ const Home = () => {
     {
       "recipe_name": "recipe name",
       "nutrition_facts": {
-        "calories": "calories in kCal",
-        "fiber": "fiber in grams",
-        "protein": "protein in grams",
-        "carbs": "carbs in grams",
-        "fats": "fats in grams",
-        "sugar": "sugar in grams"
+        "calories": "calories",
+        "fiber": "fiber",
+        "protein": "protein",
+        "carbs": "carbs",
+        "fats": "fats",
+        "sugar": "sugars"
     },
       "ingredients": [
         {"name": "ingredient name", "quantity": "quantity", "cost": "cost"}
@@ -163,7 +163,8 @@ const Home = () => {
       "estimated_cost": "total estimated cost",
       "estimate_time": "total estimated time"
     }   
-    !! Make sure there is always Unit!!!
+    !! Make sure there is always Unit for Ingredients part !!!
+    !! Make sure there is no Unit for any Nutrition items!!!
     !! I don't need any space between unit and number
     `;
 
@@ -191,7 +192,7 @@ const Home = () => {
         </h1>
       ) : (
         <div className="container mt-5 mainbody">
-          <h1 className="text-center title">What you want to eat today?</h1>
+          <p className="text-center mainbody-title">What you want to eat today?</p>
           <div className="row mt-4 selection">
             <div className="col-md-10 text-input-father">
               <input
@@ -289,14 +290,15 @@ const Home = () => {
       )}
 
       {/* Modal 弹窗部分 */}
-      <Modal show={showModal} onHide={handleModalClose}>
+      {/* dialogClassName="modal-dialog-centered" */}
+      <Modal show={showModal} onHide={handleModalClose} dialogClassName="modal-dialog-centered custom-modal" >
         <Modal.Header closeButton>
-          <Modal.Title>Enter Custom {activeCategory}</Modal.Title>
+          <Modal.Title>Customs By Yourself</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input
             type="text"
-            className="form-control"
+            className="form-control cutom-input"
             placeholder="Enter your custom option"
             value={customInput}
             onChange={(e) => setCustomInput(e.target.value)}
@@ -311,7 +313,7 @@ const Home = () => {
           <Button variant="secondary" onClick={handleModalClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleModalSave}>
+          <Button className="custom-botton-save" onClick={handleModalSave}>
             Save Changes
           </Button>
         </Modal.Footer>

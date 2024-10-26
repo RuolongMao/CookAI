@@ -1,0 +1,78 @@
+.father-part{
+    padding-top:130px;
+    padding-left:250px;
+    padding-right:250px;
+}
+
+.signIn-table{
+    margin-top:-30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.left-side-r{
+    background-color: rgb(252, 251, 236);
+    padding:0;
+}
+
+.sign-pic{
+    width: 34vw; 
+    height: auto;
+}
+
+
+.right-side-r{
+    color:#2c3b4b;
+    padding-left: 40px;
+}
+
+
+.title-signIn{
+    color:#2c3b4b;
+    font-size:49px;
+    font-weight:600;
+}
+
+
+.userName-r,.passward-r,.confirm-password-r{
+    font-size:17px;
+    font-weight:800px;
+
+}
+
+.input-r{
+    border-radius:0px;
+    margin-bottom:10px;
+    border:none;
+    border-bottom:1px solid black;
+    transition: border-color 0.1s ease;
+}
+
+.input-r:focus {
+    outline: none; /* Removes the default blue outline */
+    border-bottom: 1px solid #000000; /* Customizes the bottom border on focus */
+    box-shadow: 0 1px 0 #000; /* Adds a subtle shadow effect if desired */
+}
+
+.recheck{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.signIn-button{
+    background-color: #5c6dcb;
+    border-radius:6px;
+    border-width:0.1px;
+    border-color:gainsboro;
+    font-size:18px;
+    padding:10px;
+    color:white;
+    width:430px;
+    margin-top:20px;
+}
+
+.signIn-button:hover{
+    background-color: #6f7cc9;
+    box-shadow:  0 10px 20px rgba(0, 0, 0, 0.2);
+
+}
+

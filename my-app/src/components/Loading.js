@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import loading from "../images/loading.gif";
 import "../css/Loading.css";
-
 
 const Loading = () => {
   const navigate = useNavigate();
@@ -10,7 +9,6 @@ const Loading = () => {
 
   // 从 location.state 中获取传递的 prompt 信息
   const prompt = location.state?.prompt || null;
-
 
   const hasFetchedRef = useRef(false); // 使用 useRef 来跟踪请求状态
 
@@ -37,14 +35,13 @@ const Loading = () => {
     }
   }, [prompt, navigate]);
 
-
   return (
-    <div className="container mt-5 text-center">
-
+    <div className="container loading-page mt-5 text-center">
       {/* <img src="https://via.placeholder.com/150" alt="Loading" />  */}
-     <img src={loading} alt="cook" className="loading-img"></img>
-     <div>Grabbing the freshest ingredients... just a moment!</div>
-     
+      <img src={loading} alt="cook" className="loading-img"></img>
+      <p className="loading-text">
+        <span className="scroll-content">Grabbing the freshest ingredients... just a moment!</span>
+      </p>
     </div>
   );
 };

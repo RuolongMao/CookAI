@@ -15,7 +15,7 @@ const Video = () => {
 
   return (
     <div>
-      <h1>This is the video generation page</h1>
+      <h1>啥都没有嘿嘿！！</h1>
       <div className="generate_video">
           <div className="generate_video_button" onClick={handleBackClick}>
             Back
