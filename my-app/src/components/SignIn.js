@@ -25,7 +25,7 @@ const SignIn = ({ onSignInSuccess }) => {
       const data = await response.json();
       setMessage("Login successful");
       onSignInSuccess(username); // 通知父组件用户已登录
-      // navigate("/"); // 登录成功后跳转到 Chat 页面
+      navigate(-1); // 登录成功后跳转到 Chat 页面
     } else {
       const errorData = await response.json();
       setMessage(errorData.detail);

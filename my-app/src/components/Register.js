@@ -61,7 +61,7 @@ const Register = ({ onRegisterSuccess }) => {
       const data = await response.json(); // 响应转换为JSON格式
       setMessage(data.message); // 设置注册成功后的提示消息（来自服务器）
       onRegisterSuccess(username); // 回掉父函数，通知注册成功，利用传入的方法
-      // navigate("/"); // 注册成功后跳转到 Chat 页面
+      navigate(-1); // 注册成功后跳转到 Chat 页面
     } else {
       const errorData = await response.json();
       setMessage(errorData.detail);
