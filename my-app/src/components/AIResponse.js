@@ -34,6 +34,7 @@ const AIResponse = () => {
   } = response || {};
 
   const [checkedIngredients, setCheckedIngredients] = useState({});
+  const [liked, setLiked] = useState(false);
 
   // 处理复选框勾选状态变化
   const handleCheckboxChange = (index) => {
@@ -42,6 +43,33 @@ const AIResponse = () => {
       [index]: !prevState[index], // 切换勾选状态
     }));
   };
+
+  const handleLikeClick = async () => {
+    setLiked(true); // 设置为已点赞
+    const body = {
+      recipe_name: recipe_name,
+      user_id: 1,
+      image_url: imageUrl,
+      details: response,
+    }
+    try {
+      const res = await fetch("http://127.0.0.1:8000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        console.log("Like saved successfully");
+      } else {
+        console.error("Failed to save like");
+      }
+    } catch (error) {
+      console.error("Error in saving like: ", error);
+    }
+  };
+
   // 如果 response 存在，显示它
   return (
     <div className="container--fluid">
@@ -202,6 +230,17 @@ const AIResponse = () => {
           </div>
         )}
       </div>
+      
+      <div className="row justify-content-center">
+        <button
+          className={`btn ${liked ? "btn-success" : "btn-outline-success"}`}
+          onClick={handleLikeClick}
+          disabled={liked}
+        >
+          {liked ? "Liked!" : "Like"}
+        </button>
+      </div>
+
       {/* 版权信息 */}
       <div className="row foot text-center">
         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
