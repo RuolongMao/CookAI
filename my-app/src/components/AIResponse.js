@@ -4,15 +4,14 @@ import "../css/AiReponse.css";
 
 const AIResponse = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 获取传递的状态
-
-  // 从 location.state 中获取 response
+  const location = useLocation();
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
+  const [checkedIngredients, setCheckedIngredients] = useState({});
+  const [liked, setLiked] = useState(false);
 
-  const handleGenerateClick = () => {
-    navigate("/video"); // Navigate to the video page when button is clicked
-  };
+
+
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
@@ -33,9 +32,8 @@ const AIResponse = () => {
     estimate_time,
   } = response || {};
 
-  const [checkedIngredients, setCheckedIngredients] = useState({});
-  const [liked, setLiked] = useState(false);
 
+  
   // 处理复选框勾选状态变化
   const handleCheckboxChange = (index) => {
     setCheckedIngredients((prevState) => ({
@@ -68,6 +66,10 @@ const AIResponse = () => {
     } catch (error) {
       console.error("Error in saving like: ", error);
     }
+  };
+
+  const handleGenerateClick = () => {
+    navigate("/video"); // Navigate to the video page when button is clicked
   };
 
   // 如果 response 存在，显示它
