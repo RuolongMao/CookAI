@@ -27,8 +27,8 @@ class DashboardCRUD:
     def get_personal_recipes(self, db: Session, user_id: str) -> List[models.Recipes]:
         return db.query(models.Recipes).filter(models.Recipes.user_id == user_id).all()
 
-    def delete_recipe(self, db: Session, recipe_id: str) -> bool:
-        recipe = db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    def delete_recipe(self, db: Session, recipe_name: str) -> bool:
+        recipe = db.query(models.Recipes).filter(models.Recipes.recipe_name == recipe_name).first()
         if not recipe:
             return False
         db.delete(recipe)

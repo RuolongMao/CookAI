@@ -197,9 +197,9 @@ async def query_openai(request: QueryRequest):
 def create_recipe(recipe: schemas.RecipeCreate, db: Session = Depends(get_db)):
     return dashboard_crud.create_recipe(db, recipe)
 
-@app.delete("/delete/{recipe_id}")
-def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
-    result = dashboard_crud.delete_recipe(db, recipe_id)
+@app.post("/delete")
+def delete_recipe(recipe: schemas.RecipeDelete, db: Session = Depends(get_db)):
+    result = dashboard_crud.delete_recipe(db, recipe.recipe_name)
     if result:
         return {"message": "Recipe deletion succeeded!"}
     else:

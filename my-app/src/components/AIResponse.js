@@ -9,6 +9,7 @@ const AIResponse = () => {
   const imageUrl = location.state?.image_url || null;
   const [checkedIngredients, setCheckedIngredients] = useState({});
   const [liked, setLiked] = useState(false);
+  const [removed, setRemoved] = useState(false);
 
 
 
@@ -50,22 +51,27 @@ const AIResponse = () => {
       image_url: imageUrl,
       details: response,
     }
-    try {
-      const res = await fetch("http://127.0.0.1:8000/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      if (res.ok) {
-        console.log("Like saved successfully");
-      } else {
-        console.error("Failed to save like");
-      }
-    } catch (error) {
-      console.error("Error in saving like: ", error);
+    const res = await fetch("http://127.0.0.1:8000/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+  };
+
+  const handleRemoveClick = async () => {
+    setRemoved(true);
+    const body = {
+      recipe_name: recipe_name
     }
+    const res = await fetch("http://127.0.0.1:8000/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
   };
 
   const handleGenerateClick = () => {
@@ -233,18 +239,29 @@ const AIResponse = () => {
         )}
       </div>
       
-      <div className="row justify-content-center">
-        <button
-          className={`btn ${liked ? "btn-success" : "btn-outline-success"}`}
-          onClick={handleLikeClick}
-          disabled={liked}
-        >
-          {liked ? "Liked!" : "Like"}
-        </button>
+      <div className="row button-part">
+        <div className="col-auto">
+          <button
+            className={`like-button ${liked ? "liked" : ""}`}
+            onClick={handleLikeClick}
+            disabled={liked}
+          >
+            {liked ? "Liked" : "Like"}
+          </button>
+        </div>
+        <div className="col-auto">
+          <button
+            className={`remove-button ${removed ? "removed" : ""}`}
+            onClick={handleRemoveClick}
+            disabled={removed}
+          >
+            {removed ? "Removed" : "Remove"}
+          </button>
+        </div>
       </div>
 
       {/* 版权信息 */}
-      <div className="row foot text-center">
+      <div className="row foots text-center">
         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
       </div>
     </div>

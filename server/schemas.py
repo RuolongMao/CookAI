@@ -28,3 +28,6 @@ class RecipeFilter(BaseModel):
 
 class PersonalRecipeSearch(BaseModel):
     user_id: int
+
+class RecipeDelete(BaseModel):
+    recipe_name: str
