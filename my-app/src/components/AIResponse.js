@@ -9,6 +9,8 @@ const AIResponse = () => {
   const imageUrl = location.state?.image_url || null;
   const [checkedIngredients, setCheckedIngredients] = useState({});
   const [liked, setLiked] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(""); // 提示信息状态
+  const [showAlert, setShowAlert] = useState(false); // 控制 alert 显示状态
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
@@ -50,6 +52,8 @@ const AIResponse = () => {
 
     if (newLikedState) {
       // 如果现在是喜欢状态，发送创建请求
+      setAlertMessage("You have liked this recipe!");
+      setShowAlert(true);
       await fetch("http://127.0.0.1:8000/create", {
         method: "POST",
         headers: {
@@ -59,6 +63,8 @@ const AIResponse = () => {
       });
     } else {
       // 如果现在是未喜欢状态，发送删除请求
+      setAlertMessage("You have unliked this recipe!");
+      setShowAlert(true);
       await fetch("http://127.0.0.1:8000/delete", {
         method: "POST",
         headers: {
@@ -67,6 +73,7 @@ const AIResponse = () => {
         body: JSON.stringify({ recipe_name: recipe_name }),
       });
     }
+    setTimeout(() => setShowAlert(false), 3000);
   };
 
   const handleGenerateClick = () => {
@@ -76,6 +83,12 @@ const AIResponse = () => {
   // 如果 response 存在，显示它
   return (
     <div className="container--fluid">
+      {showAlert && (
+        <div className="alert alert-primary text-center fade-in-out" role="alert">
+          {alertMessage}
+        </div>
+      )}
+
       <div className="row image-part">
         <div className="col-10 image-left-part">
           {imageUrl && (
