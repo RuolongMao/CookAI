@@ -44,7 +44,7 @@ function App() {
         <Route path="/register" element={<Register onRegisterSuccess={handleRegisterSuccess} />} />  {/* 传递方法*/}
         <Route path="/signin" element={<SignIn onSignInSuccess={handleSignInSuccess} />} /> {/* 传递方法*/}
         <Route path="/loading" element={<Loading />} />
-        <Route path="/response" element={<AIResponse />} />
+        <Route path="/response" element={<AIResponse />} isLoggedIn={isLoggedIn} />
         <Route path="/video" element={<Video />} />
       </Routes>
     </Router>

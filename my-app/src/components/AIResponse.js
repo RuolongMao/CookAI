@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/AiReponse.css";
 
-const AIResponse = () => {
+const AIResponse = ( {isLoggedIn } ) => {
   const navigate = useNavigate();
   const location = useLocation();
   const response = location.state?.response || null;
@@ -40,7 +40,13 @@ const AIResponse = () => {
   };
 
   const handleToggleLike = async () => {
-    const newLikedState = !liked; // 切换 liked 状态
+
+    if (!isLoggedIn) {       // 如果用户未登录，跳转到登录页面
+      navigate("/signin");
+      return;
+    }
+
+    const newLikedState = !liked; // 如果登陆了，执行下面逻辑，切换 liked 状态
     setLiked(newLikedState); // 更新状态
 
     const body = {
