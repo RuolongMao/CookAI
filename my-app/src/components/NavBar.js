@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/NavBar.css";
-import fork from "../images/fork.jpg";
 
 // 设置NavBar组件，接受方法和参数）
 const Navbar = ({ isLoggedIn, username, onLogout }) => {

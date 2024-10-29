@@ -9,10 +9,6 @@ const AIResponse = () => {
   const imageUrl = location.state?.image_url || null;
   const [checkedIngredients, setCheckedIngredients] = useState({});
   const [liked, setLiked] = useState(false);
-  const [removed, setRemoved] = useState(false);
-
-
-
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
@@ -33,8 +29,6 @@ const AIResponse = () => {
     estimate_time,
   } = response || {};
 
-
-  
   // 处理复选框勾选状态变化
   const handleCheckboxChange = (index) => {
     setCheckedIngredients((prevState) => ({
@@ -43,35 +37,36 @@ const AIResponse = () => {
     }));
   };
 
-  const handleLikeClick = async () => {
-    setLiked(true); // 设置为已点赞
+  const handleToggleLike = async () => {
+    const newLikedState = !liked; // 切换 liked 状态
+    setLiked(newLikedState); // 更新状态
+
     const body = {
       recipe_name: recipe_name,
       user_id: 1,
       image_url: imageUrl,
       details: response,
-    }
-    const res = await fetch("http://127.0.0.1:8000/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-  };
+    };
 
-  const handleRemoveClick = async () => {
-    setRemoved(true);
-    const body = {
-      recipe_name: recipe_name
+    if (newLikedState) {
+      // 如果现在是喜欢状态，发送创建请求
+      await fetch("http://127.0.0.1:8000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+    } else {
+      // 如果现在是未喜欢状态，发送删除请求
+      await fetch("http://127.0.0.1:8000/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ recipe_name: recipe_name }),
+      });
     }
-    const res = await fetch("http://127.0.0.1:8000/delete", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
   };
 
   const handleGenerateClick = () => {
@@ -82,9 +77,32 @@ const AIResponse = () => {
   return (
     <div className="container--fluid">
       <div className="row image-part">
-        {imageUrl && (
-          <img src={imageUrl} alt="Generated Recipe" className="image" />
-        )}
+        <div className="col-10 image-left-part">
+          {imageUrl && (
+            <img src={imageUrl} alt="Generated Recipe" className="image" />
+          )}
+        </div>
+
+        <div className="col-2 like-right-part">
+          <div className="row button-part">
+            <div className="col-auto">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`heart-icon ${liked ? "liked" : ""}`}
+                viewBox="-1 -1 18 16"
+                onClick={handleToggleLike}
+                style={{ cursor: "pointer" }}
+              >
+                <path
+                  fillRule="evenodd"
+                  stroke={liked ? "" : "black"}
+                  strokeWidth={liked ? "" : "0.7"}
+                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="row recipe_name-part">
@@ -237,27 +255,6 @@ const AIResponse = () => {
             </div>
           </div>
         )}
-      </div>
-      
-      <div className="row button-part">
-        <div className="col-auto">
-          <button
-            className={`like-button ${liked ? "liked" : ""}`}
-            onClick={handleLikeClick}
-            disabled={liked}
-          >
-            {liked ? "Liked" : "Like"}
-          </button>
-        </div>
-        <div className="col-auto">
-          <button
-            className={`remove-button ${removed ? "removed" : ""}`}
-            onClick={handleRemoveClick}
-            disabled={removed}
-          >
-            {removed ? "Removed" : "Remove"}
-          </button>
-        </div>
       </div>
 
       {/* 版权信息 */}
