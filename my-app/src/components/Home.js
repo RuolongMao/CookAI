@@ -201,6 +201,11 @@ const Home = () => {
                 value={message}
                 className="form-control text-input"
                 onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    sendMessage(e.target.value);
+                  }
+                }}
               />
             </div>
             <div className="col-md-2">

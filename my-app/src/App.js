@@ -8,6 +8,8 @@ import Home from './components/Home';
 import AIResponse from './components/AIResponse';
 import Loading from './components/Loading';
 import Video from './components/Video';
+import Community from "./components/Commnuity";
+import About from "./components/About";
 
 
 function App() {
@@ -46,6 +48,8 @@ function App() {
         <Route path="/loading" element={<Loading />} />
         <Route path="/response" element={<AIResponse isLoggedIn={isLoggedIn} />} />
         <Route path="/video" element={<Video />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </Router>
   );

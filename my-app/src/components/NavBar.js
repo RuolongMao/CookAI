@@ -19,12 +19,12 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
         <div className="col-4 nav-1">
           <div className="row">
             <div className="col text-center">
-              <a href="" className="about">
+              <a onClick={() => navigate("/about")} className="about">
                 About
               </a>
             </div>
             <div className="col text-center">
-              <a href="" className="community">
+              <a  onClick={() => navigate("/community")} className="community">
                 Community
               </a>
             </div>

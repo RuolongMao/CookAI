@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/AiReponse.css";
 
-const AIResponse = ( {isLoggedIn } ) => {
+const AIResponse = ({ isLoggedIn }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
+  const prompt = location.state?.prompt || null;
+
   const [checkedIngredients, setCheckedIngredients] = useState({});
   const [liked, setLiked] = useState(false);
   const [alertMessage, setAlertMessage] = useState(""); // 提示信息状态
@@ -19,7 +22,8 @@ const AIResponse = ( {isLoggedIn } ) => {
     }
     console.log("AI Response: ", response);
     console.log("img", imageUrl);
-  }, [response, imageUrl, navigate]);
+    console.log("Prompt: ", prompt);
+  }, [response, imageUrl, prompt, navigate]);
 
   // 解析 response 中的内容
   const {
@@ -31,6 +35,39 @@ const AIResponse = ( {isLoggedIn } ) => {
     estimate_time,
   } = response || {};
 
+  const handleShare = async () => {
+    const shareData = {
+      title: recipe_name || "Check out this recipe!",
+      text: `Here's a recipe you might enjoy: ${recipe_name}.`,
+      url: window.location.href, // 分享当前页面链接
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setAlertMessage("Recipe shared successfully!");
+      } else {
+        setAlertMessage("Sharing is not supported on this device.");
+      }
+    } catch (err) {
+      setAlertMessage("Failed to share the recipe.");
+      console.error("Error sharing:", err);
+    }
+
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
+  };
+
+  // 处理重新生成按钮点击事件
+  const handleRegenerate = () => {
+    if (!prompt) {
+      console.error("No prompt available to regenerate.");
+      return;
+    }
+    // 导航到 Loading 页面，并传递 prompt
+    navigate("/loading", { state: { prompt: prompt } });
+  };
+
   // 处理复选框勾选状态变化
   const handleCheckboxChange = (index) => {
     setCheckedIngredients((prevState) => ({
@@ -40,8 +77,8 @@ const AIResponse = ( {isLoggedIn } ) => {
   };
 
   const handleToggleLike = async () => {
-
-    if (!isLoggedIn) {       // 如果用户未登录，跳转到登录页面
+    if (!isLoggedIn) {
+      // 如果用户未登录，跳转到登录页面
       navigate("/signin");
       return;
     }
@@ -79,7 +116,7 @@ const AIResponse = ( {isLoggedIn } ) => {
         body: JSON.stringify({ recipe_name: recipe_name }),
       });
     }
-    setTimeout(() => setShowAlert(false), 3000);
+    setTimeout(() => setShowAlert(false), 2000);
   };
 
   const handleGenerateClick = () => {
@@ -90,7 +127,10 @@ const AIResponse = ( {isLoggedIn } ) => {
   return (
     <div className="container--fluid">
       {showAlert && (
-        <div className="alert alert-primary text-center fade-in-out" role="alert">
+        <div
+          className="alert alert-primary text-center fade-in-out"
+          role="alert"
+        >
           {alertMessage}
         </div>
       )}
@@ -107,6 +147,22 @@ const AIResponse = ( {isLoggedIn } ) => {
             <div className="col-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
+                className="refresh-button bi bi-arrow-clockwise"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+                onClick={handleRegenerate}
+                style={{ cursor: "pointer" }}
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
+                />
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+              </svg>
+            </div>
+            <div className="col-auto">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
                 className={`heart-icon ${liked ? "liked" : ""}`}
                 viewBox="-1 -1 18 16"
                 onClick={handleToggleLike}
@@ -115,10 +171,23 @@ const AIResponse = ( {isLoggedIn } ) => {
                 <path
                   fillRule="evenodd"
                   stroke={liked ? "" : "black"}
-                  strokeWidth={liked ? "" : "0.7"}
+                  strokeWidth={liked ? "" : "1"}
                   d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
                 />
               </svg>
+            </div>
+
+            <div className="col-auto share-part">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  className="bi bi-share-fill share-button"
+                  viewBox="0 0 16 16"
+                  style={{ cursor: "pointer" }}
+                  onClick={handleShare}
+                >
+                  <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
+                </svg>
             </div>
           </div>
         </div>

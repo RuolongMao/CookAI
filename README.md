@@ -121,6 +121,11 @@
 1. 存储记忆（线程），改进菜谱的时候，能有之前的记忆，让 Model 直接根据之前的记忆继续修改现在的菜谱，不用重新修改
 2. 大数据模型 API，实现推广用户感兴趣的内容，或者使用 embeddings 搜索相关感兴趣的内容
 3. AI 单位问题（response 页面问题）
+4. AI response page可以添加评论功能（仅限登陆）
+5. community page如果点击喜欢可以收藏（仅限登陆）
+6. community page如果可以留下评论，更多的人看到
+7. community page点赞人数data
+8. AIresponse 实现prompt微调（允许用户输入更多的信息调整）
 
 MYSQL Terminal 启动代码
 sudo /usr/local/mysql/support-files/mysql.server restart
