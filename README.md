@@ -126,6 +126,7 @@
 6. community page如果可以留下评论，更多的人看到
 7. community page点赞人数data
 8. AIresponse 实现prompt微调（允许用户输入更多的信息调整）
+9. AIresponse 过敏原信息
 
 MYSQL Terminal 启动代码
 sudo /usr/local/mysql/support-files/mysql.server restart
