@@ -189,8 +189,6 @@ async def query_openai(request: QueryRequest):
         # 在后端打印结果监测
         print("success print", response_data)
 
-
-
         # 返回 AI 的响应
         return QueryResponse(response=RecipeOutput(**response_data), image_url=image_url)
     except Exception as e:
@@ -234,6 +232,12 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
 @app.post("/dashboard")
 def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.get_personal_recipes(db, query.user_id)
+
+from moviepy.config import change_settings
+if os.name == 'nt':  # for Windows
+    change_settings({"FFMPEG_BINARY": "ffmpeg.exe"})
+else:  # for Unix-like systems
+    change_settings({"FFMPEG_BINARY": "ffmpeg"})
 
 # Add these new model classes
 class Scene(BaseModel):
