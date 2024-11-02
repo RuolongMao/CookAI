@@ -16,6 +16,10 @@ import schemas
 from typing import List
 import httpx
 
+# Add these imports at the top of main.py
+from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
+import tempfile
+from pathlib import Path
 
 load_dotenv()
 
@@ -231,9 +235,146 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
 def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.get_personal_recipes(db, query.user_id)
 
+# Add these new model classes
+class Scene(BaseModel):
+    voiceover: str
+    image_prompt: str
+    image_url: str = ""  # Will be populated later
+    audio_path: str = ""  # Will be populated later
 
+class Scenes(BaseModel):
+    scenes: List[Scene]
 
+class VideoRequest(BaseModel):
+    recipe_steps: List[dict]
 
+class VideoResponse(BaseModel):
+    video_url: str
 
+# Add this utility function
+def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
+    """Adds line breaks to text based on font size and video width."""
+    words = text.split()
+    lines = []
+    current_line = ""
+    
+    for word in words:
+        test_line = current_line + " " + word if current_line else word
+        test_clip = TextClip(test_line, fontsize=fontsize, font='Helvetica-Bold')
+        if test_clip.w > video_width:
+            lines.append(current_line)
+            current_line = word
+        else:
+            current_line = test_line
+    
+    if current_line:
+        lines.append(current_line)
+    
+    return "\n".join(lines)
 
+# Add this endpoint to generate videos
+@app.post("/generate_video", response_model=VideoResponse)
+async def generate_video(request: VideoRequest):
+    try:
+        # Create video directory if it doesn't exist
+        video_dir = Path("static/videos")
+        video_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate unique filename
+        video_filename = f"cooking_tutorial_{int(time.time())}.mp4"
+        video_path = video_dir / video_filename
+        
+        # Create prompt for scene generation
+        instruction = '''You are the director of a cooking tutorial video.
+        Using the provided recipe steps, create a list of scenes, each including a voiceover script
+        to guide viewers through the cooking process and a detailed description of the visual shot
+        for each scene. The voiceover should be enthusiastic and friendly.'''
+        
+        prompt = ""
+        for i, step in enumerate(request.recipe_steps, start=1):
+            prompt += f"Step {i}: {step['explanation']}\nInstruction: {step['instruction']}\n\n"
 
+        # Generate scenes using OpenAI
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": instruction},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        scenes_data = json.loads(completion.choices[0].message["content"])
+        scenes = Scenes(**scenes_data)
+
+        # Generate images and audio for each scene
+        clips = []
+        for scene in scenes.scenes:
+            # Generate image using DALL-E
+            image_response = openai.Image.create(
+                model="dall-e-2",
+                prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+                size="1024x1024",
+                quality="standard",
+                n=1
+            )
+            scene.image_url = image_response.data[0].url
+
+            # Generate audio using TTS
+            audio_response = openai.Audio.create(
+                model="tts-1",
+                voice="alloy",
+                input=scene.voiceover
+            )
+            
+            # Save audio to temporary file
+            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
+                f.write(audio_response.content)
+                scene.audio_path = f.name
+
+            # Create video clip
+            audio_clip = AudioFileClip(scene.audio_path)
+            duration = audio_clip.duration
+            
+            # Download and create image clip
+            image_clip = ImageClip(scene.image_url, duration=duration)
+            
+            # Create text overlay
+            narration = add_line_breaks(
+                scene.voiceover, 
+                fontsize=64, 
+                video_width=(image_clip.w-50)
+            )
+            
+            text_clip = (TextClip(narration, 
+                                fontsize=64, 
+                                color='white', 
+                                font='Helvetica-Bold',
+                                stroke_color='black',
+                                stroke_width=1)
+                        .set_position(("center", 1100))
+                        .set_duration(duration))
+
+            # Combine elements
+            video_clip = CompositeVideoClip([image_clip, text_clip])
+            video_clip = video_clip.set_audio(audio_clip)
+            clips.append(video_clip)
+
+            # Cleanup temporary audio file
+            os.unlink(scene.audio_path)
+
+        # Create final video
+        final_video = concatenate_videoclips(clips, method="compose")
+        final_video.write_videofile(
+            str(video_path),
+            fps=24,
+            temp_audiofile='temp-audio.m4a',
+            remove_temp=True,
+            codec="libx264",
+            audio_codec="aac"
+        )
+
+        # Return video URL
+        return VideoResponse(video_url=f"/static/videos/{video_filename}")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
