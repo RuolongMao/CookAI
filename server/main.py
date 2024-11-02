@@ -20,6 +20,7 @@ import httpx
 from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
 import tempfile
 from pathlib import Path
+import time
 
 load_dotenv()
 
@@ -251,6 +252,7 @@ class Scenes(BaseModel):
 
 class VideoRequest(BaseModel):
     recipe_steps: List[dict]
+    
 
 class VideoResponse(BaseModel):
     video_url: str
