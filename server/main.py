@@ -217,19 +217,29 @@ async def query_openai(request: QueryRequest):
             response_data = completion.choices[0].message.parsed
             
         try:
-            image_response = openai.Image.create(
-                model="dall-e-2",
-                prompt=request.prompt,
-                n=1,
-                size="1024x1024",
-                quality="standard",
-            )
-            image_url = image_response['data'][0]['url']
+            if not hasattr(openai, '__version__'):
+                image_response = openai.Image.create(
+                    model="dall-e-2",
+                    prompt=request.prompt,
+                    n=1,
+                    size="1024x1024",
+                    quality="standard",
+                )
+                image_url = image_response['data'][0]['url']
+            else:
+                image_response = client.images.generate(
+                    model="dall-e-2",
+                    prompt=request.prompt,
+                    size="1024x1024",
+                    quality="standard",
+                    n=1,
+                )
+                image_url = image_response.data[0].url
+
 
         except Exception as e:
             print("Image generation error:", e)
-            image_url = None
-
+            image_url = ""
 
         # 在后端打印结果监测
         print("success print", response_data)
@@ -337,18 +347,29 @@ async def generate_video(request: VideoRequest):
         prompt = ""
         for i, step in enumerate(request.recipe_steps, start=1):
             prompt += f"Step {i}: {step['explanation']}\nInstruction: {step['instruction']}\n\n"
-
-        # Generate scenes using OpenAI
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": instruction},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        if not hasattr(openai, '__version__'):
+            # Generate scenes using OpenAI
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": instruction},
+                    {"role": "user", "content": prompt}
+                ]
+            )
         
-        scenes_data = json.loads(completion.choices[0].message["content"])
-        scenes = Scenes(**scenes_data)
+            scenes_data = json.loads(completion.choices[0].message["content"])
+            scenes = Scenes(**scenes_data)
+        else:
+            completion = client.beta.chat.completions.parse(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
+                    {"role": "user", "content": request.prompt + SystemPrompt}
+                ],
+                response_format=Scenes
+            )
+
+            scenes_data = completion.choices[0].message.parsed
 
         # Generate images and audio for each scene
         clips = []
@@ -356,14 +377,24 @@ async def generate_video(request: VideoRequest):
 
         for scene in scenes.scenes:
             # Generate image using DALL-E
-            image_response = openai.Image.create(
-                model="dall-e-2",
-                prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
-                size="1024x1024",
-                quality="standard",
-                n=1
-            )
-            scene.image_url = image_response.data[0].url
+            if not hasattr(openai, '__version__'):
+                image_response = openai.Image.create(
+                    model="dall-e-2",
+                    prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+                    size="1024x1024",
+                    quality="standard",
+                    n=1
+                )
+            else:
+                image_response = client.images.generate(
+                    model="dall-e-3",
+                    prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+                    size="1792x1024",
+                    quality="standard",
+                    n=1,
+                )
+                
+            scene.image_url = image_response['data'][0]['url']
 
             # Generate audio using TTS
             audio_response = openai.Audio.create(
@@ -426,4 +457,5 @@ async def generate_video(request: VideoRequest):
         return VideoResponse(video_data=video_data)
 
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
