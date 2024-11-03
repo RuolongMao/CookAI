@@ -139,6 +139,10 @@ const AIResponse = ({ isLoggedIn }) => {
     });
   };
 
+  const handleYoutubeClick = () => {
+    navigate("/youtube", { state: { response } }); // Navigate to the YouTube page
+  };
+
   // 如果 response 存在，显示它
   return (
     <div className="container--fluid">
@@ -309,6 +313,11 @@ const AIResponse = ({ isLoggedIn }) => {
         <div className="generate_video">
           <div className="generate_video_button" onClick={handleGenerateClick}>
             Click here for Video
+          </div>
+        </div>
+        <div className="generate_video">
+          <div className="generate_video_button" onClick={handleYoutubeClick}>
+            Find Youtube Tutorials
           </div>
         </div>
       </div>

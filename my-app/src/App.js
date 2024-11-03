@@ -10,7 +10,7 @@ import Loading from './components/Loading';
 import Video from './components/Video';
 import Community from "./components/Commnuity";
 import About from "./components/About";
-
+import Youtube from './components/Youtube';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,6 +50,7 @@ function App() {
         <Route path="/video" element={<Video />} />
         <Route path="/community" element={<Community />} />
         <Route path="/about" element={<About />} />
+        <Route path="/youtube" element={<Youtube />} />
       </Routes>
     </Router>
   );

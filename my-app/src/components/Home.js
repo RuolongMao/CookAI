@@ -7,7 +7,7 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const [taste, setTaste] = useState([]);
   const [cookingMethod, setCookingMethod] = useState([]);
-  const [mealTime, setMealTime] = useState([]);
+  const [allergen, setAllergen] = useState([]);
   const [activeCategory, setActiveCategory] = useState(""); // 记录当前自定义的分类
 
   const [showContent, setShowContent] = useState(false);
@@ -21,7 +21,7 @@ const Home = () => {
   const [customTasteInput, setCustomTasteInput] = useState(null);
   const [customCookingMethodInput, setCustomCookingMethodInput] =
     useState(null);
-  const [customMealTimeInput, setCustomMealTimeInput] = useState(null);
+  const [customAllergenInput, setCustomAllergenInput] = useState(null);
 
   const navigate = useNavigate();
 
@@ -45,9 +45,9 @@ const Home = () => {
           setActiveCategory(category);
           setShowModal(true);
         }
-      } else if (category === "mealTime") {
-        if (customMealTimeInput !== null) {
-          setCustomMealTimeInput(null);
+      } else if (category === "allergen") {
+        if (customAllergenInput !== null) {
+          setCustomAllergenInput(null);
         } else {
           setActiveCategory(category);
           setShowModal(true);
@@ -69,8 +69,8 @@ const Home = () => {
             ? prev.filter((k) => k !== keyword)
             : [...prev, keyword]
         );
-      } else if (category === "mealTime") {
-        setMealTime((prev) =>
+      } else if (category === "allergen") {
+        setAllergen((prev) =>
           prev.includes(keyword)
             ? prev.filter((k) => k !== keyword)
             : [...prev, keyword]
@@ -91,8 +91,8 @@ const Home = () => {
       setCustomTasteInput(trimmedInput);
     } else if (activeCategory === "cookingMethod") {
       setCustomCookingMethodInput(trimmedInput);
-    } else if (activeCategory === "mealTime") {
-      setCustomMealTimeInput(trimmedInput);
+    } else if (activeCategory === "allergen") {
+      setCustomAllergenInput(trimmedInput);
     }
     setCustomInput("");
     setShowModal(false);
@@ -134,12 +134,12 @@ const Home = () => {
     }
 
     // 处理 Meal Time
-    if (mealTime.length > 0 || customMealTimeInput) {
-      const mealList = [...mealTime];
-      if (customMealTimeInput) {
-        mealList.push(customMealTimeInput);
+    if (allergen.length > 0 || customAllergenInput) {
+      const mealList = [...allergen];
+      if (customAllergenInput) {
+        mealList.push(customAllergenInput);
       }
-      prompt += ` The meal time is ${mealList.join(", ")}.`;
+      prompt += ` The allergen is ${mealList.join(", ")}.`;
     }
 
     // 输出检测
@@ -242,22 +242,22 @@ const Home = () => {
             </div>
 
             <div className="col-md-4 cd">
-              <h3 className="card-title">Meal Time</h3>
+              <h3 className="card-title">Allergen</h3>
               <div className="d-inline-flex gap-1">
-                {["Breakfast", "Lunch", "Dinner", "Custom"].map((meal) => (
+                {["Milk", "Eggs", "Peanuts", "Custom"].map((meal) => (
                   <button
                     key={meal}
                     type="button"
                     className={`btn btn-outline-warning time ${
                       meal === "Custom"
-                        ? customMealTimeInput
+                        ? customAllergenInput
                           ? "active"
                           : ""
-                        : mealTime.includes(meal)
+                        : allergen.includes(meal)
                         ? "active"
                         : ""
                     }`}
-                    onClick={() => handleKeywordClick("mealTime", meal)}
+                    onClick={() => handleKeywordClick("allergen", meal)}
                   >
                     {meal}
                   </button>

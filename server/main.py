@@ -25,6 +25,10 @@ import time
 import base64
 from io import BytesIO
 
+# Add these imports at the top of main.py
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
 load_dotenv()
 
 # 设置MySQL连接
@@ -121,6 +125,9 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 
 
 SystemPrompt = '''
+Reflect the user's requirement. Especially pay attention to the user's allergent, you could be creative and adapt the common recipe to suit the user's need.
+'''
+StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
     {
       "recipe_name": "recipe name",
@@ -199,7 +206,7 @@ async def query_openai(request: QueryRequest):
                 model="gpt-3.5-turbo",
                  messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                {"role": "user", "content": request.prompt + SystemPrompt}
+                {"role": "user", "content": request.prompt + SystemPrompt + StructureReminder}
                 ]   
             )
             response_content = completion.choices[0].message["content"]
@@ -381,7 +388,7 @@ async def generate_video(request: VideoRequest):
         clips = []
         temp_files = []  # Track temporary files for cleanup
 
-        for scene in scenes.scenes:
+        for scene in scenes.scenes[:2]:
             try:
                 # Generate image using DALL-E
                 if not hasattr(openai, '__version__'):
@@ -509,4 +516,63 @@ async def test_video_local():
 
     except Exception as e:
         print(f"Error processing local video: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+# Add these new model classes
+class YoutubeVideoRequest(BaseModel):
+    recipe_name: str
+
+class YoutubeVideo(BaseModel):
+    videoId: str
+    title: str
+    description: str
+    thumbnail: str
+    channelTitle: str
+
+class YoutubeVideoResponse(BaseModel):
+    videos: List[YoutubeVideo]
+
+# Add this new endpoint
+@app.post("/search_youtube", response_model=YoutubeVideoResponse)
+async def search_youtube(request: YoutubeVideoRequest):
+    try:
+        # Get your YouTube API key from environment variable
+        youtube_api_key = os.getenv("YOUTUBE_API_KEY")
+        if not youtube_api_key:
+            raise HTTPException(status_code=500, detail="YouTube API key not configured")
+
+        # Create YouTube API client
+        youtube = build('youtube', 'v3', developerKey=youtube_api_key)
+
+        # Search for videos
+        search_response = youtube.search().list(
+            q=f"how to make {request.recipe_name}",
+            part='snippet',
+            maxResults=5,
+            type='video',
+            relevanceLanguage='en',
+            videoCategoryId='26'  # How-to & Style category
+        ).execute()
+
+        # Process the results
+        videos = []
+        for item in search_response.get('items', []):
+            video = YoutubeVideo(
+                videoId=item['id']['videoId'],
+                title=item['snippet']['title'],
+                description=item['snippet']['description'],
+                thumbnail=item['snippet']['thumbnails']['high']['url'],
+                channelTitle=item['snippet']['channelTitle']
+            )
+            videos.append(video)
+        
+        print(videos)
+
+        return YoutubeVideoResponse(videos=videos)
+
+    except HttpError as e:
+        print(f"YouTube API error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch YouTube videos")
+    except Exception as e:
+        print(f"Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
