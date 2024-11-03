@@ -22,7 +22,10 @@ class DashboardCRUD:
         return db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
 
     def get_recipes(self, db: Session) -> List[models.Recipes]:
-        return db.query(models.Recipes).all()
+        print("Fetching recipes from database...")
+        recipes = db.query(models.Recipes).all()
+        print(f"Found {len(recipes)} recipes")
+        return recipes
     
     def get_personal_recipes(self, db: Session, user_id: str) -> List[models.Recipes]:
         return db.query(models.Recipes).filter(models.Recipes.user_id == user_id).all()

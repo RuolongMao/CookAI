@@ -2,46 +2,67 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootstrap';
 import "../css/Community.css";
 
+
 const Community = () => {
-  // States
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
+  
+  // Recipe data state
+  const [recipeData, setRecipeData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch recipes on component mount
-  useEffect(() => {
-    fetchRecipes();
-  }, []);
-
+  // Fetch recipes from backend
+  // 修改现有的 useEffect 代码
+useEffect(() => {
   const fetchRecipes = async () => {
+    const startTime = performance.now();
+    
     try {
-      setLoading(true);
-      const response = await fetch('http://localhost:8000/recipes');
+      console.log('开始获取数据...');
+      const response = await fetch('http://localhost:8000/get');
+      const endTime = performance.now();
+      
+      // 打印请求信息
+      console.log('请求详情:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        timeMs: Math.round(endTime - startTime)
+      });
+
       if (!response.ok) {
-        throw new Error('Failed to fetch recipes');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const data = await response.json();
-      setRecipes(data);
+      console.log('获取到的数据:', data);
+      
+      setRecipeData(data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch recipes');
-      console.error('Error:', err);
+      console.error('Error details:', {
+        message: err.message,
+        stack: err.stack
+      });
+      setError('Failed to load recipes. Please try again later.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  
+  fetchRecipes();
+}, []); // Empty dependency array means this runs once on component mount
+
   // Calculate pagination values
-  const totalItems = recipes.length;
+  const totalItems = recipeData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
   // Get current page's items
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = recipes.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = recipeData.slice(indexOfFirstItem, indexOfLastItem);
 
   // Handle page changes
   const handlePageChange = (pageNumber) => {
@@ -194,7 +215,29 @@ const Community = () => {
             <div className="h-full flex flex-col">
               {/* Scrollable Recipe Grid */}
               <div className="recipes-container">
-                {recipes.length === 0 ? (
+                {isLoading ? (
+                  <div className="text-center p-5">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <p className="mt-2">Connecting to API...</p>
+                </div>
+              ) : error ? (
+                <div className="alert alert-danger m-3" role="alert">
+                  <h5>Connection Error</h5>
+                  <p>{error}</p>
+                  <hr />
+                  <div className="mt-3">
+                    <h6>Troubleshooting Steps:</h6>
+                    <ul>
+                      <li>Check if backend server is running (http://localhost:8000)</li>
+                      <li>Verify CORS settings in backend</li>
+                      <li>Check browser console for detailed error messages</li>
+                      <li>Ensure database connection is active</li>
+                    </ul>
+                  </div>
+                </div>
+                ) : recipeData.length === 0 ? (
                   <div className="empty-state text-center p-5">
                     <div className="empty-icon mb-3">
                       <i className="bi bi-journal-plus" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
@@ -231,8 +274,8 @@ const Community = () => {
                 )}
               </div>
 
-              {/* Only show pagination if there are items */}
-              {recipes.length > 0 && (
+              {/* Only show pagination if there are items and not loading */}
+              {!isLoading && !error && recipeData.length > 0 && (
                 <div className="mt-3 border-t pt-3 bg-white">
                   <div className="d-flex justify-content-center">
                     <Pagination size="sm">
