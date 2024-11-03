@@ -18,7 +18,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 3rem;
   }
   
   .main-video {
@@ -57,13 +56,11 @@
     font-size: 1.5rem;
     color: #333;
     text-align: center;
-    margin: 2rem 0;
     font-weight: 500;
   }
   
   /* Video List Section */
   .video-list-container {
-    margin: 2rem 0;
     padding: 0 1rem;
   }
   
