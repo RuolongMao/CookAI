@@ -1,62 +1,144 @@
+/* Grid Container */
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns with equal width */
+    gap: 2rem;
+    padding: 1.5rem;
+}
+
 /* Card Styles */
 .recipe-card {
-    height: 80%;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  }
-  
-  .recipe-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .recipe-card-img {
-    height: 280px;
-    object-fit: cover;
     width: 100%;
-  }
-  
-  .recipe-card-body {
-    padding: 1rem;
-  }
-  
-  /* Grid Container */
-  .recipe-grid {
-    display: grid;
-    column-gap: 1.5rem;   
-    row-gap: 0.45rem;    
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    height: 350px; /* Fixed height */
 }
-  
-  /* Scrollable Areas */
-  .filter-panel {
-    max-height: calc(100vh - 120px);
+
+.recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.recipe-image-container {
+    width: 100%;
+    height: 200px; /* Fixed image height */
+    position: relative;
+    overflow: hidden;
+}
+
+.recipe-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.recipe-card-body {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* User Info Styles */
+.user-name {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.recipe-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 0.5rem;
+    /* Prevent long titles from breaking layout */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.publish-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.recipe-details {
+    margin-top: auto;
+    display: flex;
+    gap: 1rem;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Responsive layout */
+@media (max-width: 1200px) {
+    .recipe-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .recipe-grid {
+        grid-template-columns: 1fr; /* 1 column on mobile */
+        padding: 1rem;
+    }
+
+    .recipe-card {
+        height: 330px; /* Slightly smaller on mobile */
+    }
+}
+
+/* Filter Panel and Container styles */
+.filter-panel {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: calc(100vh - 180px);
     overflow-y: auto;
-  }
-  
-  .recipes-container {
-    max-height: calc(100vh - 100px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.recipes-container {
+    height: calc(100vh - 180px);
     overflow-y: auto;
-  }
-  
-  /* Custom Scrollbar */
-  .filter-panel::-webkit-scrollbar,
-  .recipes-container::-webkit-scrollbar {
+}
+
+/* Empty state styles */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: 8px;
+    margin: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollbar styles */
+.filter-panel::-webkit-scrollbar,
+.recipes-container::-webkit-scrollbar {
     width: 6px;
-  }
-  
-  .filter-panel::-webkit-scrollbar-track,
-  .recipes-container::-webkit-scrollbar-track {
+}
+
+.filter-panel::-webkit-scrollbar-track,
+.recipes-container::-webkit-scrollbar-track {
     background: #f1f1f1;
-  }
-  
-  .filter-panel::-webkit-scrollbar-thumb,
-  .recipes-container::-webkit-scrollbar-thumb {
+}
+
+.filter-panel::-webkit-scrollbar-thumb,
+.recipes-container::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 3px;
-  }
-  
-  .filter-panel::-webkit-scrollbar-thumb:hover,
-  .recipes-container::-webkit-scrollbar-thumb:hover {
+}
+
+.filter-panel::-webkit-scrollbar-thumb:hover,
+.recipes-container::-webkit-scrollbar-thumb:hover {
     background: #555;
-  }
+}

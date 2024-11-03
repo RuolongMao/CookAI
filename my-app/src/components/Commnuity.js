@@ -1,8 +1,119 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootstrap';
 import "../css/Community.css";
 
 const Community = () => {
+  // States
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
+
+  // Fetch recipes on component mount
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8000/recipes');
+      if (!response.ok) {
+        throw new Error('Failed to fetch recipes');
+      }
+      const data = await response.json();
+      setRecipes(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch recipes');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+  // Calculate pagination values
+  const totalItems = recipes.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Get current page's items
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = recipes.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Handle page changes
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    document.querySelector('.recipes-container').scrollTop = 0;
+  };
+
+  // Generate pagination items
+  const renderPaginationItems = () => {
+    let items = [];
+    
+    if (totalPages > 1) {
+      // Add First and Prev buttons
+      items.push(
+        <Pagination.First 
+          key="first" 
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(1)}
+        />
+      );
+      items.push(
+        <Pagination.Prev 
+          key="prev" 
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
+        />
+      );
+
+      // Add page numbers
+      for (let number = 1; number <= totalPages; number++) {
+        if (
+          number === 1 || 
+          number === totalPages ||
+          (number >= currentPage - 1 && number <= currentPage + 1)
+        ) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              active={number === currentPage}
+              onClick={() => handlePageChange(number)}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        } else if (
+          number === currentPage - 2 ||
+          number === currentPage + 2
+        ) {
+          items.push(<Pagination.Ellipsis key={`ellipsis-${number}`} />);
+        }
+      }
+
+      // Add Next and Last buttons
+      items.push(
+        <Pagination.Next 
+          key="next" 
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+        />
+      );
+      items.push(
+        <Pagination.Last 
+          key="last" 
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(totalPages)}
+        />
+      );
+    }
+
+    return items;
+  };
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <Container fluid className="h-full py-3">
@@ -83,40 +194,53 @@ const Community = () => {
             <div className="h-full flex flex-col">
               {/* Scrollable Recipe Grid */}
               <div className="recipes-container">
-                <div className="recipe-grid">
-                  {[1, 2, 3, 4, 5, 6].map((item) => (
-                    <Card key={item} className="recipe-card">
-                      <Card.Img 
-                        variant="top" 
-                        src="/api/placeholder/400/300"
-                        alt="Recipe" 
-                        className="recipe-card-img"
-                      />
-                      <Card.Body className="recipe-card-body">
-                        <Card.Title className="h5">Recipe Name {item}</Card.Title>
-                        <Card.Text className="text-muted small">
-                          Published: Jan {item}, 2024
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
-                  ))}
-                </div>
+                {recipes.length === 0 ? (
+                  <div className="empty-state text-center p-5">
+                    <div className="empty-icon mb-3">
+                      <i className="bi bi-journal-plus" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
+                    </div>
+                    <h3 className="text-muted mb-2">Our Community is Waiting for You!</h3>
+                    <p className="text-muted">
+                      Be the first to share your amazing recipe and start building our cooking community.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="recipe-grid">
+                    {currentItems.map((recipe) => (
+                      <Card key={recipe.id} className="recipe-card">
+                        <div className="recipe-image-container">
+                          <Card.Img 
+                            variant="top" 
+                            src={recipe.image_url || "/api/placeholder/400/300"}
+                            alt="Recipe" 
+                            className="recipe-card-img"
+                          />
+                        </div>
+                        <Card.Body className="recipe-card-body">
+                          <div className="user-info">
+                            <span className="user-name">{recipe.user_id}</span>
+                          </div>
+                          <Card.Title className="recipe-title">{recipe.recipe_name}</Card.Title>
+                          <Card.Text className="publish-date">
+                            Published: {new Date(recipe.created_time).toLocaleDateString()}
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Pagination - Fixed at Bottom */}
-              <div className="mt-3 border-t pt-3 bg-white">
-                <div className="d-flex justify-content-center">
-                  <Pagination size="sm">
-                    <Pagination.First />
-                    <Pagination.Prev />
-                    <Pagination.Item>{1}</Pagination.Item>
-                    <Pagination.Item active>{2}</Pagination.Item>
-                    <Pagination.Item>{3}</Pagination.Item>
-                    <Pagination.Next />
-                    <Pagination.Last />
-                  </Pagination>
+              {/* Only show pagination if there are items */}
+              {recipes.length > 0 && (
+                <div className="mt-3 border-t pt-3 bg-white">
+                  <div className="d-flex justify-content-center">
+                    <Pagination size="sm">
+                      {renderPaginationItems()}
+                    </Pagination>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </Col>
         </Row>
