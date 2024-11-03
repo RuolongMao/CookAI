@@ -25,6 +25,10 @@ import time
 import base64
 from io import BytesIO
 
+# Add these imports at the top of main.py
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
 load_dotenv()
 
 # 设置MySQL连接
