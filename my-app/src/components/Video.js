@@ -1,27 +1,27 @@
-// Video.js
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import "../css/Video.css";
 
 const Video = () => {
-
   const navigate = useNavigate();
   const location = useLocation();
-  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoData, setVideoData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [recipeName, setRecipeName] = useState("");
 
   useEffect(() => {
     const generateVideo = async () => {
       try {
-        // Get recipe steps from previous page state
         const recipeSteps = location.state?.response?.steps;
+        const recipeName = location.state?.response?.recipe_name;
         
-        if (!recipeSteps) {
-          throw new Error("No recipe steps found");
+        if (!recipeSteps || !Array.isArray(recipeSteps) || recipeSteps.length === 0) {
+          throw new Error("Recipe steps not found. Please go back and try again.");
         }
 
+        setRecipeName(recipeName || "Recipe");
+        
         const response = await fetch("http://127.0.0.1:8000/generate_video", {
           method: "POST",
           headers: {
@@ -33,12 +33,14 @@ const Video = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to generate video");
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Failed to generate video");
         }
 
         const data = await response.json();
-        setVideoUrl(`http://127.0.0.1:8000${data.video_url}`);
+        setVideoData(data.video_data);
       } catch (err) {
+        console.error("Video generation error:", err);
         setError(err.message);
       } finally {
         setIsLoading(false);
@@ -55,7 +57,9 @@ const Video = () => {
   return (
     <div className="video-container">
       <div className="video-content">
-        <h1 className="video-title">Recipe Tutorial Video</h1>
+        <h1 className="video-title">
+          {recipeName ? `${recipeName} Tutorial` : 'Recipe Tutorial Video'}
+        </h1>
         
         {isLoading && (
           <div className="loading-section">
@@ -74,14 +78,17 @@ const Video = () => {
           </div>
         )}
 
-        {!isLoading && !error && videoUrl && (
+        {!isLoading && !error && videoData && (
           <div className="video-section">
             <video 
               controls 
               className="tutorial-video"
               poster="/api/placeholder/1280/720"
             >
-              <source src={videoUrl} type="video/mp4" />
+              <source 
+                src={`data:video/mp4;base64,${videoData}`} 
+                type="video/mp4" 
+              />
               Your browser does not support the video tag.
             </video>
             <div className="video-controls">
@@ -96,18 +103,4 @@ const Video = () => {
   );
 };
 
-//   return (
-//     <div>
-//       <h1>啥都没有嘿嘿！！</h1>
-//       <div className="generate_video">
-//           <div className="generate_video_button" onClick={handleBackClick}>
-//             Back
-//           </div>
-//         </div>
-//     </div>
-    
-//   );
-// };
-
 export default Video;
-
