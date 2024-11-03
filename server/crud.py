@@ -11,12 +11,20 @@ class DashboardCRUD:
             image_url=recipe.image_url,
             recipe_name=recipe.recipe_name,
             created_time=date.today(), 
-            details=recipe.details
+            details=recipe.details,
+            publish=False
         )
         db.add(new_recipe)
         db.commit()
         db.refresh(new_recipe)
         return new_recipe
+    
+    def share(self, db: Session, recipe_name: str) -> Optional[models.Recipes]:
+        result = db.query(models.Recipes).filter(models.Recipes.recipe_name == recipe_name).first()
+        result.publish = not result.publish
+        db.commit()
+        db.refresh(result)
+        return result
 
     def get_recipe(self, db: Session, recipe_id: str) -> Optional[models.Recipes]:
         return db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends 
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles 
 import os
@@ -298,6 +298,10 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
 @app.post("/dashboard")
 def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.get_personal_recipes(db, query.user_id)
+
+@app.post("/share")
+def is_share(body: schemas.RecipeDelete, db: Session = Depends(get_db)):
+    return dashboard_crud.share(db, body.recipe_name)
 
 from moviepy.config import change_settings
 if os.name == 'nt':  # for Windows

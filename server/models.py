@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, JSON
+from sqlalchemy import Column, Integer, String, Date, JSON, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -12,3 +12,4 @@ class Recipes(Base):
     recipe_name = Column(String, nullable=False)
     created_time = Column(Date, nullable=False)
     details = Column(JSON, nullable=False)
+    publish = Column(Boolean, nullable=True)
