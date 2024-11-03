@@ -548,7 +548,7 @@ async def search_youtube(request: YoutubeVideoRequest):
         search_response = youtube.search().list(
             q=f"how to make {request.recipe_name}",
             part='snippet',
-            maxResults=5,
+            maxResults=4,
             type='video',
             relevanceLanguage='en',
             videoCategoryId='26'  # How-to & Style category

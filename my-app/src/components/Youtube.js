@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import "../css/Video.css"; // We can reuse the video CSS
+import "../css/Youtube.css";
 
 const Youtube = () => {
   const navigate = useNavigate();
@@ -55,6 +55,8 @@ const Youtube = () => {
 
   const handleVideoSelect = (video) => {
     setSelectedVideo(video);
+    // Smooth scroll to top when selecting a new video
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackClick = () => {
@@ -64,77 +66,85 @@ const Youtube = () => {
   return (
     <div className="video-container">
       <h1 className="video-title">
-        {recipeName ? `${recipeName} Tutorials from YouTube` : 'Recipe Tutorials'}
+        {recipeName ? `${recipeName} Tutorials` : 'Recipe Tutorials'}
       </h1>
       
       {isLoading && (
         <div className="loading-section">
           <div className="spinner"></div>
-          <p>Searching for tutorial videos...</p>
+          <p>Finding the best tutorials...</p>
         </div>
       )}
 
       {error && (
         <div className="error-section">
-          <p className="error-message">Error: {error}</p>
+          <p className="error-message">{error}</p>
           <button className="back-button" onClick={handleBackClick}>
-            Go Back
+            Back to Recipe
           </button>
         </div>
       )}
 
       {!isLoading && !error && videos.length > 0 && (
-        <div className="video-section">
-          {/* Main Video Player */}
-          <div className="main-video">
-            {selectedVideo && (
-              <iframe
-                width="860"
-                height="515"
-                src={`https://www.youtube.com/embed/${selectedVideo.videoId}`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="tutorial-video"
-              ></iframe>
-            )}
+        <>
+          <div className="video-section">
+            <div className="main-video">
+              {selectedVideo && (
+                <>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${selectedVideo.videoId}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="tutorial-video"
+                  ></iframe>
+                  <div className="main-video-info">
+                    <h2 className="main-video-title">{selectedVideo.title}</h2>
+                    <p className="main-video-channel">by {selectedVideo.channelTitle}</p>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Video List */}
-          <div className="video-list">
-            {videos.map((video) => (
-              <div
-                key={video.videoId}
-                className={`video-item ${selectedVideo?.videoId === video.videoId ? 'selected' : ''}`}
-                onClick={() => handleVideoSelect(video)}
-              >
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="video-thumbnail"
-                />
-                <div className="video-info">
-                  <h3>{video.title}</h3>
-                  <p>{video.channelTitle}</p>
+          <h2 className="more-videos-title">More Tutorials</h2>
+          
+          <div className="video-list-container">
+            <div className="video-list">
+              {videos.map((video) => (
+                <div
+                  key={video.videoId}
+                  className={`video-item ${selectedVideo?.videoId === video.videoId ? 'selected' : ''}`}
+                  onClick={() => handleVideoSelect(video)}
+                >
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="video-thumbnail"
+                  />
+                  <div className="video-info">
+                    <h3>{video.title}</h3>
+                    <p>{video.channelTitle}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <div className="video-controls">
-            <button className="generate_video_button" onClick={handleBackClick}>
+            <button className="back-button" onClick={handleBackClick}>
               Back to Recipe
             </button>
           </div>
-        </div>
+        </>
       )}
 
       {!isLoading && !error && videos.length === 0 && (
         <div className="no-videos-section">
           <p>No tutorial videos found for this recipe.</p>
           <button className="back-button" onClick={handleBackClick}>
-            Go Back
+            Back to Recipe
           </button>
         </div>
       )}
