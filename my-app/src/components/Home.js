@@ -142,32 +142,6 @@ const Home = () => {
       prompt += ` The meal time is ${mealList.join(", ")}.`;
     }
 
-    // 添加剩余的 prompt 内容
-    prompt += ` Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
-    {
-      "recipe_name": "recipe name",
-      "nutrition_facts": {
-        "calories": "calories",
-        "fiber": "fiber",
-        "protein": "protein",
-        "carbs": "carbs",
-        "fats": "fats",
-        "sugar": "sugars"
-    },
-      "ingredients": [
-        {"name": "ingredient name", "quantity": "quantity", "cost": "cost"}
-      ],
-      "steps": [
-        {"explanation": "explanation for this step", "instruction": "step instruction"}
-      ],
-      "estimated_cost": "total estimated cost",
-      "estimate_time": "total estimated time"
-    }   
-    !! Make sure there is always Unit for Ingredients part !!!
-    !! Make sure there is no Unit for any Nutrition items!!!
-    !! I don't need any space between unit and number
-    `;
-
     // 输出检测
     console.log("Generated prompt is: ", prompt);
 
