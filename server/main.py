@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends 
+from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles 
 import os
 import openai
@@ -21,6 +22,8 @@ from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_video
 import tempfile
 from pathlib import Path
 import time
+import base64
+from io import BytesIO
 
 load_dotenv()
 
@@ -253,9 +256,9 @@ class Scenes(BaseModel):
 class VideoRequest(BaseModel):
     recipe_steps: List[dict]
     
-
 class VideoResponse(BaseModel):
-    video_url: str
+    video_data: str  # Base64 encoded video data
+    content_type: str = "video/mp4"
 
 # Add this utility function
 def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
@@ -282,14 +285,6 @@ def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
 @app.post("/generate_video", response_model=VideoResponse)
 async def generate_video(request: VideoRequest):
     try:
-        # Create video directory if it doesn't exist
-        video_dir = Path("static/videos")
-        video_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Generate unique filename
-        video_filename = f"cooking_tutorial_{int(time.time())}.mp4"
-        video_path = video_dir / video_filename
-        
         # Create prompt for scene generation
         instruction = '''You are the director of a cooking tutorial video.
         Using the provided recipe steps, create a list of scenes, each including a voiceover script
@@ -314,6 +309,8 @@ async def generate_video(request: VideoRequest):
 
         # Generate images and audio for each scene
         clips = []
+        temp_files = []  # Keep track of temporary files
+
         for scene in scenes.scenes:
             # Generate image using DALL-E
             image_response = openai.Image.create(
@@ -332,19 +329,14 @@ async def generate_video(request: VideoRequest):
                 input=scene.voiceover
             )
             
-            # Save audio to temporary file
-            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as f:
-                f.write(audio_response.content)
-                scene.audio_path = f.name
-
-            # Create video clip
-            audio_clip = AudioFileClip(scene.audio_path)
-            duration = audio_clip.duration
+            # Create temporary files in memory
+            audio_temp = BytesIO(audio_response.content)
+            audio_clip = AudioFileClip(audio_temp)
+            temp_files.append(audio_temp)
             
-            # Download and create image clip
+            duration = audio_clip.duration
             image_clip = ImageClip(scene.image_url, duration=duration)
             
-            # Create text overlay
             narration = add_line_breaks(
                 scene.voiceover, 
                 fontsize=64, 
@@ -360,27 +352,35 @@ async def generate_video(request: VideoRequest):
                         .set_position(("center", 1100))
                         .set_duration(duration))
 
-            # Combine elements
             video_clip = CompositeVideoClip([image_clip, text_clip])
             video_clip = video_clip.set_audio(audio_clip)
             clips.append(video_clip)
 
-            # Cleanup temporary audio file
-            os.unlink(scene.audio_path)
-
-        # Create final video
+        # Create final video in memory
         final_video = concatenate_videoclips(clips, method="compose")
+        
+        # Create a BytesIO object to store the video
+        video_buffer = BytesIO()
         final_video.write_videofile(
-            str(video_path),
+            video_buffer,
             fps=24,
-            temp_audiofile='temp-audio.m4a',
-            remove_temp=True,
             codec="libx264",
-            audio_codec="aac"
+            audio_codec="aac",
+            preset='ultrafast',  # Faster encoding
+            ffmpeg_params=["-movflags", "faststart"]  # Enable streaming
         )
+        
+        # Clean up clips
+        final_video.close()
+        for clip in clips:
+            clip.close()
+        for temp_file in temp_files:
+            temp_file.close()
 
-        # Return video URL
-        return VideoResponse(video_url=f"/static/videos/{video_filename}")
+        # Convert video data to base64
+        video_data = base64.b64encode(video_buffer.getvalue()).decode('utf-8')
+        
+        return VideoResponse(video_data=video_data)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
