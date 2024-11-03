@@ -517,3 +517,62 @@ async def test_video_local():
     except Exception as e:
         print(f"Error processing local video: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+# Add these new model classes
+class YoutubeVideoRequest(BaseModel):
+    recipe_name: str
+
+class YoutubeVideo(BaseModel):
+    videoId: str
+    title: str
+    description: str
+    thumbnail: str
+    channelTitle: str
+
+class YoutubeVideoResponse(BaseModel):
+    videos: List[YoutubeVideo]
+
+# Add this new endpoint
+@app.post("/search_youtube", response_model=YoutubeVideoResponse)
+async def search_youtube(request: YoutubeVideoRequest):
+    try:
+        # Get your YouTube API key from environment variable
+        youtube_api_key = os.getenv("YOUTUBE_API_KEY")
+        if not youtube_api_key:
+            raise HTTPException(status_code=500, detail="YouTube API key not configured")
+
+        # Create YouTube API client
+        youtube = build('youtube', 'v3', developerKey=youtube_api_key)
+
+        # Search for videos
+        search_response = youtube.search().list(
+            q=f"how to make {request.recipe_name}",
+            part='snippet',
+            maxResults=5,
+            type='video',
+            relevanceLanguage='en',
+            videoCategoryId='26'  # How-to & Style category
+        ).execute()
+
+        # Process the results
+        videos = []
+        for item in search_response.get('items', []):
+            video = YoutubeVideo(
+                videoId=item['id']['videoId'],
+                title=item['snippet']['title'],
+                description=item['snippet']['description'],
+                thumbnail=item['snippet']['thumbnails']['high']['url'],
+                channelTitle=item['snippet']['channelTitle']
+            )
+            videos.append(video)
+        
+        print(videos)
+
+        return YoutubeVideoResponse(videos=videos)
+
+    except HttpError as e:
+        print(f"YouTube API error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch YouTube videos")
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
