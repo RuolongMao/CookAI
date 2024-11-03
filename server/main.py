@@ -495,3 +495,16 @@ async def generate_video(request: VideoRequest):
     except Exception as e:
         print(f"General error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/test_video_local", response_model=VideoResponse)
+async def test_video_local():
+    try:
+        # Read the video file and convert to base64
+        with open("./static/videos/download.mp4", 'rb') as video_file:
+            video_data = base64.b64encode(video_file.read()).decode('utf-8')
+        
+        return VideoResponse(video_data=video_data)
+
+    except Exception as e:
+        print(f"Error processing local video: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

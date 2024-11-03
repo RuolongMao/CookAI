@@ -22,14 +22,18 @@ const Video = () => {
 
         setRecipeName(recipeName || "Recipe");
         
-        const response = await fetch("http://127.0.0.1:8000/generate_video", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recipe_steps: recipeSteps,
-          }),
+        // const response = await fetch("http://127.0.0.1:8000/generate_video", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     recipe_steps: recipeSteps,
+        //   }),
+        // });
+
+        const response = await fetch('http://127.0.0.1:8000/test_video_local', {
+          method: 'POST',
         });
 
         if (!response.ok) {
