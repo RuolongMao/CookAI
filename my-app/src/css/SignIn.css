@@ -21,14 +21,14 @@
 }
 
 .sign-pic{
-    width: 34vw; 
+    width: 100%; 
     height: auto;
 }
 
 
 .right-side-r{
     color:#2c3b4b;
-    padding-left: 40px;
+    padding:10px 40px 0 40px;
 }
 
 
@@ -72,7 +72,7 @@
     font-size:18px;
     padding:10px;
     color:white;
-    width:430px;
+    width:100%;
     margin-top:20px;
 }
 
