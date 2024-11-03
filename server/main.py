@@ -121,6 +121,9 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 
 
 SystemPrompt = '''
+Reflect the user's requirement. Especially pay attention to the user's allergent, you could be creative and adapt the common recipe to suit the user's need.
+'''
+StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
     {
       "recipe_name": "recipe name",
@@ -199,7 +202,7 @@ async def query_openai(request: QueryRequest):
                 model="gpt-3.5-turbo",
                  messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                {"role": "user", "content": request.prompt + SystemPrompt}
+                {"role": "user", "content": request.prompt + SystemPrompt + StructureReminder}
                 ]   
             )
             response_content = completion.choices[0].message["content"]
