@@ -146,7 +146,7 @@ Provide the ingredients, including quantity and cost, inlude all units. Also pro
     !! I don't need any space between unit and number'''
 
 # 加载 OpenAI API 密钥
-if float(openai.__version__) < 1.0:
+if not hasattr(openai, '__version__'):
     # Newer version
     openai.api_key = os.getenv("OPENAI_API_KEY")
 else:
@@ -191,19 +191,8 @@ class QueryResponse(BaseModel):
 @app.post("/query", response_model=QueryResponse)
 async def query_openai(request: QueryRequest):
     try:
-        if float(openai.__version__) > 1.0:
-            completion = client.beta.chat.completions.parse(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                    {"role": "user", "content": request.prompt + SystemPrompt}
-                ],
-                response_format=RecipeOutput
-            )
-
-            response_data = completion.choices[0].message.parsed
+        if not hasattr(openai, '__version__'):
             
-        else:
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                  messages=[
@@ -214,6 +203,18 @@ async def query_openai(request: QueryRequest):
             response_content = completion.choices[0].message["content"]
             response_data = json.loads(response_content)
             response_data = RecipeOutput(**response_data)
+            
+        else:
+            completion = client.beta.chat.completions.parse(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
+                    {"role": "user", "content": request.prompt + SystemPrompt}
+                ],
+                response_format=RecipeOutput
+            )
+
+            response_data = completion.choices[0].message.parsed
             
         try:
             image_response = openai.Image.create(
