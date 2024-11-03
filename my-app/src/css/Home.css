@@ -7,7 +7,7 @@ html, body {
 
 
 .home-container{
-  margin-top:160px;
+  margin-top:10%;
 }
 .navbar {
     position: relative; /* 让z-index生效 */
@@ -104,8 +104,6 @@ html, body {
 
 
 
-
-
 /* 定义 slidein 动画 */
 @keyframes slidein {
     from {
@@ -153,13 +151,16 @@ html, body {
 }
 
 .text-input-father{
+  display: flex;
+  justify-content: center;
   margin-top: 10px;
 }
 
 .text-input{
-  width:1000px;
+  width:100%;
+  max-width: 1000px;
   height:55px;
-  margin-left:80px;
+  margin-left: 80px;
   /* background-color:rgb(252, 251, 236); */
 }
 
