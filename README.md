@@ -115,6 +115,7 @@
    secret key: env 文件查看
 6. npm install react-google-recaptcha(前端)
 7. pip install httpx（后端）
+8. pip install moviepy (for video genration / 已加入requirment.txt)
 
 -- 潜在改进内容
 

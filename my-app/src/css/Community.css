@@ -1,0 +1,61 @@
+/* Card Styles */
+.recipe-card {
+    height: 80%;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recipe-card-img {
+    height: 280px;
+    object-fit: cover;
+    width: 100%;
+  }
+  
+  .recipe-card-body {
+    padding: 1rem;
+  }
+  
+  /* Grid Container */
+  .recipe-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    padding: 1rem;
+  }
+  
+  /* Scrollable Areas */
+  .filter-panel {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  
+  .recipes-container {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  
+  /* Custom Scrollbar */
+  .filter-panel::-webkit-scrollbar,
+  .recipes-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .filter-panel::-webkit-scrollbar-track,
+  .recipes-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .filter-panel::-webkit-scrollbar-thumb,
+  .recipes-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  
+  .filter-panel::-webkit-scrollbar-thumb:hover,
+  .recipes-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

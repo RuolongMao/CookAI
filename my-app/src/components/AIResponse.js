@@ -122,7 +122,21 @@ const AIResponse = ({ isLoggedIn }) => {
   };
 
   const handleGenerateClick = () => {
-    navigate("/video"); // Navigate to the video page when button is clicked
+    // Check if response exists and contains required data
+    if (!response || !response.recipe_name || !response.steps) {
+      console.error("Missing required recipe data");
+      return;
+    }
+    
+    // Pass the recipe data to the video page
+    navigate("/video", { 
+      state: { 
+        response: {
+          recipe_name: response.recipe_name,
+          steps: response.steps
+        }
+      } 
+    });
   };
 
   // 如果 response 存在，显示它
@@ -356,3 +370,4 @@ const AIResponse = ({ isLoggedIn }) => {
 };
 
 export default AIResponse;
+

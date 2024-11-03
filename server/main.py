@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends 
+from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles 
 import os
 import openai
@@ -13,9 +14,16 @@ from sqlalchemy.orm import sessionmaker, Session
 import json
 from crud import dashboard_crud
 import schemas
-from typing import List
+from typing import List, Optional
 import httpx
 
+# Add these imports at the top of main.py
+from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
+import tempfile
+from pathlib import Path
+import time
+import base64
+from io import BytesIO
 
 load_dotenv()
 
@@ -112,10 +120,38 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
     return {"message": "Login successful"}
 
 
+SystemPrompt = '''
+Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
+    {
+      "recipe_name": "recipe name",
+      "nutrition_facts": {
+        "calories": "calories",
+        "fiber": "fiber",
+        "protein": "protein",
+        "carbs": "carbs",
+        "fats": "fats",
+        "sugar": "sugars"
+    },
+      "ingredients": [
+        {"name": "ingredient name", "quantity": "quantity", "cost": "cost"}
+      ],
+      "steps": [
+        {"explanation": "explanation for this step", "instruction": "step instruction"}
+      ],
+      "estimated_cost": "total estimated cost",
+      "estimate_time": "total estimated time"
+    }   
+    !! Make sure there is always Unit for Ingredients part !!!
+    !! Make sure there is no Unit for any Nutrition items!!!
+    !! I don't need any space between unit and number'''
 
 # 加载 OpenAI API 密钥
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+if not hasattr(openai, '__version__'):
+    # Newer version
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+else:
+    # Older version - for illustrative purposes only, as specific syntax might vary
+    client = openai.Client(api_key=os.getenv("OPENAI_API_KEY"))
 
 # 定义结构化输出
 class Ingredient(BaseModel):
@@ -155,41 +191,64 @@ class QueryResponse(BaseModel):
 @app.post("/query", response_model=QueryResponse)
 async def query_openai(request: QueryRequest):
     try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
+        if not hasattr(openai, '__version__'):
+            
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                 messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                {"role": "user", "content": request.prompt}
-            ]
-        )
-
-        response_content = completion.choices[0].message["content"]
-        response_data = json.loads(response_content)
-
-
-        try:
-            image_response = openai.Image.create(
-                model="dall-e-2",
-                prompt=request.prompt,
-                n=1,
-                size="1024x1024",
-                quality="standard",
+                {"role": "user", "content": request.prompt + SystemPrompt}
+                ]   
             )
-            image_url = image_response['data'][0]['url']
+            response_content = completion.choices[0].message["content"]
+            response_data = json.loads(response_content)
+            response_data = RecipeOutput(**response_data)
+            
+        else:
+            completion = client.beta.chat.completions.parse(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
+                    {"role": "user", "content": request.prompt + SystemPrompt}
+                ],
+                response_format=RecipeOutput
+            )
+
+            response_data = completion.choices[0].message.parsed
+            
+        try:
+            if not hasattr(openai, '__version__'):
+                image_response = openai.Image.create(
+                    model="dall-e-2",
+                    prompt=request.prompt,
+                    n=1,
+                    size="1024x1024",
+                    quality="standard",
+                )
+                image_url = image_response['data'][0]['url']
+            else:
+                image_response = client.images.generate(
+                    model="dall-e-2",
+                    prompt=request.prompt,
+                    size="1024x1024",
+                    quality="standard",
+                    n=1,
+                )
+                image_url = image_response.data[0].url
+
 
         except Exception as e:
             print("Image generation error:", e)
-            image_url = None
-
+            image_url = ""
 
         # 在后端打印结果监测
         print("success print", response_data)
 
-
-
         # 返回 AI 的响应
-        return QueryResponse(response=RecipeOutput(**response_data), image_url=image_url)
+        return QueryResponse(response=response_data, image_url=image_url)
+        
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 # recipe dashboard
@@ -231,9 +290,208 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
 def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.get_personal_recipes(db, query.user_id)
 
+from moviepy.config import change_settings
+if os.name == 'nt':  # for Windows
+    change_settings({"FFMPEG_BINARY": "ffmpeg.exe"})
+else:  # for Unix-like systems
+    change_settings({"FFMPEG_BINARY": "ffmpeg"})
 
+# Add these new model classes
+class Scene(BaseModel):
+    voiceover: str
+    image_prompt: str
+    image_url: Optional[str]
 
+class Scenes(BaseModel):
+    scenes: List[Scene]
 
+class VideoRequest(BaseModel):
+    recipe_steps: List[dict]
+    
+class VideoResponse(BaseModel):
+    video_data: str  # Base64 encoded video data
+    content_type: str = "video/mp4"
+    
+IMAGEMAGICK_BINARY = os.getenv('IMAGEMAGICK_BINARY', 'convert')
+change_settings({"IMAGEMAGICK_BINARY": IMAGEMAGICK_BINARY})
 
+# You can verify ImageMagick installation by running:
+if os.system('which convert') != 0:
+    raise RuntimeError("ImageMagick not found. Please install it using 'brew install imagemagick'")
 
+# Add this utility function
+def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
+    """Adds line breaks to text based on font size and video width."""
+    words = text.split()
+    lines = []
+    current_line = ""
+    
+    for word in words:
+        test_line = current_line + " " + word if current_line else word
+        test_clip = TextClip(test_line, fontsize=fontsize, font='Helvetica-Bold')
+        if test_clip.w > video_width:
+            lines.append(current_line)
+            current_line = word
+        else:
+            current_line = test_line
+    
+    if current_line:
+        lines.append(current_line)
+    
+    return "\n".join(lines)
 
+@app.post("/generate_video", response_model=VideoResponse)
+async def generate_video(request: VideoRequest):
+    try:
+        # Create prompt for scene generation
+        instruction = '''You are the director of a cooking tutorial video.
+        Using the provided recipe steps, create a list of scenes, each including a voiceover script
+        to guide viewers through the cooking process and a detailed description of the visual shot
+        for each scene. The voiceover should be enthusiastic and friendly.
+        Leave the image_url as None, they will be injected later.'''
+        
+        prompt = ""
+        for i, step in enumerate(request.recipe_steps, start=1):
+            prompt += f"Step {i}: {step['explanation']}\nInstruction: {step['instruction']}\n\n"
+
+        if not hasattr(openai, '__version__'):
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": instruction},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            scenes_data = json.loads(completion.choices[0].message["content"])
+            scenes = Scenes(**scenes_data)
+        else:
+            completion = client.beta.chat.completions.parse(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": instruction},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format=Scenes
+            )
+            scenes = completion.choices[0].message.parsed
+
+        # Generate images and audio for each scene
+        clips = []
+        temp_files = []  # Track temporary files for cleanup
+
+        for scene in scenes.scenes:
+            try:
+                # Generate image using DALL-E
+                if not hasattr(openai, '__version__'):
+                    image_response = openai.Image.create(
+                        model="dall-e-2",
+                        prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+                        size="1024x1024",
+                        quality="standard",
+                        n=1
+                    )
+                    scene.image_url = image_response['data'][0]['url']
+                    
+                    # Generate audio using TTS
+                    audio_response = openai.Audio.create(
+                        model="tts-1",
+                        voice="alloy",
+                        input=scene.voiceover
+                    )
+                    audio_content = audio_response.content
+                else:
+                    image_response = client.images.generate(
+                        model="dall-e-3",
+                        prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+                        size="1792x1024",
+                        quality="standard",
+                        n=1,
+                    )
+                    scene.image_url = image_response.data[0].url
+                    
+                    audio_response = client.audio.speech.create(
+                        model="tts-1",
+                        voice="alloy",
+                        input=scene.voiceover
+                    )
+                    audio_content = audio_response.content
+
+                # Create temporary audio file
+                with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_audio:
+                    temp_audio.write(audio_content)
+                    temp_audio_path = temp_audio.name
+                    temp_files.append(temp_audio_path)
+
+                # Create audio clip from temporary file
+                audio_clip = AudioFileClip(temp_audio_path)
+                duration = audio_clip.duration
+
+                # Create image clip
+                image_clip = ImageClip(scene.image_url, duration=duration)
+                
+                # Add text overlay
+                narration = add_line_breaks(
+                    scene.voiceover, 
+                    fontsize=64, 
+                    video_width=(image_clip.w-50)
+                )
+                
+                text_clip = (TextClip(narration, 
+                                    fontsize=64, 
+                                    color='white', 
+                                    font='Helvetica-Bold',
+                                    stroke_color='black',
+                                    stroke_width=1)
+                            .set_position(("center", 1100))
+                            .set_duration(duration))
+
+                # Combine clips
+                video_clip = CompositeVideoClip([image_clip, text_clip])
+                video_clip = video_clip.set_audio(audio_clip)
+                clips.append(video_clip)
+
+            except Exception as scene_error:
+                print(f"Error processing scene: {scene_error}")
+                raise HTTPException(status_code=500, detail=f"Error processing scene: {str(scene_error)}")
+
+        try:
+            # Create final video
+            final_video = concatenate_videoclips(clips, method="compose")
+            
+            # Create temporary output file
+            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+                temp_video_path = temp_video.name
+                temp_files.append(temp_video_path)
+                
+                # Write video to temporary file
+                final_video.write_videofile(
+                    temp_video_path,
+                    fps=24,
+                    codec="libx264",
+                    audio_codec="aac",
+                    preset='ultrafast',
+                    ffmpeg_params=["-movflags", "faststart"]
+                )
+
+                # Read the video file and convert to base64
+                with open(temp_video_path, 'rb') as video_file:
+                    video_data = base64.b64encode(video_file.read()).decode('utf-8')
+
+        finally:
+            # Clean up resources
+            final_video.close()
+            for clip in clips:
+                clip.close()
+            
+            # Delete temporary files
+            for temp_file in temp_files:
+                try:
+                    os.unlink(temp_file)
+                except Exception as cleanup_error:
+                    print(f"Error cleaning up temporary file {temp_file}: {cleanup_error}")
+
+        return VideoResponse(video_data=video_data)
+
+    except Exception as e:
+        print(f"General error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
