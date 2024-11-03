@@ -120,6 +120,30 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
     return {"message": "Login successful"}
 
 
+SystemPrompt = '''
+Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
+    {
+      "recipe_name": "recipe name",
+      "nutrition_facts": {
+        "calories": "calories",
+        "fiber": "fiber",
+        "protein": "protein",
+        "carbs": "carbs",
+        "fats": "fats",
+        "sugar": "sugars"
+    },
+      "ingredients": [
+        {"name": "ingredient name", "quantity": "quantity", "cost": "cost"}
+      ],
+      "steps": [
+        {"explanation": "explanation for this step", "instruction": "step instruction"}
+      ],
+      "estimated_cost": "total estimated cost",
+      "estimate_time": "total estimated time"
+    }   
+    !! Make sure there is always Unit for Ingredients part !!!
+    !! Make sure there is no Unit for any Nutrition items!!!
+    !! I don't need any space between unit and number'''
 
 # 加载 OpenAI API 密钥
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -163,17 +187,16 @@ class QueryResponse(BaseModel):
 @app.post("/query", response_model=QueryResponse)
 async def query_openai(request: QueryRequest):
     try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+        completion = openai.beta.chat.completions.parse(
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                {"role": "user", "content": request.prompt}
-            ]
+                {"role": "user", "content": request.prompt + SystemPrompt}
+            ],
+            response_format=RecipeOutput
         )
 
-        response_content = completion.choices[0].message["content"]
-        response_data = json.loads(response_content)
-
+        response_data = completion.choices[0].message.parsed
 
         try:
             image_response = openai.Image.create(
@@ -194,7 +217,7 @@ async def query_openai(request: QueryRequest):
         print("success print", response_data)
 
         # 返回 AI 的响应
-        return QueryResponse(response=RecipeOutput(**response_data), image_url=image_url)
+        return QueryResponse(response=response_data, image_url=image_url)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
