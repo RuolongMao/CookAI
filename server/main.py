@@ -16,6 +16,8 @@ from crud import dashboard_crud
 import schemas
 from typing import List, Optional
 import httpx
+import base64
+import requests
 
 # Add these imports at the top of main.py
 from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
@@ -252,9 +254,12 @@ async def query_openai(request: QueryRequest):
 
         # 在后端打印结果监测
         print("success print", response_data)
+        response = requests.get(image_url)
+        base64_img = base64.b64encode(response.content).decode('utf-8')
+        result_img = "data:image/jpeg;base64," + base64_img
 
         # 返回 AI 的响应
-        return QueryResponse(response=response_data, image_url=image_url)
+        return QueryResponse(response=response_data, image_url=result_img)
         
     except Exception as e:
         print(e)
