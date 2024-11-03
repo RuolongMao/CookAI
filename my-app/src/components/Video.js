@@ -1,39 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Carousel } from 'react-bootstrap';
+import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Video.css";
+import bk2 from "../images/bk2.jpg";
+import bk4 from "../images/bk4.jpg";
+import bk5 from "../images/bk5.jpg";
 
 const Video = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [videoData, setVideoData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [recipeName, setRecipeName] = useState("");
 
   useEffect(() => {
     const generateVideo = async () => {
+      setIsLoading(true);
       try {
         const recipeSteps = location.state?.response?.steps;
         const recipeName = location.state?.response?.recipe_name;
-        
-        if (!recipeSteps || !Array.isArray(recipeSteps) || recipeSteps.length === 0) {
-          throw new Error("Recipe steps not found. Please go back and try again.");
+
+        if (
+          !recipeSteps ||
+          !Array.isArray(recipeSteps) ||
+          recipeSteps.length === 0
+        ) {
+          throw new Error(
+            "Recipe steps not found. Please go back and try again."
+          );
         }
 
         setRecipeName(recipeName || "Recipe");
-        
-        // const response = await fetch("http://127.0.0.1:8000/generate_video", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     recipe_steps: recipeSteps,
-        //   }),
-        // });
 
-        const response = await fetch('http://127.0.0.1:8000/test_video_local', {
-          method: 'POST',
+        const response = await fetch("http://127.0.0.1:8000/generate_video", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipe_steps: recipeSteps,
+          }),
         });
 
         if (!response.ok) {
@@ -54,55 +62,96 @@ const Video = () => {
     generateVideo();
   }, [location.state]);
 
+  useEffect(() => {
+    let interval;
+    if (isLoading) {
+      const totalTime = 120; // 预估总时间（秒）
+      const increment = 100 / totalTime; // 每秒进度增量
+      interval = setInterval(() => {
+        setProgress((prevProgress) => {
+          const nextProgress = prevProgress + increment;
+          if (nextProgress < 99) {
+            return nextProgress;
+          } else {
+            clearInterval(interval);
+            return 99; // 保持在99%，直到加载完成
+          }
+        });
+      }, 1000); // 每秒更新一次
+    } else {
+      setProgress(100);
+      clearInterval(interval);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading]);
+
   const handleBackClick = () => {
     navigate(-1);
   };
 
   return (
     <div className="video-container">
+      {!isLoading && recipeName && (
+        <h1 className="video-title">{recipeName} Tutorial</h1>
+      )}
 
-        <h1 className="video-title">
-          {recipeName ? `${recipeName} Tutorial` : 'Recipe Tutorial Video'}
-        </h1>
-        
-        {isLoading && (
-          <div className="loading-section">
-            <div className="spinner"></div>
-            <p>Generating your cooking tutorial video...</p>
-            <p className="loading-subtext">This may take a few minutes</p>
+
+      <Carousel interval={2000} pause={false}>
+        <Carousel.Item>
+          <img src={bk2} d-block w-100 className="video-loading-pic" alt="First slide" />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img src={bk4} d-block w-100 className="video-loading-pic" alt="Second slide" />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img src={bk5} d-block w-100 className="video-loading-pic" alt="Third slide" />
+        </Carousel.Item>
+      </Carousel>
+
+
+
+      {isLoading && (
+        <div className="loading-section">
+          <p>Generating your cooking tutorial video...</p>
+          <div className="progress-bar">
+            <div className="progress" style={{ width: `${progress}%` }}></div>
           </div>
-        )}
+          <p>{Math.round(progress)}% completed</p>
+          <p className="loading-subtext">This may take a few minutes</p>
+        </div>
+      )}
 
-        {error && (
-          <div className="error-section">
-            <p className="error-message">Error: {error}</p>
-            <button className="back-button" onClick={handleBackClick}>
-              Go Back
+      {error && (
+        <div className="error-section">
+          <p className="error-message">Error: {error}</p>
+          <button className="back-button" onClick={handleBackClick}>
+            Go Back
+          </button>
+        </div>
+      )}
+
+      {!isLoading && !error && videoData && (
+        <div className="video-section">
+          <video
+            controls
+            className="tutorial-video"
+            poster="/api/placeholder/1280/720"
+          >
+            <source
+              src={`data:video/mp4;base64,${videoData}`}
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+          <div className="video-controls">
+            <button className="generate_video_button" onClick={handleBackClick}>
+              Back to Recipe
             </button>
           </div>
-        )}
-
-        {!isLoading && !error && videoData && (
-          <div className="video-section">
-            <video 
-              controls 
-              className="tutorial-video"
-              poster="/api/placeholder/1280/720"
-            >
-              <source 
-                src={`data:video/mp4;base64,${videoData}`} 
-                type="video/mp4" 
-              />
-              Your browser does not support the video tag.
-            </video>
-            <div className="video-controls">
-              <button className="generate_video_button" onClick={handleBackClick}>
-                Back to Recipe
-              </button>
-            </div>
-          </div>
-        )}
-
+        </div>
+      )}
     </div>
   );
 };
