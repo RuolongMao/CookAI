@@ -146,8 +146,12 @@ Provide the ingredients, including quantity and cost, inlude all units. Also pro
     !! I don't need any space between unit and number'''
 
 # 加载 OpenAI API 密钥
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+if float(openai.__version__) < 1.0:
+    # Newer version
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+else:
+    # Older version - for illustrative purposes only, as specific syntax might vary
+    client = openai.Client(api_key=os.getenv("OPENAI_API_KEY"))
 
 # 定义结构化输出
 class Ingredient(BaseModel):
@@ -187,17 +191,30 @@ class QueryResponse(BaseModel):
 @app.post("/query", response_model=QueryResponse)
 async def query_openai(request: QueryRequest):
     try:
-        completion = openai.beta.chat.completions.parse(
-            model="gpt-4o",
-            messages=[
+        if float(openai.__version__) > 1.0:
+            completion = client.beta.chat.completions.parse(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
+                    {"role": "user", "content": request.prompt + SystemPrompt}
+                ],
+                response_format=RecipeOutput
+            )
+
+            response_data = completion.choices[0].message.parsed
+            
+        else:
+            completion = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                 messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
                 {"role": "user", "content": request.prompt + SystemPrompt}
-            ],
-            response_format=RecipeOutput
-        )
-
-        response_data = completion.choices[0].message.parsed
-
+                ]   
+            )
+            response_content = completion.choices[0].message["content"]
+            response_data = json.loads(response_content)
+            response_data = RecipeOutput(**response_data)
+            
         try:
             image_response = openai.Image.create(
                 model="dall-e-2",
@@ -218,7 +235,9 @@ async def query_openai(request: QueryRequest):
 
         # 返回 AI 的响应
         return QueryResponse(response=response_data, image_url=image_url)
+        
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 # recipe dashboard
