@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../css/Register.css";
@@ -14,7 +14,6 @@ const Register = ({ onRegisterSuccess }) => {
   const navigate = useNavigate();
   const [recaptchaValue, setRecaptchaValue] = useState(null); // 新增状态变量
   const recaptchaRef = useRef(); // 用于重置 reCAPTCHA
-
 
   useEffect(() => {
     // 当组件加载时，设置为可见
@@ -46,7 +45,7 @@ const Register = ({ onRegisterSuccess }) => {
 
     // 检查是否完成了 reCAPTCHA 验证
     if (!recaptchaValue) {
-      setMessage("Please complete the reCAPTCHA");
+      setMessage("Please complete the verification");
       return;
     }
 
@@ -81,6 +80,13 @@ const Register = ({ onRegisterSuccess }) => {
 
   return (
     <div className="container-fluid father-part">
+     
+      {message && (
+        <div class="alert alert-primary alrt-message" role="alert">
+          {message}
+        </div>
+      )}
+
       <div className={`row register-table ${isVisible ? "visible" : ""}`}>
         <div className="col-6 left-side-r">
           <img src={signpic} alt="sign-pic" className="sign-pic"></img>
@@ -142,9 +148,12 @@ const Register = ({ onRegisterSuccess }) => {
               Register
             </button>
           </form>
-          {message && <p>{message}</p>}
+
           <div className="text-start mt-3">
-            <p onClick={handleSignInNavigation} className="already-account-link">
+            <p
+              onClick={handleSignInNavigation}
+              className="already-account-link"
+            >
               Already had an account
             </p>
           </div>

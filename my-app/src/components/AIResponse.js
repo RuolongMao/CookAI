@@ -35,6 +35,7 @@ const AIResponse = ({ isLoggedIn }) => {
     estimate_time,
   } = response || {};
 
+  // 分享功能
   const handleShare = async () => {
     const shareData = {
       title: recipe_name || "Check out this recipe!",
@@ -58,7 +59,7 @@ const AIResponse = ({ isLoggedIn }) => {
     setTimeout(() => setShowAlert(false), 3000);
   };
 
-  // 处理重新生成按钮点击事件
+  // 处理重新生成
   const handleRegenerate = () => {
     if (!prompt) {
       console.error("No prompt available to regenerate.");
@@ -68,7 +69,7 @@ const AIResponse = ({ isLoggedIn }) => {
     navigate("/loading", { state: { prompt: prompt } });
   };
 
-  // 处理复选框勾选状态变化
+  // 处理复选框勾选
   const handleCheckboxChange = (index) => {
     setCheckedIngredients((prevState) => ({
       ...prevState,
@@ -76,6 +77,7 @@ const AIResponse = ({ isLoggedIn }) => {
     }));
   };
 
+  //处理收藏
   const handleToggleLike = async () => {
     if (!isLoggedIn) {
       // 如果用户未登录，跳转到登录页面
@@ -116,7 +118,7 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify({ recipe_name: recipe_name }),
       });
     }
-    setTimeout(() => setShowAlert(false), 2000);
+    setTimeout(() => setShowAlert(false), 1000);
   };
 
   const handleGenerateClick = () => {
@@ -170,8 +172,8 @@ const AIResponse = ({ isLoggedIn }) => {
               >
                 <path
                   fillRule="evenodd"
-                  stroke={liked ? "" : "black"}
-                  strokeWidth={liked ? "" : "1"}
+                  stroke={liked ? "black" : "black"}
+                  strokeWidth={liked ? "0.7" : "1"}
                   d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
                 />
               </svg>

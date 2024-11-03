@@ -16,6 +16,12 @@ const SignIn = ({ onSignInSuccess }) => {
     setIsVisible(true);
   }, []);
 
+
+  const handleRegisterNavigation = () => {
+    navigate("/register"); // 使用useNavigate跳转到SignIn页面
+  };
+
+
   const handleSignIn = async (e) => {
     e.preventDefault();
     // 发送登录请求
@@ -73,6 +79,11 @@ const SignIn = ({ onSignInSuccess }) => {
             </button>
           </form>
           {message && <p>{message}</p>}
+          <div className="text-start mt-3">
+            <p onClick={handleRegisterNavigation} className="already-account-link">
+              Don't have an account
+            </p>
+          </div>
         </div>
       </div>
     </div>
