@@ -384,7 +384,7 @@ async def generate_video(request: VideoRequest):
         clips = []
         temp_files = []  # Track temporary files for cleanup
 
-        for scene in scenes.scenes:
+        for scene in scenes.scenes[:2]:
             try:
                 # Generate image using DALL-E
                 if not hasattr(openai, '__version__'):
