@@ -96,7 +96,7 @@ const Video = () => {
               Your browser does not support the video tag.
             </video>
             <div className="video-controls">
-              <button className="back-button" onClick={handleBackClick}>
+              <button className="generate_video_button" onClick={handleBackClick}>
                 Back to Recipe
               </button>
             </div>

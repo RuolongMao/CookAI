@@ -125,15 +125,15 @@ Provide the ingredients, including quantity and cost, inlude all units. Also pro
     {
       "recipe_name": "recipe name",
       "nutrition_facts": {
-        "calories": "calories",
-        "fiber": "fiber",
-        "protein": "protein",
-        "carbs": "carbs",
-        "fats": "fats",
-        "sugar": "sugars"
+        "calories": "calories, int",
+        "fiber": "fiber, int",
+        "protein": "protein, int",
+        "carbs": "carbs, int",
+        "fats": "fats, int",
+        "sugar": "sugars, int"
     },
       "ingredients": [
-        {"name": "ingredient name", "quantity": "quantity", "cost": "cost"}
+        {"name": "ingredient name", "quantity": "quantity, with unit", "cost": "cost"}
       ],
       "steps": [
         {"explanation": "explanation for this step", "instruction": "step instruction"}
@@ -141,7 +141,9 @@ Provide the ingredients, including quantity and cost, inlude all units. Also pro
       "estimated_cost": "total estimated cost",
       "estimate_time": "total estimated time"
     }   
-    !! Make sure there is always Unit for Ingredients part !!!
+'''
+
+''' !! Make sure there is always Unit for Ingredients part !!!
     !! Make sure there is no Unit for any Nutrition items!!!
     !! I don't need any space between unit and number'''
 
@@ -165,12 +167,12 @@ class Step(BaseModel):
 
 
 class NutritionFacts(BaseModel):
-    calories: str
-    fiber: str
-    protein: str
-    carbs: str
-    fats: str
-    sugar: str
+    calories: int
+    fiber: int
+    protein: int
+    carbs: int
+    fats: int
+    sugar: int
 
 class RecipeOutput(BaseModel):
     recipe_name: str
@@ -206,7 +208,7 @@ async def query_openai(request: QueryRequest):
             
         else:
             completion = client.beta.chat.completions.parse(
-                model="gpt-4o",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
                     {"role": "user", "content": request.prompt + SystemPrompt}
@@ -366,7 +368,7 @@ async def generate_video(request: VideoRequest):
             scenes = Scenes(**scenes_data)
         else:
             completion = client.beta.chat.completions.parse(
-                model="gpt-4o",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": instruction},
                     {"role": "user", "content": prompt}
