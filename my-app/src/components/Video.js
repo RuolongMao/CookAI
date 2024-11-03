@@ -60,7 +60,7 @@ const Video = () => {
 
   return (
     <div className="video-container">
-      <div className="video-content">
+
         <h1 className="video-title">
           {recipeName ? `${recipeName} Tutorial` : 'Recipe Tutorial Video'}
         </h1>
@@ -102,7 +102,7 @@ const Video = () => {
             </div>
           </div>
         )}
-      </div>
+
     </div>
   );
 };
