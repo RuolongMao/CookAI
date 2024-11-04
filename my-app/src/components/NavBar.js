@@ -29,7 +29,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
               </a>
             </div>
             <div className="col text-center">
-              <a href="" className="qa">
+              <a onClick={() => navigate("/qa")} className="qa">
                 Q&A
               </a>
             </div>
