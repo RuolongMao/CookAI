@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 import "../css/AiReponse.css";
 
 const AIResponse = ({ isLoggedIn }) => {
@@ -14,6 +15,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const [liked, setLiked] = useState(false);
   const [alertMessage, setAlertMessage] = useState(""); // 提示信息状态
   const [showAlert, setShowAlert] = useState(false); // 控制 alert 显示状态
+
 
   const [showShareDialog, setShowShareDialog] = useState(false);
 
@@ -100,7 +102,7 @@ const AIResponse = ({ isLoggedIn }) => {
   };
 
   const handleUnlikeRecipe = async () => {
-    setAlertMessage("你已取消喜欢该食谱！");
+    setAlertMessage("You have unliked this recipe!");
     setShowAlert(true);
     await fetch("http://127.0.0.1:8000/delete", {
       method: "POST",
@@ -141,7 +143,7 @@ const AIResponse = ({ isLoggedIn }) => {
       body: JSON.stringify({ recipe_name: recipe_name }),
     });
 
-    setAlertMessage("你已点赞并分享该食谱！");
+    setAlertMessage("You have liked and shared this recipe!");
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 1000);
   };
@@ -166,7 +168,7 @@ const AIResponse = ({ isLoggedIn }) => {
       body: JSON.stringify(body),
     });
 
-    setAlertMessage("你已点赞该食谱！");
+    setAlertMessage("You have liked this recipe!");
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 1000);
   };
@@ -208,9 +210,9 @@ const AIResponse = ({ isLoggedIn }) => {
       {showShareDialog && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <p>你想要将这个食谱分享到社区吗？</p>
-            <button onClick={handleShareYes}>我想分享</button>
-            <button onClick={handleShareNo}>我不想分享</button>
+            <p>Do you want to share this recipe with the community?</p>
+            <button onClick={handleShareYes}>Yes, please</button>
+            <button onClick={handleShareNo}>No, thank you</button>
           </div>
         </div>
       )}
