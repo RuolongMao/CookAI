@@ -298,8 +298,7 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
         est_time_max=query.est_time_max,
         est_cost_min=query.est_cost_min, 
         est_cost_max=query.est_cost_max,
-        cal_min=query.cal_min,
-        cal_max=query.cal_max
+        tastes=query.tastes
     )
     return recipes
 

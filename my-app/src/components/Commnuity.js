@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootst
 import "../css/Community.css";
 //import DualRangeSlider from './DualRangeSlider';  // Adjust the import path as needed
 
-
+  
 const RangeInput = ({ title, minValue, maxValue, onRangeChange, unit }) => {
   const [tempMin, setTempMin] = useState(minValue);
   const [tempMax, setTempMax] = useState(maxValue);
@@ -138,6 +138,66 @@ const Community = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [originalRecipeData, setOriginalRecipeData] = useState([]);
+  // Add this state for tracking when filters are applied
+  const [isFiltering, setIsFiltering] = useState(false);
+
+// Update useEffect to add filter handling
+useEffect(() => {
+  const fetchRecipes = async () => {
+    setIsLoading(true);
+    try {
+      let response;
+      // If any filters are applied, use the filter endpoint
+      if (isFiltering || 
+          costRange[0] > 0 || costRange[1] < 100 || 
+          timeRange[0] > 0 || timeRange[1] < 180 || 
+          selectedTastes.length > 0) {
+        console.log('Sending filter data:', {
+          est_time_min: timeRange[0],
+          est_time_max: timeRange[1],
+          est_cost_min: costRange[0],
+          est_cost_max: costRange[1],
+          tastes: selectedTastes.length > 0 ? selectedTastes : null
+        });
+        response = await fetch('http://localhost:8000/filter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            est_time_min: timeRange[0],
+            est_time_max: timeRange[1],
+            est_cost_min: costRange[0],
+            est_cost_max: costRange[1],
+            tastes: selectedTastes.length > 0 ? selectedTastes : null
+          })
+        });
+      } else {
+        // If no filters, use the default get endpoint
+        response = await fetch('http://localhost:8000/get');
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setRecipeData(data);
+      setError(null);
+      
+    } catch (err) {
+      console.error('Error details:', {
+        message: err.message,
+        stack: err.stack
+      });
+      setError('Failed to load recipes. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchRecipes();
+}, [costRange, timeRange, selectedTastes, isFiltering]); 
 
 
 
@@ -180,18 +240,22 @@ const Community = () => {
 
   // Update cost range handler
   const handleCostRangeChange = (range) => {
+    console.log("=== Cost Range Changed ===");
+    console.log("New range:", range);
     setCostRange(range);
     // Only set cost filter if the range is different from default
     if (range[0] > 0 || range[1] < 100) {
-      setCostFilter(`$${range[0]} - $${range[1]}`);
+      console.log("Setting cost filter:", `$${range[0]} - $${range[1]}`);
     } else {
-      setCostFilter(null);
+      console.log("Clearing cost filter");
     }
   };
 
   // Update time range handler
+  // Update handleTimeRangeChange
   const handleTimeRangeChange = (range) => {
     setTimeRange(range);
+    setIsFiltering(true);
     // Only set time filter if the range is different from default
     if (range[0] > 0 || range[1] < 180) {
       setTimeFilter(`${range[0]} - ${range[1]} min`);
@@ -199,14 +263,25 @@ const Community = () => {
       setTimeFilter(null);
     }
   };
+
+  const resetFilters = () => {
+    setSelectedTastes([]);
+    setCostRange([0, 100]);
+    setTimeRange([0, 180]);
+    setCostFilter(null);
+    setTimeFilter(null);
+    setIsFiltering(false);
+  };
     
   // Add this handler for taste checkboxes
   const handleTasteChange = (taste) => {
-    setSelectedTastes(prev =>
-      prev.includes(taste)
+    setSelectedTastes(prev => {
+      const newTastes = prev.includes(taste)
         ? prev.filter(t => t !== taste)
-        : [...prev, taste]
-    );
+        : [...prev, taste];
+      setIsFiltering(true);
+      return newTastes;
+    });
   };
 
   // Add this handler for dietary checkbox
