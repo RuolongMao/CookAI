@@ -15,6 +15,8 @@ const AIResponse = ({ isLoggedIn }) => {
   const [alertMessage, setAlertMessage] = useState(""); // 提示信息状态
   const [showAlert, setShowAlert] = useState(false); // 控制 alert 显示状态
 
+  const [showShareDialog, setShowShareDialog] = useState(false);
+
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
     if (!response) {
@@ -77,16 +79,42 @@ const AIResponse = ({ isLoggedIn }) => {
     }));
   };
 
-  //处理收藏
-  const handleToggleLike = async () => {
+  // 处理点赞功能
+  const handleToggleLike = () => {
     if (!isLoggedIn) {
       // 如果用户未登录，跳转到登录页面
       navigate("/signin");
       return;
     }
 
-    const newLikedState = !liked; // 如果登陆了，执行下面逻辑，切换 liked 状态
-    setLiked(newLikedState); // 更新状态
+    const newLikedState = !liked;
+
+    if (newLikedState) {
+      // 用户想要点赞食谱，显示分享对话框
+      setShowShareDialog(true);
+    } else {
+      // 用户取消点赞
+      setLiked(newLikedState);
+      handleUnlikeRecipe();
+    }
+  };
+
+  const handleUnlikeRecipe = async () => {
+    setAlertMessage("你已取消喜欢该食谱！");
+    setShowAlert(true);
+    await fetch("http://127.0.0.1:8000/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recipe_name: recipe_name }),
+    });
+    setTimeout(() => setShowAlert(false), 1000);
+  };
+
+  const handleShareYes = async () => {
+    setLiked(true);
+    setShowShareDialog(false);
 
     const body = {
       recipe_name: recipe_name,
@@ -95,29 +123,51 @@ const AIResponse = ({ isLoggedIn }) => {
       details: response,
     };
 
-    if (newLikedState) {
-      // 如果现在是喜欢状态，发送创建请求
-      setAlertMessage("You have liked this recipe!");
-      setShowAlert(true);
-      await fetch("http://127.0.0.1:8000/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-    } else {
-      // 如果现在是未喜欢状态，发送删除请求
-      setAlertMessage("You have unliked this recipe!");
-      setShowAlert(true);
-      await fetch("http://127.0.0.1:8000/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ recipe_name: recipe_name }),
-      });
-    }
+    // 发送创建请求
+    await fetch("http://127.0.0.1:8000/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    // 发送分享请求
+    await fetch("http://127.0.0.1:8000/share", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recipe_name: recipe_name }),
+    });
+
+    setAlertMessage("你已点赞并分享该食谱！");
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 1000);
+  };
+
+  const handleShareNo = async () => {
+    setLiked(true);
+    setShowShareDialog(false);
+
+    const body = {
+      recipe_name: recipe_name,
+      user_id: 1,
+      image_url: imageUrl,
+      details: response,
+    };
+
+    // 仅发送创建请求
+    await fetch("http://127.0.0.1:8000/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    setAlertMessage("你已点赞该食谱！");
+    setShowAlert(true);
     setTimeout(() => setShowAlert(false), 1000);
   };
 
@@ -127,15 +177,15 @@ const AIResponse = ({ isLoggedIn }) => {
       console.error("Missing required recipe data");
       return;
     }
-    
+
     // Pass the recipe data to the video page
-    navigate("/video", { 
-      state: { 
+    navigate("/video", {
+      state: {
         response: {
           recipe_name: response.recipe_name,
-          steps: response.steps
-        }
-      } 
+          steps: response.steps,
+        },
+      },
     });
   };
 
@@ -152,6 +202,16 @@ const AIResponse = ({ isLoggedIn }) => {
           role="alert"
         >
           {alertMessage}
+        </div>
+      )}
+
+      {showShareDialog && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>你想要将这个食谱分享到社区吗？</p>
+            <button onClick={handleShareYes}>我想分享</button>
+            <button onClick={handleShareNo}>我不想分享</button>
+          </div>
         </div>
       )}
 
@@ -198,16 +258,16 @@ const AIResponse = ({ isLoggedIn }) => {
             </div>
 
             <div className="col-auto share-part">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  className="bi bi-share-fill share-button"
-                  viewBox="0 0 16 16"
-                  style={{ cursor: "pointer" }}
-                  onClick={handleShare}
-                >
-                  <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
-                </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                className="bi bi-share-fill share-button"
+                viewBox="0 0 16 16"
+                style={{ cursor: "pointer" }}
+                onClick={handleShare}
+              >
+                <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
+              </svg>
             </div>
           </div>
         </div>
@@ -379,4 +439,3 @@ const AIResponse = ({ isLoggedIn }) => {
 };
 
 export default AIResponse;
-
