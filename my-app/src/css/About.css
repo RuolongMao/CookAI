@@ -2,13 +2,12 @@
 
 .about-container {
     min-height: 100vh;
-    background: white;
-    padding-top: 40px;
+    background:  rgb(252, 251, 236);
   }
   
 .hero-section {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 5rem 1rem 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -76,7 +75,7 @@
 }
 
 .how-it-works {
-  background: rgb(252, 251, 236);
+  background: white;
   padding: 4rem 1rem;
 }
 
