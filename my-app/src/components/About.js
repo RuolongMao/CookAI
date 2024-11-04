@@ -78,7 +78,7 @@ const About = () => {
       </div>
 
       {/* Technology Stack */}
-      <div className="tech-stack">
+      {/* <div className="tech-stack"> */}
         <div className="tech-container">
           <div className="tech-header">
             <Code size={32} />
@@ -86,23 +86,23 @@ const About = () => {
           </div>
           <div className="tech-grid">
             <div className="tech-item">
-              <p>React</p>
-            </div>
-            <div className="tech-item">
-              <p>FastAPI</p>
-            </div>
-            <div className="tech-item">
               <p>OpenAI</p>
             </div>
             <div className="tech-item">
               <p>DALL·E</p>
             </div>
-          </div>
+            <div className="tech-item">
+              <p>Youtube API</p>
+            </div>
+            {/* <div className="tech-item">
+              <p></p>
+            </div> */}
+          {/* </div> */}
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="row foots text-center">
         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
       </footer>
     </div>
