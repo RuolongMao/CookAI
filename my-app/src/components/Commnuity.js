@@ -1,9 +1,125 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootstrap';
 import "../css/Community.css";
+//import DualRangeSlider from './DualRangeSlider';  // Adjust the import path as needed
 
+
+const RangeInput = ({ title, minValue, maxValue, onRangeChange, unit }) => {
+  const [tempMin, setTempMin] = useState(minValue);
+  const [tempMax, setTempMax] = useState(maxValue);
+  const [minInputValue, setMinInputValue] = useState(minValue.toString());
+  const [maxInputValue, setMaxInputValue] = useState(maxValue.toString());
+  // 追踪输入框是否被用户编辑过
+  const [minTouched, setMinTouched] = useState(false);
+  const [maxTouched, setMaxTouched] = useState(false);
+
+  const handleMinChange = (e) => {
+    const value = e.target.value;
+    setMinTouched(true); // 标记输入框已被编辑
+    setMinInputValue(value); // 保存输入值（包括空值）
+    const numValue = value === '' ? 0 : Number(value);
+    if (numValue >= 0) {
+      setTempMin(numValue);
+    }
+  };
+
+  const handleMaxChange = (e) => {
+    const value = e.target.value;
+    setMaxTouched(true); // 标记输入框已被编辑
+    setMaxInputValue(value); // 保存输入值（包括空值）
+    const numValue = value === '' ? 0 : Number(value);
+    if (numValue >= 0) {
+      setTempMax(numValue);
+    }
+  };
+
+  const handleMinBlur = () => {
+    if (minInputValue === '') {
+      setTempMin(0);
+      // 如果是编辑后清空，保持空值显示
+      if (minTouched) {
+        setMinInputValue('');
+      } else {
+        setMinInputValue('0');
+      }
+    }
+
+    if (tempMin > tempMax) {
+      onRangeChange([tempMin, tempMin]);
+      setTempMax(tempMin);
+      setMaxInputValue(tempMin.toString());
+    } else {
+      onRangeChange([tempMin, tempMax]);
+    }
+  };
+
+  const handleMaxBlur = () => {
+    if (maxInputValue === '') {
+      setTempMax(0);
+      // 如果是编辑后清空，保持空值显示
+      if (maxTouched) {
+        setMaxInputValue('');
+      } else {
+        setMaxInputValue('0');
+      }
+    }
+
+    if (tempMax < tempMin) {
+      onRangeChange([tempMax, tempMax]);
+      setTempMin(tempMax);
+      setMinInputValue(tempMax.toString());
+    } else {
+      onRangeChange([tempMin, tempMax]);
+    }
+  };
+
+  // 当 props 更新时，重置所有状态
+  useEffect(() => {
+    setTempMin(minValue);
+    setTempMax(maxValue);
+    setMinInputValue(minValue.toString());
+    setMaxInputValue(maxValue.toString());
+    setMinTouched(false);
+    setMaxTouched(false);
+  }, [minValue, maxValue]);
+
+  return (
+  <div className="mb-3">
+    <h6 className="mb-2">{title}</h6>
+    <div className="range-input-group">
+      <div className="range-input-container">
+        <span className="range-input-unit">{unit}</span>
+        <input
+          type="number"
+          min="0"
+          value={minInputValue}
+          onChange={handleMinChange}
+          onBlur={handleMinBlur}
+          className="form-control form-control-sm range-input-field"
+          placeholder="Min"
+        />
+      </div>
+      <span className="range-separator">to</span>
+      <div className="range-input-container">
+        <span className="range-input-unit">{unit}</span>
+        <input
+          type="number"
+          min="0"
+          value={maxInputValue}
+          onChange={handleMaxChange}
+          onBlur={handleMaxBlur}
+          className="form-control form-control-sm range-input-field"
+          placeholder="Max"
+        />
+      </div>
+    </div>
+  </div>
+  );
+};
 
 const Community = () => {
+  const [costRange, setCostRange] = useState([0, 100]);
+  const [timeRange, setTimeRange] = useState([0, 180]);
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
@@ -180,24 +296,22 @@ useEffect(() => {
                 </div>
 
                 {/* Cost Range */}
-                <div className="mb-3">
-                  <h6 className="mb-1">Cost Range</h6>
-                  <Form.Range min={0} max={100} />
-                  <div className="d-flex justify-content-between text-muted small">
-                    <span>$0</span>
-                    <span>$100</span>
-                  </div>
-                </div>
+                <RangeInput
+                  title="Cost Range"
+                  minValue={costRange[0]}
+                  maxValue={costRange[1]}
+                  unit="$"
+                  onRangeChange={(range) => setCostRange(range)}
+                />
 
                 {/* Time Range */}
-                <div className="mb-3">
-                  <h6 className="mb-1">Cooking Time</h6>
-                  <Form.Range min={0} max={180} />
-                  <div className="d-flex justify-content-between text-muted small">
-                    <span>0 min</span>
-                    <span>180 min</span>
-                  </div>
-                </div>
+                <RangeInput
+                  title="Cooking Time" 
+                  minValue={timeRange[0]}
+                  maxValue={timeRange[1]}
+                  unit="min"
+                  onRangeChange={(range) => setTimeRange(range)}
+                />
 
                 {/* Selected Filters */}
                 <div>

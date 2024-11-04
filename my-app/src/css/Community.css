@@ -142,3 +142,31 @@
 .recipes-container::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+
+.range-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.range-input-container {
+    display: flex;
+    align-items: center;
+}
+
+.range-input-unit {
+    width: 35px;
+    text-align: right;
+    margin-right: 0.25rem;
+}
+
+.range-input-field {
+    width: 80px;
+}
+
+.range-separator {
+    margin: 0 0.5rem;
+    color: #6c757d;
+}
+
