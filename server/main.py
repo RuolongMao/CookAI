@@ -128,7 +128,7 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 
 SystemPrompt = '''
 Reflect the user's requirement. Especially pay attention to the user's allergent, you could be creative and adapt the common recipe to suit the user's need.
-For the flavour tag, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
+For the flavour, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
 '''
 StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
