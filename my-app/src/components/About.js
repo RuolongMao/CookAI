@@ -101,8 +101,8 @@ const About = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="row foots text-center">
+      {/* 版权信息 */}
+      <footer className="text-center footer-fixed">
         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
       </footer>
     </div>

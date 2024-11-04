@@ -8,6 +8,15 @@
 }
 
 
+.fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* 确保导航栏在最上层 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 可选：添加阴影以增强视觉效果 */
+}
+
 .nav-1 a{
     text-align: left;
     text-decoration: none;

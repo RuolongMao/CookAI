@@ -54,7 +54,7 @@ html, body {
     filter: blur(0) brightness(0.8);
 
     /* 定义多个背景图片的动画 */
-    animation: backgroundSlide 50s infinite alternate;
+    animation: backgroundSlide 30s infinite alternate;
 }
 
 /* @keyframes定义背景图片的动画 */
@@ -189,7 +189,7 @@ html, body {
   bottom: 0;
   width: 100%;
   background-color:rgb(252, 251, 236);
-  padding: 10px 0;
+  padding: 2px 0;
   text-align: center;
   color: #6c757d;
   font-size: 14px;

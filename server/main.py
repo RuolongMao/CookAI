@@ -31,6 +31,9 @@ from io import BytesIO
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+#  Vi
+from moviepy.config import change_settings
+
 load_dotenv()
 
 # 设置MySQL连接
@@ -128,7 +131,6 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 
 SystemPrompt = '''
 Reflect the user's requirement. Especially pay attention to the user's allergent, you could be creative and adapt the common recipe to suit the user's need.
-For the flavour, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
 '''
 StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
@@ -191,7 +193,6 @@ class RecipeOutput(BaseModel):
     steps: list[Step]
     estimated_cost: str
     estimate_time: str
-    flavour: str
 
 class QueryRequest(BaseModel):
     prompt: str
@@ -310,7 +311,7 @@ def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(ge
 def is_share(body: schemas.RecipeDelete, db: Session = Depends(get_db)):
     return dashboard_crud.share(db, body.recipe_name)
 
-from moviepy.config import change_settings
+
 if os.name == 'nt':  # for Windows
     change_settings({"FFMPEG_BINARY": "ffmpeg.exe"})
 else:  # for Unix-like systems
