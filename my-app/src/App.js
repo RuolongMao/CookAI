@@ -11,6 +11,7 @@ import Video from './components/Video';
 import Community from "./components/Commnuity";
 import About from "./components/About";
 import Youtube from './components/Youtube';
+import QandA from "./components/QandA";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,6 +52,7 @@ function App() {
         <Route path="/community" element={<Community />} />
         <Route path="/about" element={<About />} />
         <Route path="/youtube" element={<Youtube />} />
+        <Route path="/qa" element={<QandA />} />
       </Routes>
     </Router>
   );

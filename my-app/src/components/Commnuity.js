@@ -134,7 +134,49 @@ const Community = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [costFilter, setCostFilter] = useState(null);
+  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [originalRecipeData, setOriginalRecipeData] = useState([]);
 
+
+
+
+  // Add this search handler function before the return statement
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      setSearchResults(null);
+      setRecipeData(originalRecipeData);
+      return;
+    }
+  
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:8000/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          recipe_name: searchTerm
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Search results:', data);
+      setRecipeData(data);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error('Search error:', err);
+      setError('Search failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Update cost range handler
   const handleCostRangeChange = (range) => {
@@ -178,48 +220,50 @@ const Community = () => {
   
   // Fetch recipes from backend
   // 修改现有的 useEffect 代码
-useEffect(() => {
-  const fetchRecipes = async () => {
-    const startTime = performance.now();
-    
-    try {
-      console.log('开始获取数据...');
-      const response = await fetch('http://localhost:8000/get');
-      const endTime = performance.now();
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      const startTime = performance.now();
       
-      // 打印请求信息
-      console.log('请求详情:', {
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-        timeMs: Math.round(endTime - startTime)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      try {
+        console.log('开始获取数据...');
+        const response = await fetch('http://localhost:8000/get');
+        const endTime = performance.now();
+        
+        // 打印请求信息
+        console.log('请求详情:', {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          timeMs: Math.round(endTime - startTime)
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('获取到的数据:', data);
+        
+        setRecipeData(data);
+        setOriginalRecipeData(data); // 初次获取数据时保存一份原始副本
+        setError(null);
+      } catch (err) {
+        console.error('Error details:', {
+          message: err.message,
+          stack: err.stack
+        });
+        setError('Failed to load recipes. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
-      
-      const data = await response.json();
-      console.log('获取到的数据:', data);
-      
-      setRecipeData(data);
-      setError(null);
-    } catch (err) {
-      console.error('Error details:', {
-        message: err.message,
-        stack: err.stack
-      });
-      setError('Failed to load recipes. Please try again later.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+  
+    fetchRecipes();
+  }, []); // 空依赖数组意味着这个 effect 只在组件首次挂载时运行
 
-  fetchRecipes();
-}, []); // Empty dependency array means this runs once on component mount
-
+  
   // Calculate pagination values
-  const totalItems = recipeData.length;
+  const totalItems = searchResults !== null ? searchResults.length : recipeData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
   // Get current page's items
@@ -227,6 +271,7 @@ useEffect(() => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = recipeData.slice(indexOfFirstItem, indexOfLastItem);
 
+  
   // Handle page changes
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -306,14 +351,53 @@ useEffect(() => {
           <Col md={3} className="h-full">
             <div className="h-full flex flex-col">
               {/* Search Bar */}
-              <div className="position-relative mb-3">
-                <Form.Control
-                  type="search"
-                  placeholder="Search recipes..."
-                  className="pe-5"
-                />
-                <i className="bi bi-search position-absolute top-50 end-0 translate-middle-y me-2 text-muted"></i>
+            <div className="position-relative mb-3">
+            <Form.Control
+              type="search"
+              placeholder="Search recipes..."
+              className="pe-5"
+              value={searchTerm}
+              onChange={(e) => {
+                const newSearchTerm = e.target.value;
+                setSearchTerm(newSearchTerm);
+                // If search term is empty, restore original data immediately
+                if (!newSearchTerm.trim()) {
+                  setRecipeData(originalRecipeData);
+                  setSearchResults(null);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
+            />
+              {searchTerm && (
+                <i 
+                  className="bi bi-x-circle position-absolute top-50 end-0 translate-middle-y me-4 text-muted"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSearchResults(null);
+                    setRecipeData(originalRecipeData); // Immediately restore original data
+                  }}
+                ></i>
+              )}
+              <i 
+                className="bi bi-search position-absolute top-50 end-0 translate-middle-y me-2 text-muted"
+                style={{ cursor: 'pointer' }}
+                onClick={handleSearch}
+              ></i>
+            </div>
+
+
+            {searchResults !== null && (
+              <div className="mb-3">
+                <small className="text-muted">
+                  Found {searchResults.length} results for "{searchTerm}"
+                </small>
               </div>
+            )}
 
               {/* Filter Panel - Scrollable */}
               <div className="filter-panel bg-white p-3 rounded shadow-sm flex-1">
