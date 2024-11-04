@@ -13,6 +13,7 @@ const RangeInput = ({ title, minValue, maxValue, onRangeChange, unit }) => {
   const [minTouched, setMinTouched] = useState(false);
   const [maxTouched, setMaxTouched] = useState(false);
 
+
   const handleMinChange = (e) => {
     const value = e.target.value;
     setMinTouched(true); // 标记输入框已被编辑
@@ -120,6 +121,10 @@ const RangeInput = ({ title, minValue, maxValue, onRangeChange, unit }) => {
 const Community = () => {
   const [costRange, setCostRange] = useState([0, 100]);
   const [timeRange, setTimeRange] = useState([0, 180]);
+  // Add these states at the beginning of the Community component
+  const [selectedTastes, setSelectedTastes] = useState([]);
+  const [selectedDietary, setSelectedDietary] = useState([]);
+  const [timeFilter, setTimeFilter] = useState(null);
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
@@ -128,7 +133,49 @@ const Community = () => {
   const [recipeData, setRecipeData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [costFilter, setCostFilter] = useState(null);
 
+
+  // Update cost range handler
+  const handleCostRangeChange = (range) => {
+    setCostRange(range);
+    // Only set cost filter if the range is different from default
+    if (range[0] > 0 || range[1] < 100) {
+      setCostFilter(`$${range[0]} - $${range[1]}`);
+    } else {
+      setCostFilter(null);
+    }
+  };
+
+  // Update time range handler
+  const handleTimeRangeChange = (range) => {
+    setTimeRange(range);
+    // Only set time filter if the range is different from default
+    if (range[0] > 0 || range[1] < 180) {
+      setTimeFilter(`${range[0]} - ${range[1]} min`);
+    } else {
+      setTimeFilter(null);
+    }
+  };
+    
+  // Add this handler for taste checkboxes
+  const handleTasteChange = (taste) => {
+    setSelectedTastes(prev =>
+      prev.includes(taste)
+        ? prev.filter(t => t !== taste)
+        : [...prev, taste]
+    );
+  };
+
+  // Add this handler for dietary checkbox
+  const handleDietaryChange = (dietary) => {
+    setSelectedDietary(prev =>
+      prev.includes(dietary)
+        ? prev.filter(d => d !== dietary)
+        : [...prev, dietary]
+    );
+  };
+  
   // Fetch recipes from backend
   // 修改现有的 useEffect 代码
 useEffect(() => {
@@ -280,6 +327,8 @@ useEffect(() => {
                       key={taste}
                       type="checkbox"
                       label={taste}
+                      checked={selectedTastes.includes(taste)}
+                      onChange={() => handleTasteChange(taste)}
                       className="mb-1"
                     />
                   ))}
@@ -291,35 +340,87 @@ useEffect(() => {
                   <Form.Check
                     type="checkbox"
                     label="Vegan"
+                    checked={selectedDietary.includes('Vegan')}
+                    onChange={() => handleDietaryChange('Vegan')}
                     className="mb-1"
                   />
                 </div>
 
                 {/* Cost Range */}
+                {/* Cost Range Component update */}
                 <RangeInput
                   title="Cost Range"
                   minValue={costRange[0]}
                   maxValue={costRange[1]}
                   unit="$"
-                  onRangeChange={(range) => setCostRange(range)}
+                  onRangeChange={handleCostRangeChange}
                 />
 
                 {/* Time Range */}
-                <RangeInput
-                  title="Cooking Time" 
-                  minValue={timeRange[0]}
-                  maxValue={timeRange[1]}
-                  unit="min"
-                  onRangeChange={(range) => setTimeRange(range)}
-                />
+                {/* Time Range */}
+             {/* Time Range Component update */}
+              <RangeInput
+                title="Cooking Time" 
+                minValue={timeRange[0]}
+                maxValue={timeRange[1]}
+                unit="min"
+                onRangeChange={handleTimeRangeChange}
+              />
 
                 {/* Selected Filters */}
-                <div>
-                  <h6 className="mb-1">Selected Filters</h6>
-                  <Badge bg="secondary" className="me-1 mb-1">Sweet ×</Badge>
-                  <Badge bg="secondary" className="me-1 mb-1">Vegan ×</Badge>
-                  <Badge bg="secondary" className="me-1 mb-1">&lt; 60 min ×</Badge>
-                </div>
+                {/* Selected Filters */}
+                  {/* Selected Filters section update */}
+  <div>
+    <h6 className="mb-1">Selected Filters</h6>
+    {selectedTastes.map(taste => (
+      <Badge 
+        key={taste}
+        bg="secondary" 
+        className="me-1 mb-1"
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleTasteChange(taste)}
+      >
+        {taste} ×
+      </Badge>
+    ))}
+    {selectedDietary.map(dietary => (
+      <Badge
+        key={dietary}
+        bg="secondary"
+        className="me-1 mb-1"
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleDietaryChange(dietary)}
+      >
+        {dietary} ×
+      </Badge>
+    ))}
+    {costFilter && (
+      <Badge
+        bg="secondary"
+        className="me-1 mb-1"
+        style={{ cursor: 'pointer' }}
+        onClick={() => {
+          setCostRange([0, 100]);
+          setCostFilter(null);
+        }}
+      >
+        {costFilter} ×
+      </Badge>
+    )}
+    {timeFilter && (
+      <Badge
+        bg="secondary"
+        className="me-1 mb-1"
+        style={{ cursor: 'pointer' }}
+        onClick={() => {
+          setTimeRange([0, 180]);
+          setTimeFilter(null);
+        }}
+      >
+        {timeFilter} ×
+      </Badge>
+    )}
+  </div>
               </div>
             </div>
           </Col>
