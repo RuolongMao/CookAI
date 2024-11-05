@@ -248,13 +248,13 @@ const AIResponse = ({ isLoggedIn }) => {
                   className="modal-button confirm-button" 
                   onClick={handleShareYes}
                 >
-                  Yes, Share
+                  Yes, Share and Save
                 </button>
                 <button 
                   className="modal-button cancel-button" 
                   onClick={handleShareNo}
                 >
-                  No, Thanks
+                  No, Just Save
                 </button>
               </div>
             </div>
