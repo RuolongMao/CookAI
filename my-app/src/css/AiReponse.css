@@ -321,6 +321,11 @@
   align-items: center;
 }
 
+.head-text{
+  font-size:22px;
+  font-weight:500;
+}
+
 .modal-header h3 {
   margin: 0;
   font-size: 1.25rem;
@@ -348,7 +353,10 @@
 }
 
 .modal-content {
-  padding: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top:0px;
+  padding-bottom:24px;
 }
 
 .modal-message {
@@ -384,7 +392,7 @@
 }
 
 .confirm-button {
-  background-color: #ff6b35;
+  background-color: #2c3b4b;
   color: white;
   border: none;
 }

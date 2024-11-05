@@ -234,7 +234,7 @@ const AIResponse = ({ isLoggedIn }) => {
         >
           <div className="modal-container">
             <div className="modal-header">
-              <h3>Share Recipe</h3>
+              <p className="head-text">Share Recipe</p>
               <button 
                 className="modal-close" 
                 onClick={() => setShowShareDialog(false)}
@@ -245,7 +245,7 @@ const AIResponse = ({ isLoggedIn }) => {
             
             <div className="modal-content">
               <div className="modal-message">
-                <h4>Share with Community?</h4>
+                {/* <h4>Share with Community?</h4> */}
                 <p>
                   Would you like to share this recipe with others in our community?
                 </p>

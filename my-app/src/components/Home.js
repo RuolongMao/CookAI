@@ -289,11 +289,11 @@ const Home = () => {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
-            Close
-          </Button>
           <Button className="custom-botton-save" onClick={handleModalSave}>
             Save Changes
+          </Button>
+          <Button variant="secondary" onClick={handleModalClose}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
