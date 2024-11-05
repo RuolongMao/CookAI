@@ -211,6 +211,7 @@ html, body {
 .custom-modal .modal-content{
   background-color: rgb(255, 255, 255); /* 自定义背景颜色 */
   color:#2c3b4b;
+  padding:0px;
 }
 
 .cutom-input{

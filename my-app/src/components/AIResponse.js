@@ -54,7 +54,7 @@ const AIResponse = ({ isLoggedIn }) => {
           setShowAlert(false);
         }, 300); // Match this with the animation duration
       }
-    }, 2500);
+    }, 2000);
   };
 
   // 分享功能
@@ -231,7 +231,7 @@ const AIResponse = ({ isLoggedIn }) => {
                 className="modal-close" 
                 onClick={() => setShowShareDialog(false)}
               >
-                ×
+                
               </button>
             </div>
             
