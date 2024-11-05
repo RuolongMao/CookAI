@@ -39,28 +39,43 @@ const AIResponse = ({ isLoggedIn }) => {
     estimate_time,
   } = response || {};
 
+  const showAlertMessage = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    
+    // Hide the alert after 3 seconds
+    setTimeout(() => {
+      const alertElement = document.querySelector('.alert');
+      if (alertElement) {
+        alertElement.classList.add('alert-exit');
+        
+        // Remove the alert from DOM after animation
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 300); // Match this with the animation duration
+      }
+    }, 2000);
+  };
+
   // 分享功能
   const handleShare = async () => {
     const shareData = {
       title: recipe_name || "Check out this recipe!",
       text: `Here's a recipe you might enjoy: ${recipe_name}.`,
-      url: window.location.href, // 分享当前页面链接
+      url: window.location.href,
     };
 
     try {
       if (navigator.share) {
         await navigator.share(shareData);
-        setAlertMessage("Recipe shared successfully!");
+        showAlertMessage("Recipe shared successfully!");
       } else {
-        setAlertMessage("Sharing is not supported on this device.");
+        showAlertMessage("Sharing is not supported on this device.");
       }
     } catch (err) {
-      setAlertMessage("Failed to share the recipe.");
+      showAlertMessage("Failed to share the recipe.");
       console.error("Error sharing:", err);
     }
-
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
   };
 
   // 处理重新生成
@@ -102,8 +117,7 @@ const AIResponse = ({ isLoggedIn }) => {
   };
 
   const handleUnlikeRecipe = async () => {
-    setAlertMessage("You have unliked this recipe!");
-    setShowAlert(true);
+    showAlertMessage("You have unliked this recipe!");
     await fetch("http://127.0.0.1:8000/delete", {
       method: "POST",
       headers: {
@@ -111,7 +125,6 @@ const AIResponse = ({ isLoggedIn }) => {
       },
       body: JSON.stringify({ recipe_name: recipe_name }),
     });
-    setTimeout(() => setShowAlert(false), 1000);
   };
 
   const handleShareYes = async () => {
@@ -125,27 +138,28 @@ const AIResponse = ({ isLoggedIn }) => {
       details: response,
     };
 
-    // 发送创建请求
-    await fetch("http://127.0.0.1:8000/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    try {
+      await fetch("http://127.0.0.1:8000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-    // 发送分享请求
-    await fetch("http://127.0.0.1:8000/share", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ recipe_name: recipe_name }),
-    });
+      await fetch("http://127.0.0.1:8000/share", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ recipe_name: recipe_name }),
+      });
 
-    setAlertMessage("You have liked and shared this recipe!");
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 1000);
+      showAlertMessage("Recipe shared successfully!");
+    } catch (error) {
+      showAlertMessage("Failed to share recipe.");
+      console.error("Error sharing recipe:", error);
+    }
   };
 
   const handleShareNo = async () => {
@@ -159,18 +173,20 @@ const AIResponse = ({ isLoggedIn }) => {
       details: response,
     };
 
-    // 仅发送创建请求
-    await fetch("http://127.0.0.1:8000/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    try {
+      await fetch("http://127.0.0.1:8000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-    setAlertMessage("You have liked this recipe!");
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 1000);
+      showAlertMessage("Recipe saved to your favorites!");
+    } catch (error) {
+      showAlertMessage("Failed to save recipe.");
+      console.error("Error saving recipe:", error);
+    }
   };
 
   const handleGenerateClick = () => {
@@ -199,20 +215,49 @@ const AIResponse = ({ isLoggedIn }) => {
   return (
     <div className="container--fluid">
       {showAlert && (
-        <div
-          className="alert alert-primary text-center fade-in-out"
-          role="alert"
-        >
-          {alertMessage}
+        <div className="alert-container">
+          <div className="alert">
+            <p className="alert-message">{alertMessage}</p>
+          </div>
         </div>
       )}
 
       {showShareDialog && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <p>Do you want to share this recipe with the community?</p>
-            <button onClick={handleShareYes}>Yes, please</button>
-            <button onClick={handleShareNo}>No, thank you</button>
+          <div className="modal-container">
+            <div className="modal-header">
+              <h3>Share Recipe</h3>
+              <button 
+                className="modal-close" 
+                onClick={() => setShowShareDialog(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <div className="modal-message">
+                <h4>Share with Community?</h4>
+                <p>
+                  Would you like to share this recipe with others in our community?
+                </p>
+              </div>
+              
+              <div className="modal-buttons">
+                <button 
+                  className="modal-button confirm-button" 
+                  onClick={handleShareYes}
+                >
+                  Yes, Share
+                </button>
+                <button 
+                  className="modal-button cancel-button" 
+                  onClick={handleShareNo}
+                >
+                  No, Thanks
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
