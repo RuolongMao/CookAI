@@ -54,7 +54,7 @@ const AIResponse = ({ isLoggedIn }) => {
           setShowAlert(false);
         }, 300); // Match this with the animation duration
       }
-    }, 2000);
+    }, 2500);
   };
 
   // 分享功能
@@ -155,7 +155,7 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify({ recipe_name: recipe_name }),
       });
 
-      showAlertMessage("Recipe shared successfully!");
+      showAlertMessage("Recipe saved to your favorites and shared successfully!");
     } catch (error) {
       showAlertMessage("Failed to share recipe.");
       console.error("Error sharing recipe:", error);

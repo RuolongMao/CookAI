@@ -60,7 +60,10 @@ const Youtube = () => {
   };
 
   const handleBackClick = () => {
-    navigate(-1);
+    navigate('/response', { 
+      replace: true,
+      state: location.state
+    });
   };
 
   return (
