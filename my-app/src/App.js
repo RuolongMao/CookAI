@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/NavBar';
@@ -14,8 +14,20 @@ import Youtube from './components/Youtube';
 import QandA from "./components/QandA";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const savedLoginState = localStorage.getItem('isLoggedIn');
+    return savedLoginState ? JSON.parse(savedLoginState) : false;
+  });
+  
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || '';
+  });
+
+  // Update localStorage whenever login state changes
+  useEffect(() => {
+    localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn));
+    localStorage.setItem('username', username);
+  }, [isLoggedIn, username]);
 
 
 
@@ -35,6 +47,9 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false); // 登录状态设置为False
     setUsername('');  // 注销后跳转到首页
+    // Clear localStorage on logout
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('username');
   };
 
   return (
