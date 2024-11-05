@@ -223,7 +223,15 @@ const AIResponse = ({ isLoggedIn }) => {
       )}
 
       {showShareDialog && (
-        <div className="modal-overlay">
+        <div 
+          className="modal-overlay"
+          onClick={(e) => {
+            // Only close if clicking the overlay, not the modal content
+            if (e.target === e.currentTarget) {
+              setShowShareDialog(false);
+            }
+          }}
+        >
           <div className="modal-container">
             <div className="modal-header">
               <h3>Share Recipe</h3>
