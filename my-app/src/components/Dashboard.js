@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const itemsPerPage = 6;
+  const itemsPerPage = 4;
 
   // Fetch user's liked recipes
   useEffect(() => {
@@ -40,6 +40,11 @@ const Dashboard = () => {
 
     fetchUserRecipes();
   }, []);
+
+  const formatCost = (cost) => {
+    if (!cost) return "";
+    return cost.replace('$', '').trim();
+  };
 
   // Handle recipe deletion
   const handleDeleteRecipe = async (recipeName) => {
@@ -84,7 +89,6 @@ const Dashboard = () => {
       {/* Dashboard Header */}
       <div className="dashboard-header">
         <h1 className="dashboard-title">My Recipe Collection</h1>
-        <p className="dashboard-subtitle">Manage and browse your favorite recipes</p>
       </div>
 
       {/* Search Bar */}
@@ -153,7 +157,7 @@ const Dashboard = () => {
                         <line x1="12" y1="1" x2="12" y2="23"></line>
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                       </svg>
-                      {recipe.details.estimated_cost}
+                      {formatCost(recipe.details.estimated_cost)}
                     </span>
                   </div>
                   
@@ -161,9 +165,6 @@ const Dashboard = () => {
                     <div className="nutrition-badges">
                       <span className="nutrition-badge">
                         {recipe.details.nutrition_facts.calories} cal
-                      </span>
-                      <span className="nutrition-badge">
-                        {recipe.details.nutrition_facts.protein}g protein
                       </span>
                     </div>
                   )}
