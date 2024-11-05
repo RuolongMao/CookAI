@@ -152,28 +152,24 @@ useEffect(() => {
           costRange[0] > 0 || costRange[1] < 100 || 
           timeRange[0] > 0 || timeRange[1] < 180 || 
           selectedTastes.length > 0) {
-        console.log('Sending filter data:', {
+        const filterParams = {
           est_time_min: timeRange[0],
           est_time_max: timeRange[1],
           est_cost_min: costRange[0],
           est_cost_max: costRange[1],
           tastes: selectedTastes.length > 0 ? selectedTastes : null
-        });
+        };
+        console.log('Sending filter request with params:', filterParams);
+
         response = await fetch('http://localhost:8000/filter', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            est_time_min: timeRange[0],
-            est_time_max: timeRange[1],
-            est_cost_min: costRange[0],
-            est_cost_max: costRange[1],
-            tastes: selectedTastes.length > 0 ? selectedTastes : null
-          })
+          body: JSON.stringify(filterParams)
         });
       } else {
-        // If no filters, use the default get endpoint
+        console.log('Fetching all recipes without filters');
         response = await fetch('http://localhost:8000/get');
       }
 
@@ -182,13 +178,27 @@ useEffect(() => {
       }
       
       const data = await response.json();
+      console.log('API Response:', {
+        endpoint: isFiltering ? '/filter' : '/get',
+        statusCode: response.status,
+        dataLength: data.length,
+        firstRecord: data[0],  // 显示第一条数据的结构
+        details: data[0]?.details // 特别展示 details 字段的内容
+      });
+
       setRecipeData(data);
       setError(null);
       
     } catch (err) {
       console.error('Error details:', {
         message: err.message,
-        stack: err.stack
+        stack: err.stack,
+        isFiltering: isFiltering,
+        filters: {
+          cost: costRange,
+          time: timeRange,
+          tastes: selectedTastes
+        }
       });
       setError('Failed to load recipes. Please try again later.');
     } finally {
@@ -197,7 +207,7 @@ useEffect(() => {
   };
 
   fetchRecipes();
-}, [costRange, timeRange, selectedTastes, isFiltering]); 
+}, [costRange, timeRange, selectedTastes, isFiltering]);
 
 
 
@@ -239,15 +249,17 @@ useEffect(() => {
   };
 
   // Update cost range handler
+// 更新 handleCostRangeChange
   const handleCostRangeChange = (range) => {
     console.log("=== Cost Range Changed ===");
     console.log("New range:", range);
     setCostRange(range);
-    // Only set cost filter if the range is different from default
+    setIsFiltering(true); // 激活过滤状态
+    // 设置 cost filter 标签
     if (range[0] > 0 || range[1] < 100) {
-      console.log("Setting cost filter:", `$${range[0]} - $${range[1]}`);
+      setCostFilter(`${range[0]} - ${range[1]}`);
     } else {
-      console.log("Clearing cost filter");
+      setCostFilter(null);
     }
   };
 
