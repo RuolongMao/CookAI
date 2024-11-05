@@ -52,17 +52,75 @@ class DashboardCRUD:
     
     def filter_recipes(self, db: Session, est_time_min: Optional[int] = None, est_time_max: Optional[int] = None, est_cost_min: Optional[float] = None, est_cost_max: Optional[float] = None, tastes: Optional[List[str]] = None):
         query = db.query(models.Recipes)
+
+        print("\n=== Filter Parameters ===")
+        print(f"Cost Range: {est_cost_min} - {est_cost_max}")
+        
+        initial_data = query.all()
+        print("\n=== Initial Cost Values ===")
+        for recipe in initial_data:
+            print(f"Recipe: {recipe.recipe_name}")
+            cost_value = recipe.details.get('estimated_cost', 'No cost found')
+            print(f"Cost value in JSON: {cost_value}")
+            # Add type testing
+            try:
+                numeric_cost = float(cost_value.replace('$', '').strip())
+                print(f"Converted cost: {numeric_cost}")
+                print(f"Cost data type: {type(numeric_cost).__name__}")  # New line to show data type
+            except Exception as e:
+                print(f"Conversion error: {e}")
+            print('---')
+
         if est_time_min is not None:
             query = query.filter(func.cast(func.json_extract(models.Recipes.details, '$.estimate_time'), Integer) >= est_time_min)
         if est_time_max is not None:
             query = query.filter(func.cast(func.json_extract(models.Recipes.details, '$.estimate_time'), Integer) <= est_time_max)
+        
+        # 修改 cost 过滤逻辑
         if est_cost_min is not None:
-            query = query.filter(func.cast(func.regexp_replace(func.json_extract(models.Recipes.details, '$.estimated_cost'), '[$]', ''), Float) >= est_cost_min)
+            print("\n=== Applying Cost Min Filter ===")
+            print(f"Min Cost Threshold: {est_cost_min}")
+            cost_expr = func.cast(
+                func.trim(
+                    func.regexp_replace(
+                        func.json_extract(models.Recipes.details, '$.estimated_cost'), 
+                        '[$]', 
+                        ''
+                    )
+                ),
+                Float
+            )
+            query = query.filter(cost_expr >= est_cost_min)
+        
         if est_cost_max is not None:
-            query = query.filter(func.cast(func.regexp_replace(func.json_extract(models.Recipes.details, '$.estimated_cost'), '[$]', ''), Float) <= est_cost_max)
+            print("\n=== Applying Cost Max Filter ===")
+            print(f"Max Cost Threshold: {est_cost_max}")
+            cost_expr = func.cast(
+                func.trim(
+                    func.regexp_replace(
+                        func.json_extract(models.Recipes.details, '$.estimated_cost'), 
+                        '[$]', 
+                        ''
+                    )
+                ),
+                Float
+            )
+            query = query.filter(cost_expr <= est_cost_max)
+
         if tastes and len(tastes) > 0:
             taste_conditions = [func.json_extract(models.Recipes.details, '$.flavour') == taste for taste in tastes]
             query = query.filter(or_(*taste_conditions))
-        return query.all()
+
+        result = query.all()
+        print("\n=== Filter Results ===")
+        print(f"Found {len(result)} recipes after filtering")
+        if result:
+            print("First filtered recipe cost:", result[0].details.get('estimated_cost', 'No cost found'))
+        
+        # 打印成功过滤的结果
+        for r in result:
+            print(f"Filtered Recipe: {r.recipe_name}, Cost: {r.details.get('estimated_cost')}")
+        
+        return result
     
 dashboard_crud = DashboardCRUD()

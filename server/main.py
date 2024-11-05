@@ -300,6 +300,7 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
         est_cost_max=query.est_cost_max,
         tastes=query.tastes
     )
+    
     return recipes
 
 @app.post("/dashboard")
