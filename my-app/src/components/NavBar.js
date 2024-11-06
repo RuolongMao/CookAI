@@ -73,7 +73,9 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
 
             <div className="col-4 text-center">
               {isLoggedIn ? (
-                <span className="DashBoard">DashBoard</span>
+                <a onClick={() => navigate("/dashboard")} className="dashboard">
+                  DashBoard
+                </a>
               ) : (
                 <Link to="/register" className="register">
                   Register

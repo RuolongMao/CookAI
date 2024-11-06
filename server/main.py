@@ -130,8 +130,9 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 
 
 SystemPrompt = '''
-Reflect the user's requirement. Especially pay attention to the user's allergent, you could be creative and adapt the common recipe to suit the user's need.
+Reflect the user's requirement. Especially pay attention to the user's allergen, you could be creative and adapt the common recipe to suit the user's need.
 For the flavour field, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
+To notify the user, for the allergen field, included all suitable tag from the following: Peanut, Milk, Egg, Shellfish, Fish, Soy, Wheat, Sesame, Gluten, Lactose.
 '''
 StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
@@ -153,7 +154,8 @@ Provide the ingredients, including quantity and cost, inlude all units. Also pro
       ],
       "estimated_cost": "total estimated cost",
       "estimate_time": "total estimated time",
-      "flavour": "flavour"
+      "flavour": "flavour",
+      "allergen": "list of allergens"
     }   
 '''
 
@@ -196,6 +198,8 @@ class RecipeOutput(BaseModel):
     estimated_cost: str
     estimate_time: str
     flavour: str
+    allergen: Optional[list[str]]
+    
 
 class QueryRequest(BaseModel):
     prompt: str
