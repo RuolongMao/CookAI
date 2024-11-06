@@ -161,14 +161,14 @@ const Dashboard = () => {
                     </span>
                   </div>
                   
-                  {recipe.details.nutrition_facts && recipe.details.allergen && (
+                  {recipe.details.nutrition_facts && (
                     <div className="badge-container">
                         <div className="nutrition-badges">
                         <span className="nutrition-badge">
                             {recipe.details.nutrition_facts.calories} cal
                         </span>
                         </div>
-                        {recipe.details.allergen.length > 0 && (
+                        {recipe.details.allergen && recipe.details.allergen.length > 0 && (
                         <div className="allergen-tags">
                             {recipe.details.allergen.map((allergen, index) => (
                             <span key={index} className="allergen-badge">

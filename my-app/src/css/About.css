@@ -3,6 +3,7 @@
 .about-container {
     min-height: 100vh;
     background:  rgb(252, 251, 236);
+    padding-bottom: 20px;
   }
   
 .hero-section {
