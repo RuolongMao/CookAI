@@ -122,7 +122,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
   const handleUnlikeRecipe = async () => {
     showAlertMessage("You have unliked this recipe!");
-    await fetch("http://127.0.0.1:8000/delete", {
+    await fetch("https://chefbotx.onrender.com/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ const AIResponse = ({ isLoggedIn }) => {
     };
 
     try {
-      await fetch("http://127.0.0.1:8000/create", {
+      await fetch("https://chefbotx.onrender.com/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +152,7 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify(body),
       });
 
-      await fetch("http://127.0.0.1:8000/share", {
+      await fetch("https://chefbotx.onrender.com/share", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -182,7 +182,7 @@ const AIResponse = ({ isLoggedIn }) => {
     };
 
     try {
-      await fetch("http://127.0.0.1:8000/create", {
+      await fetch("https://chefbotx.onrender.com/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

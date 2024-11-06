@@ -50,7 +50,7 @@ const Register = ({ onRegisterSuccess }) => {
     }
 
     // 发送POST请求到后端
-    const response = await fetch("http://127.0.0.1:8000/register", {
+    const response = await fetch("https://chefbotx.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

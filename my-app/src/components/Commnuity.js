@@ -161,7 +161,7 @@ useEffect(() => {
         };
         console.log('Sending filter request with params:', filterParams);
 
-        response = await fetch('http://localhost:8000/filter', {
+        response = await fetch('https://chefbotx.onrender.com/filter', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ useEffect(() => {
         });
       } else {
         console.log('Fetching all recipes without filters');
-        response = await fetch('http://localhost:8000/get');
+        response = await fetch('https://chefbotx.onrender.com/get');
       }
 
       if (!response.ok) {
@@ -222,7 +222,7 @@ useEffect(() => {
   
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/search', {
+      const response = await fetch('https://chefbotx.onrender.com/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -313,7 +313,7 @@ useEffect(() => {
       
       try {
         console.log('开始获取数据...');
-        const response = await fetch('http://localhost:8000/get');
+        const response = await fetch('https://chefbotx.onrender.com/get');
         const endTime = performance.now();
         
         // 打印请求信息
@@ -616,7 +616,7 @@ useEffect(() => {
                   <div className="mt-3">
                     <h6>Troubleshooting Steps:</h6>
                     <ul>
-                      <li>Check if backend server is running (http://localhost:8000)</li>
+                      <li>Check if backend server is running (https://chefbotx.onrender.com)</li>
                       <li>Verify CORS settings in backend</li>
                       <li>Check browser console for detailed error messages</li>
                       <li>Ensure database connection is active</li>
