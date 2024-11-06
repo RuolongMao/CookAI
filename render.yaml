@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: myapp-frontend
+    env: static
+    staticPublishPath: /myapp/build
+    buildCommand: "npm install && npm run build"
+
+  - type: web
+    name: myapp-backend
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase: myapp-mysql  # 自动关联数据库
+      - key: YOUTUBE_API_KEY
+        value: "AIzaSyCHUWFmHFd4YbV7QBuGJKhaQsrGeELW6Ls"
+      - key: RECAPTCHA_SECRET_KEY
+        value: "6Lc8TmwqAAAAAJX37AT3UiBIn6FOg28eJwuj_Rmx"
+
+  - type: database
+    name: myapp-mysql
+    databaseName: mydatabase
+    databaseType: mysql
+    region: oregon
+    plan: standard
