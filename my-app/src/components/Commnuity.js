@@ -161,7 +161,7 @@ useEffect(() => {
         };
         console.log('Sending filter request with params:', filterParams);
 
-        response = await fetch('https://chefbotx.onrender.com/filter', {
+        response = await fetch('https://cookai-55f9.onrender.com/filter', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ useEffect(() => {
         });
       } else {
         console.log('Fetching all recipes without filters');
-        response = await fetch('https://chefbotx.onrender.com/get');
+        response = await fetch('https://cookai-55f9.onrender.com/get');
       }
 
       if (!response.ok) {
@@ -222,7 +222,7 @@ useEffect(() => {
   
     setIsLoading(true);
     try {
-      const response = await fetch('https://chefbotx.onrender.com/search', {
+      const response = await fetch('https://cookai-55f9.onrender.com/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -313,7 +313,7 @@ useEffect(() => {
       
       try {
         console.log('开始获取数据...');
-        const response = await fetch('https://chefbotx.onrender.com/get');
+        const response = await fetch('https://cookai-55f9.onrender.com/get');
         const endTime = performance.now();
         
         // 打印请求信息
