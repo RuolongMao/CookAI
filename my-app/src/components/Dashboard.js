@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const itemsPerPage = 4;
+  const username = localStorage.getItem("username");
 
   // Fetch user's liked recipes
   useEffect(() => {
@@ -20,7 +21,7 @@ const Dashboard = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ user_id: 1 }) // Replace with actual user ID
+          body: JSON.stringify({ user_name: username })
         });
 
         if (!response.ok) {

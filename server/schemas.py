@@ -9,11 +9,12 @@ class RecipeBase(BaseModel):
     details: dict
 
 class RecipeCreate(RecipeBase):
-    user_id: int
+    user_name: str
+    est_cost: float
 
 class RecipeGet(RecipeBase):
     id: int
-    user_id: int
+    user_name: str
     created_time: date
 
 class RecipeSearch(BaseModel):
@@ -27,7 +28,7 @@ class RecipeFilter(BaseModel):
     tastes: Optional[List[str]] = None
 
 class PersonalRecipeSearch(BaseModel):
-    user_id: int
+    user_name: str
 
 class RecipeDelete(BaseModel):
     recipe_name: str

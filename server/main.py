@@ -307,12 +307,12 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
         est_cost_max=query.est_cost_max,
         tastes=query.tastes
     )
-    
     return recipes
+        
 
 @app.post("/dashboard")
 def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
-    return dashboard_crud.get_personal_recipes(db, query.user_id)
+    return dashboard_crud.get_personal_recipes(db, query.user_name)
 
 @app.post("/share")
 def is_share(body: schemas.RecipeDelete, db: Session = Depends(get_db)):
@@ -325,275 +325,275 @@ else:  # for Unix-like systems
     change_settings({"FFMPEG_BINARY": "ffmpeg"})
 
 # Add these new model classes
-class Scene(BaseModel):
-    voiceover: str
-    image_prompt: str
-    image_url: Optional[str]
+# class Scene(BaseModel):
+#     voiceover: str
+#     image_prompt: str
+#     image_url: Optional[str]
 
-class Scenes(BaseModel):
-    scenes: List[Scene]
+# class Scenes(BaseModel):
+#     scenes: List[Scene]
 
-class VideoRequest(BaseModel):
-    recipe_steps: List[dict]
+# class VideoRequest(BaseModel):
+#     recipe_steps: List[dict]
     
-class VideoResponse(BaseModel):
-    video_data: str  # Base64 encoded video data
-    content_type: str = "video/mp4"
+# class VideoResponse(BaseModel):
+#     video_data: str  # Base64 encoded video data
+#     content_type: str = "video/mp4"
     
-IMAGEMAGICK_BINARY = os.getenv('IMAGEMAGICK_BINARY', 'convert')
-change_settings({"IMAGEMAGICK_BINARY": IMAGEMAGICK_BINARY})
+# IMAGEMAGICK_BINARY = os.getenv('IMAGEMAGICK_BINARY', 'convert')
+# change_settings({"IMAGEMAGICK_BINARY": IMAGEMAGICK_BINARY})
 
-# You can verify ImageMagick installation by running:
-if os.system('which convert') != 0:
-    raise RuntimeError("ImageMagick not found. Please install it using 'brew install imagemagick'")
+# # You can verify ImageMagick installation by running:
+# if os.system('which convert') != 0:
+#     raise RuntimeError("ImageMagick not found. Please install it using 'brew install imagemagick'")
 
-# Add this utility function
-def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
-    """Adds line breaks to text based on font size and video width."""
-    words = text.split()
-    lines = []
-    current_line = ""
+# # Add this utility function
+# def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
+#     """Adds line breaks to text based on font size and video width."""
+#     words = text.split()
+#     lines = []
+#     current_line = ""
     
-    for word in words:
-        test_line = current_line + " " + word if current_line else word
-        test_clip = TextClip(test_line, fontsize=fontsize, font='Helvetica-Bold')
-        if test_clip.w > video_width:
-            lines.append(current_line)
-            current_line = word
-        else:
-            current_line = test_line
+#     for word in words:
+#         test_line = current_line + " " + word if current_line else word
+#         test_clip = TextClip(test_line, fontsize=fontsize, font='Helvetica-Bold')
+#         if test_clip.w > video_width:
+#             lines.append(current_line)
+#             current_line = word
+#         else:
+#             current_line = test_line
     
-    if current_line:
-        lines.append(current_line)
+#     if current_line:
+#         lines.append(current_line)
     
-    return "\n".join(lines)
+#     return "\n".join(lines)
 
-@app.post("/generate_video", response_model=VideoResponse)
-async def generate_video(request: VideoRequest):
-    try:
-        # Create prompt for scene generation
-        instruction = '''You are the director of a cooking tutorial video.
-        Using the provided recipe steps, create a list of scenes, each including a voiceover script
-        to guide viewers through the cooking process and a detailed description of the visual shot
-        for each scene. The voiceover should be enthusiastic and friendly.
-        Leave the image_url as None, they will be injected later.'''
+# @app.post("/generate_video", response_model=VideoResponse)
+# async def generate_video(request: VideoRequest):
+#     try:
+#         # Create prompt for scene generation
+#         instruction = '''You are the director of a cooking tutorial video.
+#         Using the provided recipe steps, create a list of scenes, each including a voiceover script
+#         to guide viewers through the cooking process and a detailed description of the visual shot
+#         for each scene. The voiceover should be enthusiastic and friendly.
+#         Leave the image_url as None, they will be injected later.'''
         
-        prompt = ""
-        for i, step in enumerate(request.recipe_steps, start=1):
-            prompt += f"Step {i}: {step['explanation']}\nInstruction: {step['instruction']}\n\n"
+#         prompt = ""
+#         for i, step in enumerate(request.recipe_steps, start=1):
+#             prompt += f"Step {i}: {step['explanation']}\nInstruction: {step['instruction']}\n\n"
 
-        if not hasattr(openai, '__version__'):
-            completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": instruction},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-            scenes_data = json.loads(completion.choices[0].message["content"])
-            scenes = Scenes(**scenes_data)
-        else:
-            completion = client.beta.chat.completions.parse(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": instruction},
-                    {"role": "user", "content": prompt}
-                ],
-                response_format=Scenes
-            )
-            scenes = completion.choices[0].message.parsed
+#         if not hasattr(openai, '__version__'):
+#             completion = openai.ChatCompletion.create(
+#                 model="gpt-3.5-turbo",
+#                 messages=[
+#                     {"role": "system", "content": instruction},
+#                     {"role": "user", "content": prompt}
+#                 ]
+#             )
+#             scenes_data = json.loads(completion.choices[0].message["content"])
+#             scenes = Scenes(**scenes_data)
+#         else:
+#             completion = client.beta.chat.completions.parse(
+#                 model="gpt-4o-mini",
+#                 messages=[
+#                     {"role": "system", "content": instruction},
+#                     {"role": "user", "content": prompt}
+#                 ],
+#                 response_format=Scenes
+#             )
+#             scenes = completion.choices[0].message.parsed
 
-        # Generate images and audio for each scene
-        clips = []
-        temp_files = []  # Track temporary files for cleanup
+#         # Generate images and audio for each scene
+#         clips = []
+#         temp_files = []  # Track temporary files for cleanup
 
-        for scene in scenes.scenes[:2]:
-            try:
-                # Generate image using DALL-E
-                if not hasattr(openai, '__version__'):
-                    image_response = openai.Image.create(
-                        model="dall-e-2",
-                        prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
-                        size="1024x1024",
-                        quality="standard",
-                        n=1
-                    )
-                    scene.image_url = image_response['data'][0]['url']
+#         for scene in scenes.scenes[:2]:
+#             try:
+#                 # Generate image using DALL-E
+#                 if not hasattr(openai, '__version__'):
+#                     image_response = openai.Image.create(
+#                         model="dall-e-2",
+#                         prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+#                         size="1024x1024",
+#                         quality="standard",
+#                         n=1
+#                     )
+#                     scene.image_url = image_response['data'][0]['url']
                     
-                    # Generate audio using TTS
-                    audio_response = openai.Audio.create(
-                        model="tts-1",
-                        voice="alloy",
-                        input=scene.voiceover
-                    )
-                    audio_content = audio_response.content
-                else:
-                    image_response = client.images.generate(
-                        model="dall-e-3",
-                        prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
-                        size="1792x1024",
-                        quality="standard",
-                        n=1,
-                    )
-                    scene.image_url = image_response.data[0].url
+#                     # Generate audio using TTS
+#                     audio_response = openai.Audio.create(
+#                         model="tts-1",
+#                         voice="alloy",
+#                         input=scene.voiceover
+#                     )
+#                     audio_content = audio_response.content
+#                 else:
+#                     image_response = client.images.generate(
+#                         model="dall-e-3",
+#                         prompt=f"In a modern kitchen setting, be realistic. Focus on the food and operation. {scene.image_prompt}",
+#                         size="1792x1024",
+#                         quality="standard",
+#                         n=1,
+#                     )
+#                     scene.image_url = image_response.data[0].url
                     
-                    audio_response = client.audio.speech.create(
-                        model="tts-1",
-                        voice="alloy",
-                        input=scene.voiceover
-                    )
-                    audio_content = audio_response.content
+#                     audio_response = client.audio.speech.create(
+#                         model="tts-1",
+#                         voice="alloy",
+#                         input=scene.voiceover
+#                     )
+#                     audio_content = audio_response.content
 
-                # Create temporary audio file
-                with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_audio:
-                    temp_audio.write(audio_content)
-                    temp_audio_path = temp_audio.name
-                    temp_files.append(temp_audio_path)
+#                 # Create temporary audio file
+#                 with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_audio:
+#                     temp_audio.write(audio_content)
+#                     temp_audio_path = temp_audio.name
+#                     temp_files.append(temp_audio_path)
 
-                # Create audio clip from temporary file
-                audio_clip = AudioFileClip(temp_audio_path)
-                duration = audio_clip.duration
+#                 # Create audio clip from temporary file
+#                 audio_clip = AudioFileClip(temp_audio_path)
+#                 duration = audio_clip.duration
 
-                # Create image clip
-                image_clip = ImageClip(scene.image_url, duration=duration)
+#                 # Create image clip
+#                 image_clip = ImageClip(scene.image_url, duration=duration)
                 
-                # Add text overlay
-                narration = add_line_breaks(
-                    scene.voiceover, 
-                    fontsize=64, 
-                    video_width=(image_clip.w-50)
-                )
+#                 # Add text overlay
+#                 narration = add_line_breaks(
+#                     scene.voiceover, 
+#                     fontsize=64, 
+#                     video_width=(image_clip.w-50)
+#                 )
                 
-                text_clip = (TextClip(narration, 
-                                    fontsize=64, 
-                                    color='white', 
-                                    font='Helvetica-Bold',
-                                    stroke_color='black',
-                                    stroke_width=1)
-                            .set_position(("center", 1100))
-                            .set_duration(duration))
+#                 text_clip = (TextClip(narration, 
+#                                     fontsize=64, 
+#                                     color='white', 
+#                                     font='Helvetica-Bold',
+#                                     stroke_color='black',
+#                                     stroke_width=1)
+#                             .set_position(("center", 1100))
+#                             .set_duration(duration))
 
-                # Combine clips
-                video_clip = CompositeVideoClip([image_clip, text_clip])
-                video_clip = video_clip.set_audio(audio_clip)
-                clips.append(video_clip)
+#                 # Combine clips
+#                 video_clip = CompositeVideoClip([image_clip, text_clip])
+#                 video_clip = video_clip.set_audio(audio_clip)
+#                 clips.append(video_clip)
 
-            except Exception as scene_error:
-                print(f"Error processing scene: {scene_error}")
-                raise HTTPException(status_code=500, detail=f"Error processing scene: {str(scene_error)}")
+#             except Exception as scene_error:
+#                 print(f"Error processing scene: {scene_error}")
+#                 raise HTTPException(status_code=500, detail=f"Error processing scene: {str(scene_error)}")
 
-        try:
-            # Create final video
-            final_video = concatenate_videoclips(clips, method="compose")
+#         try:
+#             # Create final video
+#             final_video = concatenate_videoclips(clips, method="compose")
             
-            # Create temporary output file
-            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
-                temp_video_path = temp_video.name
-                temp_files.append(temp_video_path)
+#             # Create temporary output file
+#             with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+#                 temp_video_path = temp_video.name
+#                 temp_files.append(temp_video_path)
                 
-                # Write video to temporary file
-                final_video.write_videofile(
-                    temp_video_path,
-                    fps=24,
-                    codec="libx264",
-                    audio_codec="aac",
-                    preset='ultrafast',
-                    ffmpeg_params=["-movflags", "faststart"]
-                )
+#                 # Write video to temporary file
+#                 final_video.write_videofile(
+#                     temp_video_path,
+#                     fps=24,
+#                     codec="libx264",
+#                     audio_codec="aac",
+#                     preset='ultrafast',
+#                     ffmpeg_params=["-movflags", "faststart"]
+#                 )
 
-                # Read the video file and convert to base64
-                with open(temp_video_path, 'rb') as video_file:
-                    video_data = base64.b64encode(video_file.read()).decode('utf-8')
+#                 # Read the video file and convert to base64
+#                 with open(temp_video_path, 'rb') as video_file:
+#                     video_data = base64.b64encode(video_file.read()).decode('utf-8')
 
-        finally:
-            # Clean up resources
-            final_video.close()
-            for clip in clips:
-                clip.close()
+#         finally:
+#             # Clean up resources
+#             final_video.close()
+#             for clip in clips:
+#                 clip.close()
             
-            # Delete temporary files
-            for temp_file in temp_files:
-                try:
-                    os.unlink(temp_file)
-                except Exception as cleanup_error:
-                    print(f"Error cleaning up temporary file {temp_file}: {cleanup_error}")
+#             # Delete temporary files
+#             for temp_file in temp_files:
+#                 try:
+#                     os.unlink(temp_file)
+#                 except Exception as cleanup_error:
+#                     print(f"Error cleaning up temporary file {temp_file}: {cleanup_error}")
 
-        return VideoResponse(video_data=video_data)
+#         return VideoResponse(video_data=video_data)
 
-    except Exception as e:
-        print(f"General error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+#     except Exception as e:
+#         print(f"General error: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
     
-@app.post("/test_video_local", response_model=VideoResponse)
-async def test_video_local():
-    try:
-        # Read the video file and convert to base64
-        with open("./static/videos/download.mp4", 'rb') as video_file:
-            video_data = base64.b64encode(video_file.read()).decode('utf-8')
+# @app.post("/test_video_local", response_model=VideoResponse)
+# async def test_video_local():
+#     try:
+#         # Read the video file and convert to base64
+#         with open("./static/videos/download.mp4", 'rb') as video_file:
+#             video_data = base64.b64encode(video_file.read()).decode('utf-8')
         
-        return VideoResponse(video_data=video_data)
+#         return VideoResponse(video_data=video_data)
 
-    except Exception as e:
-        print(f"Error processing local video: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+#     except Exception as e:
+#         print(f"Error processing local video: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
     
-# Add these new model classes
-class YoutubeVideoRequest(BaseModel):
-    recipe_name: str
+# # Add these new model classes
+# class YoutubeVideoRequest(BaseModel):
+#     recipe_name: str
 
-class YoutubeVideo(BaseModel):
-    videoId: str
-    title: str
-    description: str
-    thumbnail: str
-    channelTitle: str
+# class YoutubeVideo(BaseModel):
+#     videoId: str
+#     title: str
+#     description: str
+#     thumbnail: str
+#     channelTitle: str
 
-class YoutubeVideoResponse(BaseModel):
-    videos: List[YoutubeVideo]
+# class YoutubeVideoResponse(BaseModel):
+#     videos: List[YoutubeVideo]
 
-# Add this new endpoint
-@app.post("/search_youtube", response_model=YoutubeVideoResponse)
-async def search_youtube(request: YoutubeVideoRequest):
-    try:
-        # Get your YouTube API key from environment variable
-        youtube_api_key = os.getenv("YOUTUBE_API_KEY")
-        if not youtube_api_key:
-            raise HTTPException(status_code=500, detail="YouTube API key not configured")
+# # Add this new endpoint
+# @app.post("/search_youtube", response_model=YoutubeVideoResponse)
+# async def search_youtube(request: YoutubeVideoRequest):
+#     try:
+#         # Get your YouTube API key from environment variable
+#         youtube_api_key = os.getenv("YOUTUBE_API_KEY")
+#         if not youtube_api_key:
+#             raise HTTPException(status_code=500, detail="YouTube API key not configured")
 
-        # Create YouTube API client
-        youtube = build('youtube', 'v3', developerKey=youtube_api_key)
+#         # Create YouTube API client
+#         youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 
-        # Search for videos
-        search_response = youtube.search().list(
-            q=f"how to make {request.recipe_name}",
-            part='snippet',
-            maxResults=4,
-            type='video',
-            relevanceLanguage='en',
-            videoCategoryId='26'  # How-to & Style category
-        ).execute()
+#         # Search for videos
+#         search_response = youtube.search().list(
+#             q=f"how to make {request.recipe_name}",
+#             part='snippet',
+#             maxResults=4,
+#             type='video',
+#             relevanceLanguage='en',
+#             videoCategoryId='26'  # How-to & Style category
+#         ).execute()
 
-        # Process the results
-        videos = []
-        for item in search_response.get('items', []):
-            video = YoutubeVideo(
-                videoId=item['id']['videoId'],
-                title=item['snippet']['title'],
-                description=item['snippet']['description'],
-                thumbnail=item['snippet']['thumbnails']['high']['url'],
-                channelTitle=item['snippet']['channelTitle']
-            )
-            videos.append(video)
+#         # Process the results
+#         videos = []
+#         for item in search_response.get('items', []):
+#             video = YoutubeVideo(
+#                 videoId=item['id']['videoId'],
+#                 title=item['snippet']['title'],
+#                 description=item['snippet']['description'],
+#                 thumbnail=item['snippet']['thumbnails']['high']['url'],
+#                 channelTitle=item['snippet']['channelTitle']
+#             )
+#             videos.append(video)
         
-        print(videos)
+#         print(videos)
 
-        return YoutubeVideoResponse(videos=videos)
+#         return YoutubeVideoResponse(videos=videos)
 
-    except HttpError as e:
-        print(f"YouTube API error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to fetch YouTube videos")
-    except Exception as e:
-        print(f"Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+#     except HttpError as e:
+#         print(f"YouTube API error: {e}")
+#         raise HTTPException(status_code=500, detail="Failed to fetch YouTube videos")
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
     
 

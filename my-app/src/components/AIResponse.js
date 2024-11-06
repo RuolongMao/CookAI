@@ -15,6 +15,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const [liked, setLiked] = useState(false);
   const [alertMessage, setAlertMessage] = useState(""); // 提示信息状态
   const [showAlert, setShowAlert] = useState(false); // 控制 alert 显示状态
+  const username = localStorage.getItem("username");
 
 
   const [showShareDialog, setShowShareDialog] = useState(false);
@@ -133,9 +134,10 @@ const AIResponse = ({ isLoggedIn }) => {
 
     const body = {
       recipe_name: recipe_name,
-      user_id: 1,
+      user_name: username,
       image_url: imageUrl,
       details: response,
+      est_cost: parseFloat(estimated_cost.slice(1))
     };
 
     try {
@@ -168,9 +170,10 @@ const AIResponse = ({ isLoggedIn }) => {
 
     const body = {
       recipe_name: recipe_name,
-      user_id: 1,
+      user_name: username,
       image_url: imageUrl,
       details: response,
+      est_cost: parseFloat(estimated_cost.slice(1))
     };
 
     try {
