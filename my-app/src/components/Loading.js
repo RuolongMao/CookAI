@@ -15,7 +15,7 @@ const Loading = () => {
   useEffect(() => {
     if (!hasFetchedRef.current && prompt) {
       hasFetchedRef.current = true; // 标记请求已经发送
-      fetch("https://chefbotx.onrender.com/query", {
+      fetch("https://cookai-55f9.onrender.com/query", {
         method: "POST",
         body: JSON.stringify({ prompt: prompt }),
         headers: {

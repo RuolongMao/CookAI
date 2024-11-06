@@ -122,7 +122,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
   const handleUnlikeRecipe = async () => {
     showAlertMessage("You have unliked this recipe!");
-    await fetch("https://chefbotx.onrender.com/delete", {
+    await fetch("https://cookai-55f9.onrender.com/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ const AIResponse = ({ isLoggedIn }) => {
     };
 
     try {
-      await fetch("https://chefbotx.onrender.com/create", {
+      await fetch("https://cookai-55f9.onrender.com/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +152,7 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify(body),
       });
 
-      await fetch("https://chefbotx.onrender.com/share", {
+      await fetch("https://cookai-55f9.onrender.com/share", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -182,7 +182,7 @@ const AIResponse = ({ isLoggedIn }) => {
     };
 
     try {
-      await fetch("https://chefbotx.onrender.com/create", {
+      await fetch("https://cookai-55f9.onrender.com/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
