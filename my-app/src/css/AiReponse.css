@@ -313,8 +313,11 @@
   animation: slideIn 0.3s ease-out;
 }
 
-.modal-header {
-  padding: 20px 24px;
+.head-text-share {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 0px;
+  padding-top: 10px;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
@@ -360,7 +363,7 @@
 }
 
 .modal-message {
-  text-align: center;
+  text-align: start;
   margin-bottom: 24px;
 }
 
@@ -374,12 +377,13 @@
   margin: 0;
   color: #666;
   line-height: 1.5;
+  margin-top:10px;
 }
 
 .modal-buttons {
   display: flex;
-  gap: 12px;
-  justify-content: center;
+  gap: 25px;
+
 }
 
 .modal-button {
@@ -409,7 +413,8 @@
 }
 
 .cancel-button:hover {
-  background-color: #f5f5f5;
+  background-color: #bbbaba;
+  border: 1px solid #9a9999;
   transform: translateY(-1px);
 }
 

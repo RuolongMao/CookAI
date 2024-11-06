@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Youtube.css";
 
 const Youtube = () => {
@@ -15,13 +15,15 @@ const Youtube = () => {
     const fetchYoutubeVideos = async () => {
       try {
         const recipe = location.state?.response?.recipe_name;
-        
+
         if (!recipe) {
-          throw new Error("Recipe name not found. Please go back and try again.");
+          throw new Error(
+            "Recipe name not found. Please go back and try again."
+          );
         }
 
         setRecipeName(recipe);
-        
+
         const response = await fetch("http://127.0.0.1:8000/search_youtube", {
           method: "POST",
           headers: {
@@ -56,35 +58,31 @@ const Youtube = () => {
   const handleVideoSelect = (video) => {
     setSelectedVideo(video);
     // Smooth scroll to top when selecting a new video
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleBackClick = () => {
-    navigate('/response', { 
+    navigate("/response", {
       replace: true,
-      state: location.state
+      state: location.state,
     });
   };
 
   return (
     <div className="video-container">
-      <h1 className="video-title">
-        {recipeName ? `${recipeName} Tutorials` : 'Recipe Tutorials'}
-      </h1>
-      
       {isLoading && (
         <div className="loading-section">
           <div className="spinner"></div>
-          <p>Finding the best tutorials...</p>
+          <p>Finding similar videos from Youtube</p>
         </div>
       )}
 
       {error && (
         <div className="error-section">
           <p className="error-message">{error}</p>
-          <button className="back-button" onClick={handleBackClick}>
+          {/* <button className="back-button" onClick={handleBackClick}>
             Back to Recipe
-          </button>
+          </button> */}
         </div>
       )}
 
@@ -104,7 +102,9 @@ const Youtube = () => {
                   ></iframe>
                   <div className="main-video-info">
                     <h2 className="main-video-title">{selectedVideo.title}</h2>
-                    <p className="main-video-channel">by {selectedVideo.channelTitle}</p>
+                    <p className="main-video-channel">
+                      by {selectedVideo.channelTitle}
+                    </p>
                   </div>
                 </>
               )}
@@ -112,13 +112,15 @@ const Youtube = () => {
           </div>
 
           <h2 className="more-videos-title">More Tutorials</h2>
-          
+
           <div className="video-list-container">
             <div className="video-list">
               {videos.map((video) => (
                 <div
                   key={video.videoId}
-                  className={`video-item ${selectedVideo?.videoId === video.videoId ? 'selected' : ''}`}
+                  className={`video-item ${
+                    selectedVideo?.videoId === video.videoId ? "selected" : ""
+                  }`}
                   onClick={() => handleVideoSelect(video)}
                 >
                   <img
@@ -135,20 +137,20 @@ const Youtube = () => {
             </div>
           </div>
 
-          <div className="video-controls">
+          {/* <div className="video-controls">
             <button className="back-button" onClick={handleBackClick}>
               Back to Recipe
             </button>
-          </div>
+          </div> */}
         </>
       )}
 
       {!isLoading && !error && videos.length === 0 && (
         <div className="no-videos-section">
           <p>No tutorial videos found for this recipe.</p>
-          <button className="back-button" onClick={handleBackClick}>
+          {/* <button className="back-button" onClick={handleBackClick}>
             Back to Recipe
-          </button>
+          </button> */}
         </div>
       )}
     </div>

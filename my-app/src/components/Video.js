@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Carousel } from 'react-bootstrap';
+import { Carousel } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
+import Youtube from "./Youtube";
 import "../css/Video.css";
-import bk2 from "../images/bk2.jpg";
 import bk4 from "../images/bk4.jpg";
 import bk5 from "../images/bk5.jpg";
+import bk6 from "../images/bk6.jpg";
+import bk7 from "../images/bk7.jpg";
 
 const Video = () => {
   const navigate = useNavigate();
@@ -93,42 +95,64 @@ const Video = () => {
 
   return (
     <div className="video-container">
-      {!isLoading && recipeName && (
-        <h1 className="video-title">{recipeName} Tutorial</h1>
-      )}
-
-
       <Carousel interval={2000} pause={false}>
         <Carousel.Item>
-          <img src={bk2} d-block w-100 className="video-loading-pic" alt="First slide" />
+          <img
+            src={bk6}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="First slide"
+          />
+        </Carousel.Item>
+        {/* <Carousel.Item>
+          <img
+            src={bk4}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="Second slide"
+          />
         </Carousel.Item>
         <Carousel.Item>
-          <img src={bk4} d-block w-100 className="video-loading-pic" alt="Second slide" />
-        </Carousel.Item>
+          <img
+            src={bk5}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="Third slide"
+          />
+        </Carousel.Item> */}
         <Carousel.Item>
-          <img src={bk5} d-block w-100 className="video-loading-pic" alt="Third slide" />
+          <img
+            src={bk7}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="Third slide"
+          />
         </Carousel.Item>
       </Carousel>
 
-
-
       {isLoading && (
         <div className="loading-section">
-          <p>Generating your cooking tutorial video...</p>
+          <div className="loading-section-title">
+            <h1>Generating your AI cooking tutorial video...</h1>
+          </div>
+
+          {/* <p>{Math.round(progress)}% completed</p> */}
           <div className="progress-bar">
             <div className="progress" style={{ width: `${progress}%` }}></div>
           </div>
-          <p>{Math.round(progress)}% completed</p>
-          <p className="loading-subtext">This may take a few minutes</p>
+          <div>
+            <Youtube />
+          </div>
         </div>
       )}
 
       {error && (
         <div className="error-section">
           <p className="error-message">Error: {error}</p>
-          <button className="back-button" onClick={handleBackClick}>
-            Go Back
-          </button>
         </div>
       )}
 
@@ -145,13 +169,19 @@ const Video = () => {
             />
             Your browser does not support the video tag.
           </video>
-          <div className="video-controls">
+          {/* <div className="video-controls">
             <button className="generate_video_button" onClick={handleBackClick}>
               Back to Recipe
             </button>
-          </div>
+          </div> */}
         </div>
       )}
+
+      <div className="back-recipe-btn">
+        <button className="back-button" onClick={handleBackClick}>
+          Go Back
+        </button>
+      </div>
     </div>
   );
 };

@@ -135,7 +135,7 @@
     padding: 0.8rem 2rem;
     font-size: 1rem;
     color: white;
-    background-color: #ff0000;
+    background-color: #2c3b4b;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -143,8 +143,8 @@
   }
   
   .back-button:hover {
-    background-color: #cc0000;
-    transform: translateY(-2px);
+    background-color: #4b6785;
+
   }
   
   /* Loading State */

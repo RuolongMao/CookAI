@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "bootstrap";
 import "../css/AiReponse.css";
 
 const AIResponse = ({ isLoggedIn }) => {
@@ -17,7 +17,6 @@ const AIResponse = ({ isLoggedIn }) => {
   const [showAlert, setShowAlert] = useState(false); // 控制 alert 显示状态
   const username = localStorage.getItem("username");
 
-
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   // 如果 response 不存在，则自动返回主页
@@ -30,6 +29,10 @@ const AIResponse = ({ isLoggedIn }) => {
     console.log("Prompt: ", prompt);
   }, [response, imageUrl, prompt, navigate]);
 
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipTriggerList.forEach((tooltipTriggerEl) => {
+    new Tooltip(tooltipTriggerEl);
+  });
   // 解析 response 中的内容
   const {
     recipe_name,
@@ -43,13 +46,13 @@ const AIResponse = ({ isLoggedIn }) => {
   const showAlertMessage = (message) => {
     setAlertMessage(message);
     setShowAlert(true);
-    
+
     // Hide the alert after 3 seconds
     setTimeout(() => {
-      const alertElement = document.querySelector('.alert');
+      const alertElement = document.querySelector(".alert");
       if (alertElement) {
-        alertElement.classList.add('alert-exit');
-        
+        alertElement.classList.add("alert-exit");
+
         // Remove the alert from DOM after animation
         setTimeout(() => {
           setShowAlert(false);
@@ -157,7 +160,9 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify({ recipe_name: recipe_name }),
       });
 
-      showAlertMessage("Recipe saved to your favorites and shared successfully!");
+      showAlertMessage(
+        "Recipe saved to your favorites and shared successfully!"
+      );
     } catch (error) {
       showAlertMessage("Failed to share recipe.");
       console.error("Error sharing recipe:", error);
@@ -210,9 +215,9 @@ const AIResponse = ({ isLoggedIn }) => {
     });
   };
 
-  const handleYoutubeClick = () => {
-    navigate("/youtube", { state: { response } }); // Navigate to the YouTube page
-  };
+  // const handleYoutubeClick = () => {
+  //   navigate("/youtube", { state: { response } }); // Navigate to the YouTube page
+  // };
 
   // 如果 response 存在，显示它
   return (
@@ -226,7 +231,7 @@ const AIResponse = ({ isLoggedIn }) => {
       )}
 
       {showShareDialog && (
-        <div 
+        <div
           className="modal-overlay"
           onClick={(e) => {
             // Only close if clicking the overlay, not the modal content
@@ -236,33 +241,31 @@ const AIResponse = ({ isLoggedIn }) => {
           }}
         >
           <div className="modal-container">
-            <div className="modal-header">
+            <div className="modal-header head-text-share">
               <p className="head-text">Share Recipe</p>
-              <button 
-                className="modal-close" 
+              <button
+                className="modal-close"
                 onClick={() => setShowShareDialog(false)}
-              >
-                
-              </button>
+              ></button>
             </div>
-            
+
             <div className="modal-content">
-              <div className="modal-message">
-                {/* <h4>Share with Community?</h4> */}
+              <div className="modal-message message">
                 <p>
-                  Would you like to share this recipe with others in our community?
+                  Would you like to share this recipe with others in our
+                  community?
                 </p>
               </div>
-              
+
               <div className="modal-buttons">
-                <button 
-                  className="modal-button confirm-button" 
+                <button
+                  className="modal-button confirm-button"
                   onClick={handleShareYes}
                 >
                   Yes, Share and Save
                 </button>
-                <button 
-                  className="modal-button cancel-button" 
+                <button
+                  className="modal-button cancel-button"
                   onClick={handleShareNo}
                 >
                   No, Just Save
@@ -289,6 +292,9 @@ const AIResponse = ({ isLoggedIn }) => {
                 fill="currentColor"
                 viewBox="0 0 16 16"
                 onClick={handleRegenerate}
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Regenerate"
                 style={{ cursor: "pointer" }}
               >
                 <path
@@ -298,12 +304,16 @@ const AIResponse = ({ isLoggedIn }) => {
                 <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
               </svg>
             </div>
+
             <div className="col-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`heart-icon ${liked ? "liked" : ""}`}
                 viewBox="-1 -1 18 16"
                 onClick={handleToggleLike}
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Like"
                 style={{ cursor: "pointer" }}
               >
                 <path
@@ -321,8 +331,11 @@ const AIResponse = ({ isLoggedIn }) => {
                 fill="currentColor"
                 className="bi bi-share-fill share-button"
                 viewBox="0 0 16 16"
-                style={{ cursor: "pointer" }}
                 onClick={handleShare}
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Share"
+                style={{ cursor: "pointer" }}
               >
                 <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
               </svg>
@@ -433,11 +446,11 @@ const AIResponse = ({ isLoggedIn }) => {
             Click here for Video
           </div>
         </div>
-        <div className="generate_video">
+        {/* <div className="generate_video">
           <div className="generate_video_button" onClick={handleYoutubeClick}>
             Find Youtube Tutorials
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="row nutrition-part">
