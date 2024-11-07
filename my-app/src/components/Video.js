@@ -36,8 +36,8 @@ const Video = () => {
 
         setRecipeName(recipeName || "Recipe");
 
-        // const response = await fetch("https://cookai-55f9.onrender.com/generate_video", {
-        const response = await fetch("https://cookai-55f9.onrender.com/test_video_local", {
+        const response = await fetch("https://cookai-55f9.onrender.com/generate_video", {
+        // const response = await fetch("https://cookai-55f9.onrender.com/test_video_local", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
