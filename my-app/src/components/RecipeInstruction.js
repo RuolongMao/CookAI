@@ -5,13 +5,21 @@ import "../css/RecipeInstruction.css";
 const RecipeInstruction = () => {
   const location = useLocation();
   const recipe = location.state?.recipe;
+  
+  // Helper function to format cost
+  const formatCost = (cost) => {
+    if (!cost) return "N/A";
+    // cost 是字符串形式的 "$25.00"
+    return cost.replace('$', '').trim();
+  };
+
 
   return (
     <div className="container--fluid">
       {/* Image and Action Buttons Section */}
       <div className="row image-part">
         <div className="col-10 image-left-part">
-          <img src="/api/placeholder/400/300" alt="Recipe" className="image" />
+          <img src={recipe?.image_url || "/api/placeholder/400/300"} alt="Recipe" className="image" />
         </div>
 
         <div className="col-2 like-right-part">
@@ -49,7 +57,9 @@ const RecipeInstruction = () => {
 
       {/* Recipe Name Section */}
       <div className="row recipe_name-part">
-        <p className="recipe_name text-center">SAMPLE RECIPE NAME</p>
+        <p className="recipe_name text-center">
+          {recipe?.recipe_name?.toUpperCase() || "NO RECIPE NAME"}
+        </p>
       </div>
 
       {/* Ingredients and Estimates Section */}
@@ -84,21 +94,21 @@ const RecipeInstruction = () => {
         </div>
 
         <div className="col estimate">
-          <div className="row cost">
-            <div className="cost-name">
-              <h2>Estimated Total Cost</h2>
+            <div className="row cost">
+                <div className="cost-name">
+                <h2>Estimated Total Cost</h2>
+                </div>
+                <div className="estimate-cost">
+                <p>${formatCost(recipe?.details?.estimated_cost)}</p>
+                </div>
             </div>
-            <div className="estimate-cost">
-              <p>$25</p>
-            </div>
-          </div>
 
           <div className="row time1">
             <div className="time-name">
               <h2>Estimated Time</h2>
             </div>
             <div className="estimate-time">
-              <p>45 minutes</p>
+              <p>{recipe?.details?.estimate_time ? `${recipe.details.estimate_time} ` : "N/A"}</p>
             </div>
           </div>
         </div>
