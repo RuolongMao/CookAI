@@ -25,7 +25,7 @@ const SignIn = ({ onSignInSuccess }) => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     // 发送登录请求
-    const response = await fetch("https://cookai-55f9.onrender.com/signin", {
+    const response = await fetch("http://127.0.0.1:8000/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Tooltip } from "bootstrap";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import "../css/AiReponse.css";
 
 const AIResponse = ({ isLoggedIn }) => {
@@ -29,10 +29,14 @@ const AIResponse = ({ isLoggedIn }) => {
     console.log("Prompt: ", prompt);
   }, [response, imageUrl, prompt, navigate]);
 
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  tooltipTriggerList.forEach((tooltipTriggerEl) => {
-    new Tooltip(tooltipTriggerEl);
-  });
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {props.id === "regenerate-tooltip"
+        ? "Regenerate Recipe"
+        : "Like this Recipe"}
+    </Tooltip>
+  );
+
   // 解析 response 中的内容
   const {
     recipe_name,
@@ -122,7 +126,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
   const handleUnlikeRecipe = async () => {
     showAlertMessage("You have unliked this recipe!");
-    await fetch("https://cookai-55f9.onrender.com/delete", {
+    await fetch("http://127.0.0.1:8000/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -140,11 +144,11 @@ const AIResponse = ({ isLoggedIn }) => {
       user_name: username,
       image_url: imageUrl,
       details: response,
-      est_cost: parseFloat(estimated_cost.slice(1))
+      est_cost: parseFloat(estimated_cost.slice(1)),
     };
 
     try {
-      await fetch("https://cookai-55f9.onrender.com/create", {
+      await fetch("http://127.0.0.1:8000/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +156,7 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify(body),
       });
 
-      await fetch("https://cookai-55f9.onrender.com/share", {
+      await fetch("http://127.0.0.1:8000/share", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -178,11 +182,11 @@ const AIResponse = ({ isLoggedIn }) => {
       user_name: username,
       image_url: imageUrl,
       details: response,
-      est_cost: parseFloat(estimated_cost.slice(1))
+      est_cost: parseFloat(estimated_cost.slice(1)),
     };
 
     try {
-      await fetch("https://cookai-55f9.onrender.com/create", {
+      await fetch("http://127.0.0.1:8000/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -286,59 +290,65 @@ const AIResponse = ({ isLoggedIn }) => {
         <div className="col-2 like-right-part">
           <div className="row button-part">
             <div className="col-auto">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="refresh-button bi bi-arrow-clockwise"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-                onClick={handleRegenerate}
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Regenerate"
-                style={{ cursor: "pointer" }}
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="regenerate-tooltip">Regenerate</Tooltip>}
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
-                />
-                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="refresh-button bi bi-arrow-clockwise"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                  onClick={handleRegenerate}
+                  style={{ cursor: "pointer" }}
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
+                  />
+                  <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                </svg>
+              </OverlayTrigger>
             </div>
 
             <div className="col-auto">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`heart-icon ${liked ? "liked" : ""}`}
-                viewBox="-1 -1 18 16"
-                onClick={handleToggleLike}
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Like"
-                style={{ cursor: "pointer" }}
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="like-tooltip">Like</Tooltip>}
               >
-                <path
-                  fillRule="evenodd"
-                  stroke={liked ? "black" : "black"}
-                  strokeWidth={liked ? "0.7" : "1"}
-                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`heart-icon ${liked ? "liked" : ""}`}
+                  viewBox="-1 -1 18 16"
+                  onClick={handleToggleLike}
+                  style={{ cursor: "pointer" }}
+                >
+                  <path
+                    fillRule="evenodd"
+                    stroke={liked ? "black" : "black"}
+                    strokeWidth={liked ? "0.7" : "1"}
+                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                  />
+                </svg>
+              </OverlayTrigger>
             </div>
 
             <div className="col-auto share-part">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                className="bi bi-share-fill share-button"
-                viewBox="0 0 16 16"
-                onClick={handleShare}
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Share"
-                style={{ cursor: "pointer" }}
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip id="share-tooltip">Share</Tooltip>}
               >
-                <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  className="bi bi-share-fill share-button"
+                  viewBox="0 0 16 16"
+                  onClick={handleShare}
+                  style={{ cursor: "pointer" }}
+                >
+                  <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
+                </svg>
+              </OverlayTrigger>
             </div>
           </div>
         </div>

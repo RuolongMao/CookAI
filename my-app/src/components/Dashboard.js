@@ -16,7 +16,7 @@ const Dashboard = () => {
     const fetchUserRecipes = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('https://cookai-55f9.onrender.com/dashboard', {
+        const response = await fetch('http://127.0.0.1:8000/dashboard', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const Dashboard = () => {
   // Handle recipe deletion
   const handleDeleteRecipe = async (recipeName) => {
     try {
-      const response = await fetch('https://cookai-55f9.onrender.com/delete', {
+      const response = await fetch('http://127.0.0.1:8000/delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,13 +122,17 @@ const Dashboard = () => {
         <>
           <div className="recipes-grid">
             {currentRecipes.map((recipe) => (
-              <div key={recipe.id} className="recipe-card">
+              <div key={recipe.id} className="recipe-card-container">
+
+
                 <div className="recipe-image-container">
+      
                   <img
                     src={recipe.image_url || "/api/placeholder/400/300"}
                     alt={recipe.recipe_name}
                     className="recipe-image"
                   />
+       
                   <button
                     className="delete-button"
                     onClick={() => handleDeleteRecipe(recipe.recipe_name)}
@@ -141,6 +145,8 @@ const Dashboard = () => {
                     </svg>
                   </button>
                 </div>
+
+
                 
                 <div className="recipe-content">
                   <h3 className="recipe-title">{recipe.recipe_name}</h3>
@@ -164,14 +170,19 @@ const Dashboard = () => {
                   
                   {recipe.details.nutrition_facts && (
                     <div className="badge-container">
-                        <div className="nutrition-badges">
+                      <div className="col">
+                      
+                        <div className="row nutrition-badges">
                         <span className="nutrition-badge">
                             {recipe.details.nutrition_facts.calories} cal
                         </span>
                         </div>
                         {recipe.details.allergen && recipe.details.allergen.length > 0 && (
-                        <div className="allergen-tags">
-                            {recipe.details.allergen.map((allergen, index) => (
+                        
+                       
+                        <div className="row ">
+                          <div className="allergen-tags"> 
+                          {recipe.details.allergen.map((allergen, index) => (
                             <span key={index} className="allergen-badge">
                                 <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -192,11 +203,18 @@ const Dashboard = () => {
                                 {allergen}
                             </span>
                             ))}
+                          </div>
+
                         </div>
+
+        
+                        
                         )}
+                        </div>
                     </div>
                     )}
                 </div>
+   
               </div>
             ))}
           </div>

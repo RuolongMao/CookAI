@@ -50,7 +50,7 @@ const Register = ({ onRegisterSuccess }) => {
     }
 
     // 发送POST请求到后端
-    const response = await fetch("https://cookai-55f9.onrender.com/register", {
+    const response = await fetch("http://127.0.0.1:8000/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,7 +136,7 @@ const Register = ({ onRegisterSuccess }) => {
             <div className="form-group recheck">
               <ReCAPTCHA
                 ref={recaptchaRef}
-                sitekey="6Lc5iXcqAAAAAINWaHjX78877-cwrC4Hp2EFN55c"
+                sitekey="6Lc8TmwqAAAAAKm-H6hFjjbgZucAUhVOOD48tF1F"
                 onChange={(value) => {
                   setRecaptchaValue(value);
                   setMessage("");

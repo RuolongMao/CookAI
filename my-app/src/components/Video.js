@@ -36,7 +36,7 @@ const Video = () => {
 
         setRecipeName(recipeName || "Recipe");
 
-        const response = await fetch("https://cookai-55f9.onrender.com/generate_video", {
+        const response = await fetch("http://127.0.0.1:8000/generate_video", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

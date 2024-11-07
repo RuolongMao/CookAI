@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootstrap';
 import "../css/Community.css";
+import { useNavigate } from 'react-router-dom';
 //import DualRangeSlider from './DualRangeSlider';  // Adjust the import path as needed
 
   
@@ -80,8 +81,8 @@ const RangeInput = ({ title, minValue, maxValue, onRangeChange, unit }) => {
     setTempMax(maxValue);
     setMinInputValue(minValue.toString());
     setMaxInputValue(maxValue.toString());
-    setMinTouched(false);
-    setMaxTouched(false);
+    // setMinTouched(false);
+    // setMaxTouched(false);
   }, [minValue, maxValue]);
 
   return (
@@ -140,65 +141,64 @@ const Community = () => {
   const [originalRecipeData, setOriginalRecipeData] = useState([]);
   // Add this state for tracking when filters are applied
   const [isFiltering, setIsFiltering] = useState(false);
+  const navigate = useNavigate();
+  const formatCost = (cost) => {
+    if (!cost) return "";
+    return cost.replace('$', '').trim();
+  };
 
+  
 // Update useEffect to add filter handling
 useEffect(() => {
   const fetchRecipes = async () => {
     setIsLoading(true);
     try {
+      // 检查是否有过滤条件
+      const isFilteringActive = 
+        costRange[0] > 0 || costRange[1] < 100 || 
+        timeRange[0] > 0 || timeRange[1] < 180 || 
+        selectedTastes.length > 0;
+
       let response;
-      // If any filters are applied, use the filter endpoint
-      if (isFiltering || 
-          costRange[0] > 0 || costRange[1] < 100 || 
-          timeRange[0] > 0 || timeRange[1] < 180 || 
-          selectedTastes.length > 0) {
+      if (isFilteringActive) {
+        // 过滤请求的参数
         const filterParams = {
           est_time_min: timeRange[0],
           est_time_max: timeRange[1],
           est_cost_min: costRange[0],
           est_cost_max: costRange[1],
-          tastes: selectedTastes.length > 0 ? selectedTastes : null
+          tastes: selectedTastes.length > 0 ? selectedTastes : null,
         };
-        console.log('Sending filter request with params:', filterParams);
-
-        response = await fetch('https://cookai-55f9.onrender.com/filter', {
+        
+        console.log('Sending filter request:', filterParams);
+        response = await fetch('http://localhost:8000/filter', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(filterParams)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(filterParams),
         });
       } else {
         console.log('Fetching all recipes without filters');
-        response = await fetch('https://cookai-55f9.onrender.com/get');
+        response = await fetch('http://localhost:8000/get');
       }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
       const data = await response.json();
       console.log('API Response:', {
-        endpoint: isFiltering ? '/filter' : '/get',
+        endpoint: isFilteringActive ? '/filter' : '/get',
         statusCode: response.status,
         dataLength: data.length,
-        firstRecord: data[0],  // 显示第一条数据的结构
-        details: data[0]?.details // 特别展示 details 字段的内容
+        firstRecord: data[0],
+        details: data[0]?.details,
       });
 
       setRecipeData(data);
       setError(null);
       
     } catch (err) {
-      console.error('Error details:', {
-        message: err.message,
+      console.error('Fetch error:', err.message, {
         stack: err.stack,
-        isFiltering: isFiltering,
-        filters: {
-          cost: costRange,
-          time: timeRange,
-          tastes: selectedTastes
-        }
+        filters: { costRange, timeRange, selectedTastes },
       });
       setError('Failed to load recipes. Please try again later.');
     } finally {
@@ -207,7 +207,9 @@ useEffect(() => {
   };
 
   fetchRecipes();
-}, [costRange, timeRange, selectedTastes, isFiltering]);
+}, [costRange, timeRange, selectedTastes]);
+
+
 
 
 
@@ -215,33 +217,20 @@ useEffect(() => {
   // Add this search handler function before the return statement
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
-      setSearchResults(null);
-      setRecipeData(originalRecipeData);
+      setRecipeData(originalRecipeData); // 恢复原始数据
       return;
     }
-  
     setIsLoading(true);
     try {
-      const response = await fetch('https://cookai-55f9.onrender.com/search', {
+      const response = await fetch('http://localhost:8000/search', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          recipe_name: searchTerm
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipe_name: searchTerm }),
       });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      console.log('Search results:', data);
       setRecipeData(data);
-      setCurrentPage(1);
     } catch (err) {
-      console.error('Search error:', err);
       setError('Search failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -304,51 +293,7 @@ useEffect(() => {
         : [...prev, dietary]
     );
   };
-  
-  // Fetch recipes from backend
-  // 修改现有的 useEffect 代码
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      const startTime = performance.now();
-      
-      try {
-        console.log('开始获取数据...');
-        const response = await fetch('https://cookai-55f9.onrender.com/get');
-        const endTime = performance.now();
-        
-        // 打印请求信息
-        console.log('请求详情:', {
-          status: response.status,
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries()),
-          timeMs: Math.round(endTime - startTime)
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('获取到的数据:', data);
-        
-        setRecipeData(data);
-        setOriginalRecipeData(data); // 初次获取数据时保存一份原始副本
-        setError(null);
-      } catch (err) {
-        console.error('Error details:', {
-          message: err.message,
-          stack: err.stack
-        });
-        setError('Failed to load recipes. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
-    fetchRecipes();
-  }, []); // 空依赖数组意味着这个 effect 只在组件首次挂载时运行
-
-  
+    
   // Calculate pagination values
   const totalItems = searchResults !== null ? searchResults.length : recipeData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -431,31 +376,24 @@ useEffect(() => {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="jason h-screen flex flex-col overflow-hidden">
       <Container fluid className="h-full py-3">
         <Row className="h-full">
           {/* Left Section - Search and Filters */}
-          <Col md={3} className="h-full">
+          <Col md={3} className="h-full ">
             <div className="h-full flex flex-col">
               {/* Search Bar */}
             <div className="position-relative mb-3">
             <Form.Control
               type="search"
               placeholder="Search recipes..."
-              className="pe-5"
               value={searchTerm}
-              onChange={(e) => {
-                const newSearchTerm = e.target.value;
-                setSearchTerm(newSearchTerm);
-                // If search term is empty, restore original data immediately
-                if (!newSearchTerm.trim()) {
-                  setRecipeData(originalRecipeData);
-                  setSearchResults(null);
-                }
-              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              //onBlur={handleSearch}  // 搜索框失去焦点时触发搜索
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  handleSearch();
+                  e.preventDefault();
+                  handleSearch();  // 按下 Enter 键时触发搜索
                 }
               }}
             />
@@ -616,7 +554,7 @@ useEffect(() => {
                   <div className="mt-3">
                     <h6>Troubleshooting Steps:</h6>
                     <ul>
-                      <li>Check if backend server is running (https://chefbotx.onrender.com)</li>
+                      <li>Check if backend server is running (http://localhost:8000)</li>
                       <li>Verify CORS settings in backend</li>
                       <li>Check browser console for detailed error messages</li>
                       <li>Ensure database connection is active</li>
@@ -636,33 +574,60 @@ useEffect(() => {
                 ) : (
                   <div className="recipe-grid">
                     {currentItems.map((recipe) => (
-                      <Card key={recipe.id} className="recipe-card">
+                        <Card 
+                        key={recipe.id} 
+                        className="recipe-card"
+                        onClick={() => navigate('/recipe', { state: { recipe } })}
+                      >
                         <div className="recipe-image-container">
                           <Card.Img 
                             variant="top" 
                             src={recipe.image_url || "/api/placeholder/400/300"}
-                            alt="Recipe" 
-                            className="recipe-card-img"
+                            alt={recipe.recipe_name} 
+                            className="recipe-image"
                           />
                         </div>
-                        <Card.Body className="recipe-card-body">
+                        
+                        <Card.Body className="recipe-content">
                           <div className="user-info">
                             <span className="user-name">{recipe.user_id}</span>
                           </div>
                           <Card.Title className="recipe-title">{recipe.recipe_name}</Card.Title>
-                          <Card.Text className="publish-date">
-                            Published: {new Date(recipe.created_time).toLocaleDateString()}
-                          </Card.Text>
+                          
+                          <div className="recipe-stats">
+                            <span className="stat-badge time-badge">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 6v6l4 2"></path>
+                              </svg>
+                              {recipe.details.estimate_time}
+                            </span>
+                            <span className="stat-badge cost-badge">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                              </svg>
+                              {formatCost(recipe.details.estimated_cost)}
+                            </span>
+                          </div>
+                      
+                          {recipe.details.nutrition_facts && (
+                            <div className="badge-container">
+                              <div className="nutrition-badges">
+                                <span className="nutrition-badge-new">
+                                  {recipe.details.nutrition_facts.calories} cal
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </Card.Body>
                       </Card>
                     ))}
                   </div>
                 )}
-              </div>
-
-              {/* Only show pagination if there are items and not loading */}
+                              {/* Only show pagination if there are items and not loading */}
               {!isLoading && !error && recipeData.length > 0 && (
-                <div className="mt-3 border-t pt-3 bg-white">
+                <div className="mt-3 border-t pt-3 ruolong">
                   <div className="d-flex justify-content-center">
                     <Pagination size="sm">
                       {renderPaginationItems()}
@@ -670,6 +635,9 @@ useEffect(() => {
                   </div>
                 </div>
               )}
+              </div>
+
+
             </div>
           </Col>
         </Row>
