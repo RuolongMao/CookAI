@@ -96,44 +96,31 @@ const Video = () => {
 
   return (
     <div className="video-container">
-      <Carousel interval={2000} pause={false}>
-        <Carousel.Item>
-          <img
-            src={bk6}
-            d-block
-            w-100
-            className="video-loading-pic"
-            alt="First slide"
-          />
-        </Carousel.Item>
-        {/* <Carousel.Item>
-          <img
-            src={bk4}
-            d-block
-            w-100
-            className="video-loading-pic"
-            alt="Second slide"
-          />
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            src={bk5}
-            d-block
-            w-100
-            className="video-loading-pic"
-            alt="Third slide"
-          />
-        </Carousel.Item> */}
-        <Carousel.Item>
-          <img
-            src={bk7}
-            d-block
-            w-100
-            className="video-loading-pic"
-            alt="Third slide"
-          />
-        </Carousel.Item>
-      </Carousel>
+       {isLoading && (
+              <Carousel interval={2000} pause={false}>
+              <Carousel.Item>
+                <img
+                  src={bk6}
+                  d-block
+                  w-100
+                  className="video-loading-pic"
+                  alt="First slide"
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  src={bk7}
+                  d-block
+                  w-100
+                  className="video-loading-pic"
+                  alt="Third slide"
+                />
+              </Carousel.Item>
+            </Carousel>
+        
+      )}
+      
+
 
       {isLoading && (
         <div className="loading-section">
