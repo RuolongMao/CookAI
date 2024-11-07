@@ -36,7 +36,8 @@ const Video = () => {
 
         setRecipeName(recipeName || "Recipe");
 
-        const response = await fetch("https://cookai-55f9.onrender.com/generate_video", {
+        // const response = await fetch("https://cookai-55f9.onrender.com/generate_video", {
+        const response = await fetch("https://cookai-55f9.onrender.com/test_video_local", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -67,7 +68,7 @@ const Video = () => {
   useEffect(() => {
     let interval;
     if (isLoading) {
-      const totalTime = 120; // 预估总时间（秒）
+      const totalTime = 360; // 预估总时间（秒）
       const increment = 100 / totalTime; // 每秒进度增量
       interval = setInterval(() => {
         setProgress((prevProgress) => {
