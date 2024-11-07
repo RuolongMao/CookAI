@@ -65,32 +65,38 @@ const RecipeInstruction = () => {
       {/* Ingredients and Estimates Section */}
       <div className="row section1">
         <div className="col ingredients-part">
-          <h2>Ingredients</h2>
-          <div className="ingredients-list">
-            <ul>
-              {[1, 2, 3].map((_, index) => (
-                <li key={index} className="ingredient-item">
-                  <div className="form-check d-flex justify-content-between align-items-center">
-                    <div>
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id={`ingredient-checkbox-${index}`}
-                      />
-                      <label className="form-check-label" htmlFor={`ingredient-checkbox-${index}`}>
-                        <span className="ingredient-name">Sample Ingredient</span>
-                      </label>
+            <h2>Ingredients</h2>
+            <div className="ingredients-list">
+            {recipe?.details?.ingredients && recipe.details.ingredients.length > 0 ? (
+                <ul>
+                {recipe.details.ingredients.map((ingredient, index) => (
+                    <li key={index} className="ingredient-item">
+                    <div className="form-check d-flex justify-content-between align-items-center">
+                        <div>
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`ingredient-checkbox-${index}`}
+                        />
+                        <label className="form-check-label" htmlFor={`ingredient-checkbox-${index}`}>
+                            <span className="ingredient-name">{ingredient.name}</span>
+                        </label>
+                        </div>
+                        <div>
+                        <label className="form-check-label" htmlFor={`ingredient-checkbox-${index}`}>
+                            <span className="ingredient-info">
+                            {ingredient.quantity} ({ingredient.cost})
+                            </span>
+                        </label>
+                        </div>
                     </div>
-                    <div>
-                      <label className="form-check-label" htmlFor={`ingredient-checkbox-${index}`}>
-                        <span className="ingredient-info">2 cups ($3)</span>
-                      </label>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                    </li>
+                ))}
+                </ul>
+            ) : (
+                <p className="text-center mt-3">No ingredients available</p>
+            )}
+            </div>
         </div>
 
         <div className="col estimate">
@@ -118,11 +124,11 @@ const RecipeInstruction = () => {
       <div className="row steps-part">
         <h2>Steps</h2>
         <ol>
-          {[1, 2, 3].map((_, index) => (
+        {recipe?.details?.steps?.map((step, index) => (
             <li key={index}>
-              <strong>Step {index + 1}</strong> - Sample cooking instruction goes here.
+            <strong>{step.explanation}</strong> - {step.instruction}
             </li>
-          ))}
+        ))}
         </ol>
 
         <div className="generate_video">
@@ -133,19 +139,56 @@ const RecipeInstruction = () => {
       </div>
 
       {/* Nutrition Section */}
-      <div className="row nutrition-part">
-        <h2>Nutrition</h2>
-        <div className="row justify-content-center nutrition-section">
-          {['Calories', 'Fiber', 'Protein', 'Carbs', 'Fats', 'Sugar'].map((nutrient) => (
-            <div key={nutrient} className="col-auto">
-              <div className="nutrition-card">
-                <div className="card-circle">100g</div>
-                <div className="card-name">{nutrient}</div>
-              </div>
+      {/* Nutrition Section */}
+        <div className="row nutrition-part">
+            <h2>Nutrition</h2>
+            <div className="row justify-content-center nutrition-section">
+                {recipe?.details?.nutrition_facts ? (
+                <>
+                    <div className="col-auto">
+                    <div className="nutrition-card">
+                        <div className="card-circle">{recipe.details.nutrition_facts.calories}</div>
+                        <div className="card-name">Calories</div>
+                    </div>
+                    </div>
+                    <div className="col-auto">
+                    <div className="nutrition-card">
+                        <div className="card-circle">{recipe.details.nutrition_facts.fiber}g</div>
+                        <div className="card-name">Fiber</div>
+                    </div>
+                    </div>
+                    <div className="col-auto">
+                    <div className="nutrition-card">
+                        <div className="card-circle">{recipe.details.nutrition_facts.protein}g</div>
+                        <div className="card-name">Protein</div>
+                    </div>
+                    </div>
+                    <div className="col-auto">
+                    <div className="nutrition-card">
+                        <div className="card-circle">{recipe.details.nutrition_facts.carbs}g</div>
+                        <div className="card-name">Carbs</div>
+                    </div>
+                    </div>
+                    <div className="col-auto">
+                    <div className="nutrition-card">
+                        <div className="card-circle">{recipe.details.nutrition_facts.fats}g</div>
+                        <div className="card-name">Fats</div>
+                    </div>
+                    </div>
+                    <div className="col-auto">
+                    <div className="nutrition-card">
+                        <div className="card-circle">{recipe.details.nutrition_facts.sugar}g</div>
+                        <div className="card-name">Sugar</div>
+                    </div>
+                    </div>
+                </>
+                ) : (
+                <div className="text-center">
+                    <p>Nutrition information not available</p>
+                </div>
+                )}
             </div>
-          ))}
-        </div>
-      </div>
+            </div>
 
       {/* Footer */}
       <div className="row foots text-center">
