@@ -604,3 +604,8 @@ async def search_youtube(request: YoutubeVideoRequest):
 async def read_root():
     """Serve the main application page"""
     return FileResponse('../my-app/build/index.html')
+
+# 放在所有路由的最后，捕获所有未匹配的路径
+@app.get("/{full_path:path}")
+async def catch_all(request: Request, full_path: str):
+    return FileResponse('../my-app/build/index.html')
