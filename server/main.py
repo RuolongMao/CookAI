@@ -36,10 +36,6 @@ from moviepy.config import change_settings
 
 load_dotenv()
 
-app = FastAPI()
-
-app.mount("/static", StaticFiles(directory="my-app/build/static"), name="static")
-
 # 设置MySQL连接
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:password@localhost/cookingai_users")
 engine = create_engine(DATABASE_URL)
@@ -60,6 +56,8 @@ class User(Base):
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="my-app/build/static"), name="static")
 
 # Configure CORS
 app.add_middleware(
