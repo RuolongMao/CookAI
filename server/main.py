@@ -81,7 +81,7 @@ def get_db():
 class UserRegister(BaseModel):
     username: str
     password: str
-    recaptchaToken: str 
+    # recaptchaToken: str 
 
 # User login model
 class UserLogin(BaseModel):
@@ -91,17 +91,17 @@ class UserLogin(BaseModel):
 # 注册
 @app.post("/register")
 async def register_user(user: UserRegister, db: Session = Depends(get_db)):
-    verification_url = 'https://www.google.com/recaptcha/api/siteverify'
-    data = {
-        'secret': RECAPTCHA_SECRET_KEY,
-        'response': user.recaptchaToken
-    }
-    async with httpx.AsyncClient() as client:
-        captcha_response = await client.post(verification_url, data=data)
-        captcha_result = captcha_response.json()
+    # verification_url = 'https://www.google.com/recaptcha/api/siteverify'
+    # data = {
+    #     'secret': RECAPTCHA_SECRET_KEY,
+    #     'response': user.recaptchaToken
+    # }
+    # async with httpx.AsyncClient() as client:
+    #     captcha_response = await client.post(verification_url, data=data)
+    #     captcha_result = captcha_response.json()
 
-    if not captcha_result.get('success'):
-        raise HTTPException(status_code=400, detail="Invalid reCAPTCHA")
+    # if not captcha_result.get('success'):
+    #     raise HTTPException(status_code=400, detail="Invalid reCAPTCHA")
 
     # Check if username exists(验重)
     existing_user = db.query(User).filter(User.username == user.username).first()
