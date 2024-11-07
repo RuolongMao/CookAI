@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles 
+from starlette.responses import FileResponse
 import os
 import openai
 from dotenv import load_dotenv
@@ -598,4 +599,7 @@ async def search_youtube(request: YoutubeVideoRequest):
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     
-
+@app.get("/")
+async def read_root():
+    """Serve the main application page"""
+    return FileResponse('../my-app/build/static/index.html')
