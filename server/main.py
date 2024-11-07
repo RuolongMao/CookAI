@@ -57,7 +57,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="my-app/build/static"), name="static")
+app.mount("/static", StaticFiles(directory="../my-app/build/static"), name="static")
 
 # Configure CORS
 app.add_middleware(
