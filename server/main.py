@@ -36,6 +36,7 @@ from moviepy.config import change_settings
 
 load_dotenv()
 
+app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="my-app/build/static"), name="static")
 
