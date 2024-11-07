@@ -136,7 +136,7 @@ const Register = ({ onRegisterSuccess }) => {
             <div className="form-group recheck">
               <ReCAPTCHA
                 ref={recaptchaRef}
-                sitekey="6LebbncqAAAAAF4kRhwrFLITxmGQ9XX0uEvg1rpj"
+                sitekey="6Lc5iXcqAAAAAINWaHjX78877-cwrC4Hp2EFN55c"
                 onChange={(value) => {
                   setRecaptchaValue(value);
                   setMessage("");
