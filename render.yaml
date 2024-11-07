@@ -16,7 +16,7 @@ services:
       - key: YOUTUBE_API_KEY
         value: "AIzaSyCHUWFmHFd4YbV7QBuGJKhaQsrGeELW6Ls"
       - key: RECAPTCHA_SECRET_KEY
-        value: "6Lc8TmwqAAAAAJX37AT3UiBIn6FOg28eJwuj_Rmx"
+        value: "6LebbncqAAAAAOYvnaWoxRdUowU0pw6oXFMsDCiF"
 
   - type: database
     name: myapp-mysql
