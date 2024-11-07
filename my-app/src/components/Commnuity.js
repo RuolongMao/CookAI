@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootstrap';
 import "../css/Community.css";
+import { useNavigate } from 'react-router-dom';
 //import DualRangeSlider from './DualRangeSlider';  // Adjust the import path as needed
 
   
@@ -140,6 +141,7 @@ const Community = () => {
   const [originalRecipeData, setOriginalRecipeData] = useState([]);
   // Add this state for tracking when filters are applied
   const [isFiltering, setIsFiltering] = useState(false);
+  const navigate = useNavigate();
 
 // Update useEffect to add filter handling
 useEffect(() => {
@@ -636,7 +638,12 @@ useEffect(() => {
                 ) : (
                   <div className="recipe-grid">
                     {currentItems.map((recipe) => (
-                      <Card key={recipe.id} className="recipe-card">
+                        <Card 
+                          key={recipe.id} 
+                          className="recipe-card"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => navigate('/recipe', { state: { recipe } })}
+                        >
                         <div className="recipe-image-container">
                           <Card.Img 
                             variant="top" 
