@@ -132,9 +132,9 @@ const RecipeInstruction = () => {
         </ol>
 
         <div className="generate_video">
-          <div className="generate_video_button">
+          {/* <div className="generate_video_button">
             Click here for Video
-          </div>
+          </div> */}
         </div>
       </div>
 
