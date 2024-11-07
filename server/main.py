@@ -36,6 +36,9 @@ from moviepy.config import change_settings
 
 load_dotenv()
 
+
+app.mount("/static", StaticFiles(directory="my-app/build/static"), name="static")
+
 # 设置MySQL连接
 DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:password@localhost/cookingai_users")
 engine = create_engine(DATABASE_URL)
