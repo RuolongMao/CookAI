@@ -602,4 +602,4 @@ async def search_youtube(request: YoutubeVideoRequest):
 @app.get("/")
 async def read_root():
     """Serve the main application page"""
-    return FileResponse('../my-app/build/static/index.html')
+    return FileResponse('../my-app/build/index.html')
