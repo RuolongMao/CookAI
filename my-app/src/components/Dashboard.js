@@ -16,7 +16,7 @@ const Dashboard = () => {
     const fetchUserRecipes = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://127.0.0.1:8000/dashboard', {
+        const response = await fetch('https://cookai-55f9.onrender.com/dashboard', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const Dashboard = () => {
   // Handle recipe deletion
   const handleDeleteRecipe = async (recipeName) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/delete', {
+      const response = await fetch('https://cookai-55f9.onrender.com/delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

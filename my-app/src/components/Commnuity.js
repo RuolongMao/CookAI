@@ -171,14 +171,14 @@ useEffect(() => {
         };
         
         console.log('Sending filter request:', filterParams);
-        response = await fetch('http://localhost:8000/filter', {
+        response = await fetch('https://cookai-55f9.onrender.com/filter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(filterParams),
         });
       } else {
         console.log('Fetching all recipes without filters');
-        response = await fetch('http://localhost:8000/get');
+        response = await fetch('https://cookai-55f9.onrender.com/get');
       }
 
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -222,7 +222,7 @@ useEffect(() => {
     }
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/search', {
+      const response = await fetch('https://cookai-55f9.onrender.com/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recipe_name: searchTerm }),
@@ -554,7 +554,7 @@ useEffect(() => {
                   <div className="mt-3">
                     <h6>Troubleshooting Steps:</h6>
                     <ul>
-                      <li>Check if backend server is running (http://localhost:8000)</li>
+                      <li>Check if backend server is running (https://cookai-55f9.onrender.com)</li>
                       <li>Verify CORS settings in backend</li>
                       <li>Check browser console for detailed error messages</li>
                       <li>Ensure database connection is active</li>
