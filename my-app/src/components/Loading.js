@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-// import loading from "../images/loading.gif";
+import loading from "../images/loading.gif";
 import "../css/Loading.css";
 
 const Loading = () => {
@@ -11,6 +11,17 @@ const Loading = () => {
   const prompt = location.state?.prompt || null;
 
   const hasFetchedRef = useRef(false); // 使用 useRef 来跟踪请求状态
+
+
+  useEffect(() => {
+    // 预加载图片
+    const images = [loading];
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
 
   useEffect(() => {
     if (!hasFetchedRef.current && prompt) {
@@ -38,7 +49,7 @@ const Loading = () => {
   return (
     <div className="container loading-page mt-5 text-center">
       {/* <img src="https://via.placeholder.com/150" alt="Loading" />  */}
-      <img src={`${process.env.PUBLIC_URL}/images/loading.gif`} alt="cook" className="loading-img"></img>
+      <img src={loading} alt="cook" className="loading-img"></img>
       <p className="loading-text">
         <span className="scroll-content">Grabbing the freshest ingredients... just a moment!</span>
       </p>
