@@ -267,7 +267,7 @@ async def query_openai(request: QueryRequest):
             image_url = ""
 
         # 在后端打印结果监测
-        print("success print", response_data)
+        # print("success print", response_data)
         response = requests.get(image_url)
         base64_img = base64.b64encode(response.content).decode('utf-8')
         result_img = "data:image/jpeg;base64," + base64_img

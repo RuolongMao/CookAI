@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import loading from "../images/loading.gif";
+// import loading from "../images/loading.gif";
 import "../css/Loading.css";
 
 const Loading = () => {
@@ -38,7 +38,7 @@ const Loading = () => {
   return (
     <div className="container loading-page mt-5 text-center">
       {/* <img src="https://via.placeholder.com/150" alt="Loading" />  */}
-      <img src={loading} alt="cook" className="loading-img"></img>
+      <img src={`${process.env.PUBLIC_URL}/images/loading.gif`} alt="cook" className="loading-img"></img>
       <p className="loading-text">
         <span className="scroll-content">Grabbing the freshest ingredients... just a moment!</span>
       </p>

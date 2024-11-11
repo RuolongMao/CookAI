@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Carousel } from "react-bootstrap";
+// import { Carousel } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import Youtube from "./Youtube";
 import "../css/Video.css";
-import bk4 from "../images/bk4.jpg";
-import bk5 from "../images/bk5.jpg";
-import bk6 from "../images/bk6.jpg";
-import bk7 from "../images/bk7.jpg";
+// import bk4 from "../images/bk4.jpg";
+// import bk5 from "../images/bk5.jpg";
+// import bk6 from "../images/bk6.jpg";
+// import bk7 from "../images/bk7.jpg";
 
 const Video = () => {
   const navigate = useNavigate();
@@ -96,7 +96,7 @@ const Video = () => {
 
   return (
     <div className="video-container">
-       {isLoading && (
+       {/* {isLoading && (
               <Carousel interval={2000} pause={false}>
               <Carousel.Item>
                 <img
@@ -119,7 +119,7 @@ const Video = () => {
             </Carousel>
         
       )}
-      
+       */}
 
 
       {isLoading && (

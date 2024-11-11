@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { Modal, Button } from "react-bootstrap";
+
+
+// 导入图片
+import bk2 from '../images/bk2.jpg';
+import bk4 from '../images/bk4.jpg';
+import bk5 from '../images/bk5.jpg';
+import bk6 from '../images/bk6.jpg';
+import bk7 from '../images/bk7.jpg';
 
 const Home = () => {
   const [message, setMessage] = useState("");
@@ -24,6 +32,15 @@ const Home = () => {
   const [customAllergenInput, setCustomAllergenInput] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 预加载图片
+    const images = [bk2, bk4, bk5, bk6, bk7];
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   // 选项点击逻辑（正常选项 & Custom选项）
   const handleKeywordClick = (category, keyword) => {
