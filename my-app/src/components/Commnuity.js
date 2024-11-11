@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Card, Badge, Pagination } from 'react-bootstrap';
+import { Container, Row, Col, Form, Card, Badge, Pagination, Button } from 'react-bootstrap';
 import "../css/Community.css";
 import { useNavigate } from 'react-router-dom';
 //import DualRangeSlider from './DualRangeSlider';  // Adjust the import path as needed
@@ -265,6 +265,17 @@ useEffect(() => {
     }
   };
 
+  const applySelectedFilters = () => {
+    const filteredData = originalRecipeData.filter(recipe => {
+      const matchesTastes = selectedTastes.every(taste => recipe.tastes.includes(taste));
+      const matchesDietary = selectedDietary.every(diet => recipe.dietary.includes(diet));
+      const withinCost = costFilter ? recipe.cost <= costFilter : true;
+      const withinTime = timeFilter ? recipe.time <= timeFilter : true;
+      return matchesTastes && matchesDietary && withinCost && withinTime;
+    });
+    setRecipeData(filteredData);
+  };
+
   const resetFilters = () => {
     setSelectedTastes([]);
     setCostRange([0, 100]);
@@ -479,6 +490,21 @@ useEffect(() => {
                 {/* Selected Filters */}
                 {/* Selected Filters */}
                   {/* Selected Filters section update */}
+                  <div className="d-flex mb-2">
+        <Button 
+          variant="primary" 
+          className="me-2" 
+          onClick={applySelectedFilters}
+        >
+          Add Filter(s)
+        </Button>
+        <Button 
+          variant="danger" 
+          onClick={resetFilters}
+        >
+          Remove Filter(s)
+        </Button>
+      </div>                  
   <div>
     <h6 className="mb-1">Selected Filters</h6>
     {selectedTastes.map(taste => (
