@@ -137,6 +137,7 @@ Reflect the user's requirement. Especially pay attention to the user's allergen,
 For the flavour field, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
 To notify the user, for the allergen field, included all suitable tag from the following: Peanut, Milk, Egg, Shellfish, Fish, Soy, Wheat, Sesame, Gluten, Lactose.
 Leave allergen as an empty list [] if no allergen is included in the recipe.
+For estimated_time, provide one time for the whole process in minutes, ex. 75 minutes.
 '''
 StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
