@@ -1,3 +1,11 @@
+.jason{
+    background-color: rgb(252, 251, 236);
+}
+
+.ruolong{
+    background-color: rgb(252, 251, 236);
+    
+}
 /* Grid Container */
 .recipe-grid {
     display: grid;
@@ -65,6 +73,22 @@
     -webkit-box-orient: vertical;
 }
 
+.nutrition-badge-new {
+    background-color: #475569;
+    color: rgb(252, 251, 236);
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:10px;
+    padding-right:15px;
+    margin-bottom: 20px;
+
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    width:60px;
+
+  }
 .publish-date {
     font-size: 0.8rem;
     color: #6c757d;
@@ -157,7 +181,7 @@
 
 .range-input-unit {
     width: 35px;
-    text-align: right;
+    text-align: start;
     margin-right: 0.25rem;
 }
 

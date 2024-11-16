@@ -13,6 +13,7 @@ import About from "./components/About";
 import Youtube from './components/Youtube';
 import QandA from "./components/QandA";
 import Dashboard from "./components/Dashboard";
+import RecipeInstruction from './components/RecipeInstruction';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -70,6 +71,7 @@ function App() {
         <Route path="/youtube" element={<Youtube />} />
         <Route path="/qa" element={<QandA />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/recipe" element={<RecipeInstruction />} />
       </Routes>
     </Router>
   );

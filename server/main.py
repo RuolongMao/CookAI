@@ -517,7 +517,7 @@ async def generate_video(request: VideoRequest):
                     os.unlink(temp_file)
                 except Exception as cleanup_error:
                     print(f"Error cleaning up temporary file {temp_file}: {cleanup_error}")
-
+ 
         return VideoResponse(video_data=video_data)
 
     except Exception as e:

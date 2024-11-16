@@ -67,7 +67,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
               {isLoggedIn ? (
                 <span className="wc-txt">Hello, {username}!</span>
               ) : (
-                <span className="wc-txt">Hello, Guest!</span>
+                <span className="wc-txt"></span>
               )}
             </div>
 
