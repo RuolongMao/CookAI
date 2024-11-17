@@ -9,6 +9,8 @@ function Community() {
   const [dietaryOptions, setDietaryOptions] = useState({ Vegan: false });
   const [costRange, setCostRange] = useState({ min: '', max: '' });
   const [cookingTime, setCookingTime] = useState({ min: '', max: '' });
+  const [caloriesRange, setCaloriesRange] = useState({ min: '', max: '' });
+
 
 
   useEffect(() => {
@@ -40,7 +42,11 @@ function Community() {
     if (cookingTime.min || cookingTime.max) {
       selected.push(`Time: ${cookingTime.min || '0'} - ${cookingTime.max || '∞'}`);
     }
-  
+    
+    //calories
+    if (caloriesRange.min || caloriesRange.max) {
+      selected.push(`Calories: ${caloriesRange.min || '0'} - ${caloriesRange.max || '∞'}`);
+    }
     setSelectedFilters(selected);
   };
   
@@ -51,7 +57,7 @@ function Community() {
           <Form>
             <Form.Control type="text" placeholder="Search recipes..." className="mb-3" />
             <h5>Filters</h5>
-            {['Taste', 'Dietary', 'Cost Range', 'Cooking Time'].map((label, index) => (
+            {['Taste', 'Dietary', 'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
               <Form.Group key={index} className="mt-3">
                 <Form.Label>{label}</Form.Label>
                 {label === 'Taste' && ['Sweet', 'Sour', 'Salty', 'Spicy'].map((flavor, idx) => (
@@ -114,6 +120,29 @@ function Community() {
                     />
                   </Form.Group>
                 )}
+
+                {label === 'Calories' && (
+                  <Form.Group className="mb-3 d-flex align-items-center">
+                    <span className="me-2">cal&nbsp;&nbsp;</span>
+                    <Form.Control
+                      type="text"
+                      placeholder="MIN"
+                      className="me-2 commu-filter-box"
+                      value={caloriesRange.min}
+                      onChange={(e) => setCaloriesRange({ ...caloriesRange, min: e.target.value })}
+                    />
+                    <span className="me-2">to</span>
+                    <span className="me-2">cal</span>
+                    <Form.Control
+                      type="text"
+                      placeholder="MAX"
+                      className="commu-filter-box"
+                      value={caloriesRange.max}
+                      onChange={(e) => setCaloriesRange({ ...caloriesRange, max: e.target.value })}
+                    />
+                  </Form.Group>
+                )}
+
               </Form.Group>
             ))}
 
