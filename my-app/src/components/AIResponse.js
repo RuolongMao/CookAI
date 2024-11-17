@@ -280,14 +280,15 @@ const AIResponse = ({ isLoggedIn }) => {
         </div>
       )}
 
-      <div className="row image-part">
-        <div className="col-10 image-left-part">
+      <div className="row image-part d-flex flex-wrap">
+        <div className="col-4"> </div>
+        <div className="col-4 image-left-part-airesponse text-center">
           {imageUrl && (
             <img src={imageUrl} alt="Generated Recipe" className="image" />
           )}
         </div>
 
-        <div className="col-2 like-right-part">
+        <div className="col-4 like-right-part d-flex justify-content-end">
           <div className="row button-part">
             <div className="col-auto">
               <OverlayTrigger

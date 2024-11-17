@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Carousel } from "react-bootstrap";
+// import { Carousel } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import Youtube from "./Youtube";
 import "../css/Video.css";
-import bk4 from "../images/bk4.jpg";
-import bk5 from "../images/bk5.jpg";
-import bk6 from "../images/bk6.jpg";
-import bk7 from "../images/bk7.jpg";
+// import bk4 from "../images/bk4.jpg";
+// import bk5 from "../images/bk5.jpg";
+// import bk6 from "../images/bk6.jpg";
+// import bk7 from "../images/bk7.jpg";
 
 const Video = () => {
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ const Video = () => {
 
   return (
     <div className="video-container">
-      <Carousel interval={2000} pause={false}>
+      {/* <Carousel interval={2000} pause={false}>
         <Carousel.Item>
           <img
             src={bk6}
@@ -104,7 +104,7 @@ const Video = () => {
             className="video-loading-pic"
             alt="First slide"
           />
-        </Carousel.Item>
+        </Carousel.Item> */}
         {/* <Carousel.Item>
           <img
             src={bk4}
@@ -123,7 +123,7 @@ const Video = () => {
             alt="Third slide"
           />
         </Carousel.Item> */}
-        <Carousel.Item>
+        {/* <Carousel.Item>
           <img
             src={bk7}
             d-block
@@ -132,7 +132,7 @@ const Video = () => {
             alt="Third slide"
           />
         </Carousel.Item>
-      </Carousel>
+      </Carousel> */}
 
       {isLoading && (
         <div className="loading-section">

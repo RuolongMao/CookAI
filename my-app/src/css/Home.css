@@ -57,7 +57,7 @@ html, body {
     animation: backgroundSlide 30s infinite alternate;
 }
 
-/* @keyframes定义背景图片的动画 */
+/* @keyframes定义背景图片的动画
 @keyframes backgroundSlide {
   0% {
       background-image: url('../images/bk2.jpg');
@@ -74,7 +74,27 @@ html, body {
   100% {
       background-image: url('../images/bk7.jpg');
   }
+} */
+
+@keyframes backgroundSlide {
+  0% {
+    background-image: var(--bk2);
+  }
+  25% {
+    background-image: var(--bk5);
+  }
+  50% {
+    background-image: var(--bk4);
+  }
+  75% {
+    background-image: var(--bk6);
+  }
+  100% {
+    background-image: var(--bk7);
+  }
 }
+
+
 
 
 /* 点击后背景虚化 */
