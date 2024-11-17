@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-slider": "^1.2.1",
     "@testing-library/jest-dom": "^5.17.0",

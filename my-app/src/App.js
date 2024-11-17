@@ -14,6 +14,7 @@ import Youtube from './components/Youtube';
 import QandA from "./components/QandA";
 import Dashboard from "./components/Dashboard";
 import RecipeInstruction from './components/RecipeInstruction';
+import NearbyStores from './components/NearbyStores';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -72,6 +73,7 @@ function App() {
         <Route path="/qa" element={<QandA />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/recipe" element={<RecipeInstruction />} />
+        <Route path="/nearby-stores" element={<NearbyStores />} />
       </Routes>
     </Router>
   );
