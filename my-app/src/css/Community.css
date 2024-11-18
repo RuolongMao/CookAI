@@ -1,15 +1,10 @@
-.commu-recipe-column {
-    background-color: rgb(252, 251, 236);
-    height: calc(100vh - var(--navbar-height));
-    overflow-y: auto;
-  }
 
 .commu-container {
     background-color: rgb(252, 251, 236);
     min-height: calc(100vh - var(--navbar-height));
 }
 
-
+/* filter column */
 .commu-filter {
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
@@ -19,11 +14,48 @@
     overflow-y: auto;
 }
 
-.commu-timecost-badge {
-    background-color: #faf1d9 !important;
-    color: #2b3c4b; 
+/* filter column search part*/
+.commu-search {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
+.commu-search-input {
+    padding-right: 35px;
+    border-radius: 15px;
+    width: 94%;
+}
+  
+.commu-clear-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: gray;
+}
+
+.commu-search-icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: gray;
+}
+
+.commu-search-icon:hover {
+    color: var(--bs-primary);
+    transform: scale(1.1);
+}
+
+.commu-search-icon:active {
+    color: #faf1d9!important;
+}
+
+
+/* filter column filter part*/
 .commu-filter-box {
     text-align: center;
 } 
@@ -35,20 +67,17 @@
 }
 
 
-.commu-search-input {
-    padding-right: 35px;
-    border-radius: 15px;
-    width: 100%;
+.commu-taste-row {
+    padding-left: 15px;
 }
-  
-.commu-clear-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 20px;
-    color: gray;
+
+
+
+/* recipe column */
+.commu-recipe-column {
+    background-color: rgb(252, 251, 236);
+    height: calc(100vh - var(--navbar-height) - 1rem);
+    overflow-y: auto;
 }
 
 .commu-card {
@@ -66,9 +95,9 @@
     height: 185px;
     object-fit: cover;
     width: 100%; 
-  }
-  
-  
-.commu-taste-row {
-    padding-left: 15px;
+}
+
+.commu-timecost-badge {
+    background-color: #faf1d9 !important;
+    color: #2b3c4b; 
 }

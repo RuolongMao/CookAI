@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Badge, Button, Card} from 'react-bootstrap';
-import { MdClear } from "react-icons/md";
+import { MdClear, MdOutlineSearch} from "react-icons/md";
 // import Ratio from 'react-bootstrap/Ratio';
 import { useNavigate } from 'react-router-dom';
 import "../css/Community.css";
@@ -138,7 +138,7 @@ function Community() {
           className="p-3 commu-filter mt-3"
         >
           <Form>
-          <div style={{ position: "relative", marginBottom: "20px" }}>
+          <div className="commu-search">
             <Form.Control
               type="text"
               placeholder="Search recipes..."
@@ -151,6 +151,10 @@ function Community() {
                 }
               }}
               className="commu-search-input"
+            />
+            <MdOutlineSearch 
+              className="commu-search-icon" 
+              onClick={handleSearch}  
             />
             {searchTerm && (
               <MdClear
