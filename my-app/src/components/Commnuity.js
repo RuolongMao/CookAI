@@ -16,6 +16,18 @@ function Community() {
   const [searchTerm, setSearchTerm] = useState('');
   const [allRecipes, setAllRecipes] = useState([]);
   const navigate = useNavigate();
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  useEffect(() => {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      setNavbarHeight(navbar.offsetHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--navbar-height', `${navbarHeight}px`);
+  }, [navbarHeight]);
 
 
 
@@ -156,15 +168,18 @@ function Community() {
             {['Taste', 'Dietary', 'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
               <Form.Group key={index} className="mt-3">
                 <Form.Label>{label}</Form.Label>
-                {label === 'Taste' && ['Sweet', 'Sour', 'Salty', 'Spicy'].map((flavor, idx) => (
-                  <Form.Check
-                  key={idx}
-                  type="checkbox"
-                  label={flavor}
-                  onChange={(e) => setTasteOptions({ ...tasteOptions, [flavor]: e.target.checked })}
-                />
-                
-                ))}
+                {label === 'Taste' && (
+                  <Row xs={2} className="commu-taste-row">
+                    {['Sweet', 'Sour', 'Salty', 'Spicy'].map((flavor) => (
+                      <Form.Check
+                        key={flavor}
+                        type="checkbox"
+                        label={flavor}
+                        onChange={(e) => setTasteOptions({ ...tasteOptions, [flavor]: e.target.checked })}
+                      />
+                    ))}
+                  </Row>
+                )}
                 {label === 'Dietary' && 
                 <Form.Check
                   type="checkbox"

@@ -1,12 +1,12 @@
 .commu-recipe-column {
     background-color: rgb(252, 251, 236);
-    height: 87vh;
+    height: calc(100vh - var(--navbar-height));
     overflow-y: auto;
   }
 
 .commu-container {
     background-color: rgb(252, 251, 236);
-    min-height: 87vh;
+    min-height: calc(100vh - var(--navbar-height));
 }
 
 
@@ -14,7 +14,7 @@
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     border-radius: 8px; 
-    height: 83.8vh;
+    height: calc(100vh - var(--navbar-height) - 2rem);
     position: sticky;
 }
 
@@ -68,3 +68,6 @@
   }
   
   
+.commu-taste-row {
+    padding-left: 15px;
+}
