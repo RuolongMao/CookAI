@@ -129,7 +129,17 @@ function Community() {
     }
   };
 
-  
+  const handleReset = () => {
+    setTasteOptions({ Sweet: false, Sour: false, Salty: false, Spicy: false });
+    setDietaryOptions({ Vegan: false });
+    setCostRange({ min: '', max: '' });
+    setCookingTime({ min: '', max: '' });
+    setCaloriesRange({ min: '', max: '' });
+    setSearchTerm('');
+    setSelectedFilters([]);
+    setRecipes(allRecipes);
+  };
+
   return (
     <Container fluid className="commu-container">
       <Row>
@@ -179,6 +189,7 @@ function Community() {
                         key={flavor}
                         type="checkbox"
                         label={flavor}
+                        checked={tasteOptions[flavor]}
                         onChange={(e) => setTasteOptions({ ...tasteOptions, [flavor]: e.target.checked })}
                       />
                     ))}
@@ -188,6 +199,7 @@ function Community() {
                 <Form.Check
                   type="checkbox"
                   label="Vegan"
+                  checked={dietaryOptions.Vegan}
                   onChange={(e) => setDietaryOptions({ ...dietaryOptions, Vegan: e.target.checked })}
                 />
                 }
@@ -274,13 +286,19 @@ function Community() {
 
 
             <Form.Group className="d-flex justify-content-between mt-4">
-              <Button variant="outline-secondary" style={{ width: '45%' }}>Reset</Button>
+              <Button 
+                variant="outline-secondary" 
+                style={{ width: '45%' }} 
+                onClick={handleReset}
+              >
+                Reset
+              </Button>
               <Button
                 variant="outline-primary"
                 style={{ width: '47%' }}
                 onClick={handleFilter}
               >
-                Search
+                Apply
               </Button>
             </Form.Group>
           </Form>
