@@ -1,5 +1,7 @@
 .commu-recipe-column {
     background-color: rgb(252, 251, 236);
+    height: 87vh;
+    overflow-y: auto;
   }
 
 .commu-container {
@@ -12,6 +14,8 @@
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
     border-radius: 8px; 
+    height: 83.8vh;
+    position: sticky;
 }
 
 .commu-timecost-badge {
@@ -28,3 +32,39 @@
     text-align: center;
     opacity: 1;  
 }
+
+
+.commu-search-input {
+    padding-right: 35px;
+    border-radius: 15px;
+    width: 100%;
+}
+  
+.commu-clear-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: gray;
+}
+
+.commu-card {
+    transition: all 0.3s ease;
+    border: none !important;  
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+  }
+  
+.commu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.commu-card-img {
+    height: 185px;
+    object-fit: cover;
+    width: 100%; 
+  }
+  
+  

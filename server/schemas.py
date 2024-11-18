@@ -25,6 +25,8 @@ class RecipeFilter(BaseModel):
     est_time_max: Optional[int] = None
     est_cost_min: Optional[float] = None
     est_cost_max: Optional[float] = None
+    calories_min: Optional[int] = None  # Added this line
+    calories_max: Optional[int] = None  # Added this line
     tastes: Optional[List[str]] = None
 
 class PersonalRecipeSearch(BaseModel):

@@ -133,6 +133,8 @@ SystemPrompt = '''
 Reflect the user's requirement. Especially pay attention to the user's allergen, you could be creative and adapt the common recipe to suit the user's need.
 For the flavour field, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
 To notify the user, for the allergen field, included all suitable tag from the following: Peanut, Milk, Egg, Shellfish, Fish, Soy, Wheat, Sesame, Gluten, Lactose.
+Leave allergen as an empty list [] if no allergen is included in the recipe.
+For estimated_time, provide one time for the whole process in minutes, ex. 75 minutes.
 '''
 StructureReminder = '''
 Provide the ingredients, including quantity and cost, inlude all units. Also provide detailed steps for the recipe in the following JSON format:
@@ -305,6 +307,8 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
         est_time_max=query.est_time_max,
         est_cost_min=query.est_cost_min, 
         est_cost_max=query.est_cost_max,
+        calories_min=query.calories_min,      
+        calories_max=query.calories_max, 
         tastes=query.tastes
     )
     return recipes

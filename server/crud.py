@@ -52,7 +52,7 @@ class DashboardCRUD:
     def search_recipes(self, db: Session, name: str) -> List[models.Recipes]:
         return db.query(models.Recipes).filter(models.Recipes.recipe_name.ilike(f"%{name}%")).all()
     
-    def filter_recipes(self, db: Session, est_time_min: Optional[int] = None, est_time_max: Optional[int] = None, est_cost_min: Optional[float] = None, est_cost_max: Optional[float] = None, tastes: Optional[List[str]] = None):
+    def filter_recipes(self, db: Session, est_time_min: Optional[int] = None, est_time_max: Optional[int] = None, est_cost_min: Optional[float] = None, est_cost_max: Optional[float] = None, calories_min: Optional[int] = None, calories_max: Optional[int] = None,tastes: Optional[List[str]] = None):
         query = db.query(models.Recipes)
 
         print("\n=== Filter Parameters ===")
@@ -113,6 +113,19 @@ class DashboardCRUD:
         #         Float
         #     )
         #     query = query.filter(cost_expr <= est_cost_max)
+
+        if calories_min is not None:
+            query = query.filter(
+            func.cast(
+                func.json_extract(models.Recipes.details, '$.nutrition_facts.calories'), Integer
+            ) >= calories_min
+        )
+        if calories_max is not None:
+            query = query.filter(
+                func.cast(
+                func.json_extract(models.Recipes.details, '$.nutrition_facts.calories'), Integer
+            ) <= calories_max
+        )
 
         if tastes and len(tastes) > 0:
             taste_conditions = [func.json_extract(models.Recipes.details, '$.flavour') == taste for taste in tastes]
