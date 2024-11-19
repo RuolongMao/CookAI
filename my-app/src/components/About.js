@@ -94,12 +94,14 @@ const About = () => {
             <div className="tech-item">
               <p>Youtube API</p>
             </div>
-            {/* <div className="tech-item">
-              <p></p>
-            </div> */}
-          {/* </div> */}
+
+            <div className="tech-item">
+              <p>GoogleMap API</p>
+            </div>
         </div>
       </div>
+
+      
 
       {/* 版权信息 */}
       <footer className="text-center footer-fixed">

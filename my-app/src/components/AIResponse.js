@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
+import NearbyStores from "./NearbyStores";
 import "../css/AiReponse.css";
 
 const AIResponse = ({ isLoggedIn }) => {
@@ -457,11 +458,6 @@ const AIResponse = ({ isLoggedIn }) => {
             Click here for Video
           </div>
         </div>
-        {/* <div className="generate_video">
-          <div className="generate_video_button" onClick={handleYoutubeClick}>
-            Find Youtube Tutorials
-          </div>
-        </div> */}
       </div>
 
       <div className="row nutrition-part">
@@ -511,6 +507,10 @@ const AIResponse = ({ isLoggedIn }) => {
           </div>
         )}
       </div>
+
+      
+      <NearbyStores />
+
 
       {/* 版权信息 */}
       <div className="row foots text-center">

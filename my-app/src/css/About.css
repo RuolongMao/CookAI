@@ -1,5 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+
+  }
+  to {
+    opacity: 1;
+
+  }
+}
+
+.about-container {
+  min-height: 100vh;
+  background: rgb(252, 251, 236);
+  padding-bottom: 20px;
+
+  /* 添加动画 */
+  opacity: 0;
+  animation: fadeIn 2s ease-out forwards;
+}
+
+
+
 .about-container {
     min-height: 100vh;
     background:  rgb(252, 251, 236);
@@ -16,7 +41,7 @@
 .hero-title {
   color: #ff6b35;
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
 .hero-description {

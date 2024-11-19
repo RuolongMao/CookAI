@@ -1,20 +1,15 @@
-/* src/NearbyStores.css */
 
 .nearby-stores-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
+  padding-left:30px;
+  padding-right:30px;
+
+}
   .nearby-stores-container h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
   }
-  
+
   .error {
     color: red;
     text-align: center;
@@ -66,11 +61,20 @@
   }
   
 
+.store-card{
+  background-color: #a7cbee; /* 图片背景色，可选 */
+
+  padding-bottom:5px;
+
+  border-radius: 8px 8px 10px 10px;
 
 
-  .card-img-container {
+}
+
+  .store-card-img-container {
+    border-radius:8px 8px 0px 0px;
     width: 100%; /* 宽度占满卡片 */
-    height: 150px; /* 固定高度 */
+    height: 200px; /* 固定高度 */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,13 +82,13 @@
     background-color: #f8f9fa; /* 图片背景色，可选 */
   }
   
-  .card-img-top {
+  .store-card-img-top {
     width: 100%; /* 图片宽度适应容器 */
     height: 100%; /* 图片高度适应容器 */
     object-fit: cover; /* 保持图片比例并填充容器 */
   }
   
-  .placeholder-img {
+  .store-placeholder-img {
     width: 100%;
     height: 100%;
     display: flex;
@@ -95,3 +99,20 @@
     font-size: 14px;
   }
   
+
+
+  .store-name{
+    margin-top:10px;
+    margin-left:5px;
+  }
+
+  .card-text-vicinity{
+    height:30px;
+    margin-bottom:25px;
+    margin-left:5px;
+  }
+
+  .card-text{
+
+    margin-left:5px;
+  }
