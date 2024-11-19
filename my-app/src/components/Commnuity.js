@@ -17,6 +17,11 @@ function Community() {
   const [allRecipes, setAllRecipes] = useState([]);
   const navigate = useNavigate();
   const [navbarHeight, setNavbarHeight] = useState(0);
+  const hasInvalidRanges = () => {
+    return (costRange.min && costRange.max && Number(costRange.min) > Number(costRange.max)) ||
+          (cookingTime.min && cookingTime.max && Number(cookingTime.min) > Number(cookingTime.max)) ||
+          (caloriesRange.min && caloriesRange.max && Number(caloriesRange.min) > Number(caloriesRange.max));
+  };
 
   useEffect(() => {
     const navbar = document.querySelector('.navbar');
@@ -221,6 +226,7 @@ function Community() {
                       className="me-2 commu-filter-box"
                       value={costRange.max}
                       onChange={(e) => setCostRange({ ...costRange, max: e.target.value })}
+                      isInvalid={costRange.min && costRange.max && Number(costRange.min) > Number(costRange.max)}
                     />
                     <span className="me-2">USD</span>
                   </Form.Group>
@@ -243,6 +249,7 @@ function Community() {
                       className="me-2 commu-filter-box"
                       value={cookingTime.max}
                       onChange={(e) => setCookingTime({ ...cookingTime, max: e.target.value })}
+                      isInvalid={cookingTime.min && cookingTime.max && Number(cookingTime.min) > Number(cookingTime.max)}
                     />
                     <span className="me-2">&nbsp;MIN</span>
                   </Form.Group>
@@ -265,6 +272,7 @@ function Community() {
                     className="me-2 commu-filter-box"
                     value={caloriesRange.max}
                     onChange={(e) => setCaloriesRange({ ...caloriesRange, max: e.target.value })}
+                    isInvalid={caloriesRange.min && caloriesRange.max && Number(caloriesRange.min) > Number(caloriesRange.max)}
                   />
                   <span className="me-2">&nbsp;CAL</span>
                 </Form.Group>
@@ -297,6 +305,7 @@ function Community() {
                 variant="outline-primary"
                 style={{ width: '47%' }}
                 onClick={handleFilter}
+                disabled={hasInvalidRanges()}
               >
                 Apply
               </Button>

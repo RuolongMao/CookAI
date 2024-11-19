@@ -92,7 +92,7 @@
 }
 
 .commu-card-img {
-    height: 185px;
+    height: 185px !important;
     object-fit: cover;
     width: 100%; 
 }
@@ -100,4 +100,5 @@
 .commu-timecost-badge {
     background-color: #faf1d9 !important;
     color: #2b3c4b; 
+    font-size: 0.8rem !important;  
 }
