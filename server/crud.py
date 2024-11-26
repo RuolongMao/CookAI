@@ -144,4 +144,20 @@ class DashboardCRUD:
         
         return result
     
+    def add_comment(self, db: Session, recipe_name: str, username: str, user_comment: str):
+        recipe = db.query(models.Recipes).filter(models.Recipes.recipe_name == recipe_name).first()
+        if not recipe:
+            raise ValueError("Recipe not found")
+    
+        comments = json.loads(recipe.comments) if recipe.comments else {}
+        comments[username] = user_comment
+
+        recipe.comments = json.dumps(comments)
+        db.commit()
+        db.refresh(recipe)
+
+        return comments
+
+
+    
 dashboard_crud = DashboardCRUD()

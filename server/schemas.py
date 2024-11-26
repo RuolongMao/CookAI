@@ -34,3 +34,8 @@ class PersonalRecipeSearch(BaseModel):
 
 class RecipeDelete(BaseModel):
     recipe_name: str
+
+class CommentAdd(BaseModel):
+    recipe_name: str
+    username: str
+    comments: str

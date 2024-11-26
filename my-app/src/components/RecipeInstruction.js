@@ -1,11 +1,52 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import "../css/RecipeInstruction.css";
 
-const RecipeInstruction = () => {
+const RecipeInstruction = ({ isLoggedIn }) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const recipe = location.state?.recipe;
+  const username = localStorage.getItem("username");
+  const response = location.state?.response || null;
   
+  const [comments, setComments] = useState(recipe?.details?.comments || []);
+  const [newComment, setNewComment] = useState("");
+
+  const {
+    recipe_name,
+    nutrition_facts,
+    ingredients,
+    steps,
+    estimated_cost,
+    estimate_time,
+  } = response || {};
+
+  const handleAddComment = async () => {
+    console.log(isLoggedIn);
+    if (!isLoggedIn) {
+      // 如果用户未登录，跳转到登录页面
+      navigate("/signin");
+      return;
+    }
+
+    if (!newComment.trim()) return;
+   
+    const response = await fetch("http://127.0.0.1:8000/comment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recipe_name: recipe_name, username: username, comments: newComment }),
+    });
+
+    if (response.ok) {
+      const updatedComments = await response.json();
+      setComments(updatedComments); // Update state with new comments
+      setNewComment(""); // Clear input
+    } else {
+      console.error("Failed to add comment");
+    }
+  };
   // Helper function to format cost
   const formatCost = (cost) => {
     if (!cost) return "N/A";
@@ -139,7 +180,6 @@ const RecipeInstruction = () => {
       </div>
 
       {/* Nutrition Section */}
-      {/* Nutrition Section */}
         <div className="row nutrition-part">
             <h2>Nutrition</h2>
             <div className="row justify-content-center nutrition-section">
@@ -189,6 +229,37 @@ const RecipeInstruction = () => {
                 )}
             </div>
             </div>
+
+      {/* Comment Section */}
+      <div className="row comment-section">
+        <h2>Comments</h2>
+        <div className="comment-list">
+          {comments.length > 0 ? (
+            comments.map((comment, index) => (
+              <div key={index} className="comment-item">
+                <strong>{comment.username}:</strong> {comment.comment}
+              </div>
+            ))
+          ) : (
+            <p>No comments yet. Be the first to comment!</p>
+          )}
+        </div>
+        <div className="comment-input">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Add your comment..."
+            rows="3"
+            className="form-control"
+          />
+          <button
+            onClick={handleAddComment}
+            className="btn btn-primary mt-2"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
 
       {/* Footer */}
       <div className="row foots text-center">
