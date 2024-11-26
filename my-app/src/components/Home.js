@@ -41,14 +41,14 @@ const Home = () => {
 
 
 
-  // const handleImageLoad = () => {
-  //   setLoadedImages(prevCount => prevCount + 1);
-  // };
-
-  const handleImageLoad = useCallback(() => {
-    console.log("Image loaded, current count:", loadedImages + 1); 
+  const handleImageLoad = () => {
     setLoadedImages(prevCount => prevCount + 1);
-  }, []);
+  };
+
+  // const handleImageLoad = useCallback(() => {
+  //   console.log("Image loaded, current count:", loadedImages + 1); 
+  //   setLoadedImages(prevCount => prevCount + 1);
+  // }, []);
 
 
 // 在组件挂载时，将图片路径设置为 CSS 变量
