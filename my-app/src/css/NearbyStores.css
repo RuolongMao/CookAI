@@ -71,11 +71,14 @@
 .store-card {
   /* background-color: rgba(255, 247, 227, 0.745);  */
   background-color: rgba(249, 244, 237, 0.886); 
-  padding-bottom: 15px;
+  padding-bottom: 10px;
   border-radius: 8px 8px 10px 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.06); /* Adds soft shadow */
   transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effect */
+  height:490px;
+  /* width:330px; */
 }
+
 
 .store-card:hover {
   transform: translateY(-5px); /* Slight lift on hover */
@@ -116,7 +119,7 @@
 .store-name{
     margin-top:15px;
     margin-left:10px;
-    margin-bottom:10px;
+    margin-bottom:40px;
     font-size:20px;
     font-weight:600;
   }
@@ -281,4 +284,16 @@
 }
 
 
+.show-more-button{
+  display:flex;
+  justify-content:end;
+  margin-right:50px;
+  margin-top:10px;
+  font-size:18px;
+  text-decoration-line:underline;
+}
+
+.show-more-button:hover{
+  cursor:pointer;
+}
 

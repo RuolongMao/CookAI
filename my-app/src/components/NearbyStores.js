@@ -178,7 +178,7 @@ const NearbyStores = () => {
             ))}
           </div>
           <div className="show-more-arrow" onClick={handleShowMore}>
-            <i className="bi bi-chevron-right">show more</i>
+            <i className="show-more-button">show more</i>
           </div>
         </div>
       )}
