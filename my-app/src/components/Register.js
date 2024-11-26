@@ -60,7 +60,7 @@ const Register = ({ onRegisterSuccess }) => {
       },
       body: JSON.stringify({
         username,
-        password,
+        password
         // recaptchaToken: recaptchaValue,
       }), //请求体
     });
