@@ -9,6 +9,7 @@ const SignIn = ({ onSignInSuccess }) => {
   const [message, setMessage] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
 
   useEffect(() => {
@@ -18,7 +19,9 @@ const SignIn = ({ onSignInSuccess }) => {
 
 
   const handleRegisterNavigation = () => {
-    navigate("/register"); // 使用useNavigate跳转到SignIn页面
+    navigate('/register', { 
+      state: { from: location.state?.from || '/' } 
+    });
   };
 
 
@@ -37,7 +40,7 @@ const SignIn = ({ onSignInSuccess }) => {
       const data = await response.json();
       setMessage("Login successful");
       onSignInSuccess(username); // 通知父组件用户已登录
-      navigate(-1); // 登录成功后跳转到 Chat 页面
+      navigate(location.state?.from || '/'); // 登录成功后跳转到 Chat 页面
     } else {
       const errorData = await response.json();
       setMessage(errorData.detail);

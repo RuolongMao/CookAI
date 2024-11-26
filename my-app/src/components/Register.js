@@ -12,6 +12,7 @@ const Register = ({ onRegisterSuccess }) => {
   const [message, setMessage] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [recaptchaValue, setRecaptchaValue] = useState(null); // 新增状态变量
   const recaptchaRef = useRef(); // 用于重置 reCAPTCHA
 
@@ -21,7 +22,9 @@ const Register = ({ onRegisterSuccess }) => {
   }, []);
 
   const handleSignInNavigation = () => {
-    navigate("/signin"); // 使用useNavigate跳转到SignIn页面
+    navigate('/signin', { 
+      state: { from: location.state?.from || '/' } 
+    });
   };
 
   // 异步函数，阻止表单的默认提交行为（页面刷新）
@@ -71,7 +74,7 @@ const Register = ({ onRegisterSuccess }) => {
       const data = await response.json(); // 响应转换为JSON格式
       setMessage(data.message); // 设置注册成功后的提示消息（来自服务器）
       onRegisterSuccess(username); // 回掉父函数，通知注册成功，利用传入的方法
-      navigate(-1); // 注册成功后跳转到 Chat 页面
+      navigate(location.state?.from || '/'); // 注册成功后跳转到 Chat 页面
     } else {
       const errorData = await response.json();
       setMessage(errorData.detail);
