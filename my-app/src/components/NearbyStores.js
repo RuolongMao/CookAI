@@ -126,8 +126,8 @@ const NearbyStores = () => {
       {stores.length > 0 && (
         <div className="nstore-row">
           <div className="store-part row">
-            {stores.slice(0, 6).map((store) => (
-              <div key={store.place_id} className="col-md-2">
+            {stores.slice(0, 4).map((store) => (
+              <div key={store.place_id} className="col-md-3">
                 <div className="store-card">
                   <div className="store-card-img-container">
                     {store.photos && store.photos.length > 0 ? (
