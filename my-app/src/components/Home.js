@@ -2,17 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { Modal, Button } from "react-bootstrap";
-
-
 import PreloadImage from './PreloadImage';
 
-// 导入图片
+
 import bk2 from '../images/bk2.jpg';
 import bk5 from '../images/bk5.jpg';
 import bk4 from '../images/bk4.jpg';
 import bk6 from '../images/bk6.jpg';
 import bk7 from '../images/bk7.jpg';
-
+import loadingGif from "../images/loading.gif";
 
 
 
@@ -59,10 +57,7 @@ useEffect(() => {
 }, []);
 
 // 定义需要预加载的图片数组
-const backgroundImages = [bk2, bk5, bk4, bk6, bk7];
-
-
-
+const backgroundImages = [bk2, bk5, bk4, bk6, bk7, loadingGif];
 
 
 
