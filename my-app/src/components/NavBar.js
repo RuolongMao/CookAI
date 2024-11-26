@@ -166,12 +166,20 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
             // 未登录状态
             <div className="row justify-content-end">
               <div className="col-6 text-end nav-reg-sig">
-                <Link to="/register" className="register">
+                <Link 
+                  to="/register" 
+                  state={{ from: location.pathname }} 
+                  className="register"
+                >
                   Register
                 </Link>
               </div>
               <div className="col-6 text-end nav-reg-sig">
-                <Link to="/signin" className="signin">
+                <Link 
+                  to="/signin" 
+                  state={{ from: location.pathname }}
+                  className="signin"
+                >
                   Sign In
                 </Link>
               </div>

@@ -13,8 +13,8 @@ const Register = ({ onRegisterSuccess }) => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const [recaptchaValue, setRecaptchaValue] = useState(null); // 新增状态变量
-  const recaptchaRef = useRef(); // 用于重置 reCAPTCHA
+  // const [recaptchaValue, setRecaptchaValue] = useState(null); // 新增状态变量
+  // const recaptchaRef = useRef(); // 用于重置 reCAPTCHA
 
   useEffect(() => {
     // 当组件加载时，设置为可见
@@ -47,10 +47,10 @@ const Register = ({ onRegisterSuccess }) => {
     }
 
     // 检查是否完成了 reCAPTCHA 验证
-    if (!recaptchaValue) {
-      setMessage("Please complete the verification");
-      return;
-    }
+    // if (!recaptchaValue) {
+    //   setMessage("Please complete the verification");
+    //   return;
+    // }
 
     // 发送POST请求到后端
     const response = await fetch("http://127.0.0.1:8000/register", {
@@ -61,13 +61,13 @@ const Register = ({ onRegisterSuccess }) => {
       body: JSON.stringify({
         username,
         password,
-        recaptchaToken: recaptchaValue,
+        // recaptchaToken: recaptchaValue,
       }), //请求体
     });
 
-    // 重置 reCAPTCHA
-    recaptchaRef.current.reset();
-    setRecaptchaValue(null);
+    // // 重置 reCAPTCHA
+    // recaptchaRef.current.reset();
+    // setRecaptchaValue(null);
 
     // 检查响应是否成功
     if (response.ok) {
@@ -136,7 +136,7 @@ const Register = ({ onRegisterSuccess }) => {
               />
             </div>
 
-            <div className="form-group recheck">
+            {/* <div className="form-group recheck">
               <ReCAPTCHA
                 ref={recaptchaRef}
                 sitekey="6Lc8TmwqAAAAAKm-H6hFjjbgZucAUhVOOD48tF1F"
@@ -145,7 +145,7 @@ const Register = ({ onRegisterSuccess }) => {
                   setMessage("");
                 }}
               />
-            </div>
+            </div> */}
 
             <button type="submit" className="register-button">
               Register
