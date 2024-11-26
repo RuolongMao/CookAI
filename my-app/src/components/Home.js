@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { Modal, Button } from "react-bootstrap";
+import PreloadImage from './PreloadImage';
 
 
-// 导入图片
 import bk2 from '../images/bk2.jpg';
-import bk4 from '../images/bk4.jpg';
 import bk5 from '../images/bk5.jpg';
+import bk4 from '../images/bk4.jpg';
 import bk6 from '../images/bk6.jpg';
 import bk7 from '../images/bk7.jpg';
+import loadingGif from "../images/loading.gif";
+
+
 
 const Home = () => {
   const [message, setMessage] = useState("");
@@ -33,14 +36,30 @@ const Home = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // 预加载图片
-    const images = [bk2, bk4, bk5, bk6, bk7];
-    images.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+  const [loadedImages, setLoadedImages] = useState(0);
+
+
+
+
+  const handleImageLoad = () => {
+    setLoadedImages(prevCount => prevCount + 1);
+  };
+
+
+// 在组件挂载时，将图片路径设置为 CSS 变量
+useEffect(() => {
+  const root = document.documentElement;
+  root.style.setProperty('--bk2', `url(${bk2})`);
+  root.style.setProperty('--bk5', `url(${bk5})`);
+  root.style.setProperty('--bk4', `url(${bk4})`);
+  root.style.setProperty('--bk6', `url(${bk6})`);
+  root.style.setProperty('--bk7', `url(${bk7})`);
+}, []);
+
+// 定义需要预加载的图片数组
+const backgroundImages = [bk2, bk5, bk4, bk6, bk7, loadingGif];
+
+
 
   // 选项点击逻辑（正常选项 & Custom选项）
   const handleKeywordClick = (category, keyword) => {
@@ -165,8 +184,16 @@ const Home = () => {
     navigate("/loading", { state: { prompt: prompt } });
   };
 
+  
+
   return (
     <div className="home-container">
+
+{backgroundImages.map((src, index) => (
+  <PreloadImage key={index} src={src} onLoad={handleImageLoad} />
+))}
+
+      
       {/* 背景部分 */}
       <div
         className={`background-container ${

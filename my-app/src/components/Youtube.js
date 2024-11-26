@@ -24,7 +24,7 @@ const Youtube = () => {
 
         setRecipeName(recipe);
 
-        const response = await fetch("https://cookai-55f9.onrender.com/search_youtube", {
+        const response = await fetch("http://127.0.0.1:8000/search_youtube", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

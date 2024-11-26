@@ -1,229 +1,249 @@
 
 html, body {
-    height: 100%; /* 使页面的高度始终是 100% */
-    margin: 0; /* 确保没有额外的边距 */
-  }
+  height: 100%; /* 使页面的高度始终是 100% */
+  margin: 0; /* 确保没有额外的边距 */
+}
 
 
 
 .home-container{
-  margin-top:10%;
+margin-top:10%;
 }
 .navbar {
-    position: relative; /* 让z-index生效 */
-    z-index: 10; /* 确保它比背景高 */
-  }
+  position: relative; /* 让z-index生效 */
+  z-index: 10; /* 确保它比背景高 */
+}
 
 /* 定义 fade-in 动画 */
 @keyframes fadein {
-  from {
-      opacity: 0; /* 初始透明度为 0 */
-  }
-  to {
-      opacity: 1; /* 结束时透明度为 1 */
-  }
+from {
+    opacity: 0; /* 初始透明度为 0 */
+}
+to {
+    opacity: 1; /* 结束时透明度为 1 */
+}
 }
 
 /* 应用于 .before-txt 的动画效果 */
 .before-txt {
-  text-align: center;
-  transform: translate(-50%, -50%);
-  position: absolute; 
-  top: 50%;
-  left: 50%;
-  font-size: 100px;
-  color: rgb(255, 255, 255);
-  z-index: 2;
-  opacity: 0; /* 默认透明 */
-  animation: fadein 3s ease forwards; /* 加入淡入动画，持续 2 秒 */
+text-align: center;
+transform: translate(-50%, -50%);
+position: absolute; 
+top: 50%;
+left: 50%;
+font-size: 100px;
+color: rgb(255, 255, 255);
+z-index: 2;
+opacity: 0; /* 默认透明 */
+animation: fadein 3s ease forwards; /* 加入淡入动画，持续 2 秒 */
 }
 
 
 /* 背景部分的样式 */
 .background-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* background-image: url('../images/bk2.jpg'); */
-    background-size: cover;
-    background-position: center;
-    transition: filter 4s ease;
-    z-index: 0; /* 背景在后 */
-    filter: blur(0) brightness(0.8);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-image: url('../images/bk2.jpg'); */
+  background-size: cover;
+  background-position: center;
+  transition: filter 4s ease;
+  z-index: 0; /* 背景在后 */
+  filter: blur(0) brightness(0.8);
 
-    /* 定义多个背景图片的动画 */
-    animation: backgroundSlide 30s infinite alternate;
+  /* 定义多个背景图片的动画 */
+  animation: backgroundSlide 30s infinite alternate;
 }
 
-/* @keyframes定义背景图片的动画 */
+/* @keyframes定义背景图片的动画
 @keyframes backgroundSlide {
-  0% {
-      background-image: url('../images/bk2.jpg');
-  }
-  25% {
-      background-image: url('../images/bk5.jpg');
-  }
-  50% {
-      background-image: url('../images/bk4.jpg');
-  }
-  75% {
-    background-image: url('../images/bk6.jpg');
+0% {
+    background-image: url('../images/bk2.jpg');
 }
-  100% {
-      background-image: url('../images/bk7.jpg');
-  }
+25% {
+    background-image: url('../images/bk5.jpg');
 }
+50% {
+    background-image: url('../images/bk4.jpg');
+}
+75% {
+  background-image: url('../images/bk6.jpg');
+}
+100% {
+    background-image: url('../images/bk7.jpg');
+}
+} */
+
+@keyframes backgroundSlide {
+0% {
+  background-image: var(--bk2);
+}
+25% {
+  background-image: var(--bk5);
+}
+50% {
+  background-image: var(--bk4);
+}
+75% {
+  background-image: var(--bk6);
+}
+100% {
+  background-image: var(--bk7);
+}
+}
+
+
 
 
 /* 点击后背景虚化 */
 .background-active {
-    filter: blur(6px) brightness(0.6);
+  filter: blur(6px) brightness(0.6);
 }
 
 
 /* 定义 slide-up 动画 */
 @keyframes slideup {
-    from {
-        transform: translate(-50%, -50%); /* 初始位置 */
-        opacity :1;
-    }
-    to {
-        transform: translate(-50%, -100%); /* 向上滑动并消失 */
-        opacity :0;
-    }
+  from {
+      transform: translate(-50%, -50%); /* 初始位置 */
+      opacity :1;
   }
+  to {
+      transform: translate(-50%, -100%); /* 向上滑动并消失 */
+      opacity :0;
+  }
+}
 
 .slide-up {
-    animation: slideup 0.6s ease forwards; /* 动画持续 1.5s，向上滑动后消失 */
-  }
+  animation: slideup 0.6s ease forwards; /* 动画持续 1.5s，向上滑动后消失 */
+}
 
 
 
 /* 定义 slidein 动画 */
 @keyframes slidein {
-    from {
-      transform: translateY(170%); /* 从页面下方滑入 */
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  from {
+    transform: translateY(170%); /* 从页面下方滑入 */
+    opacity: 0;
   }
-  
-  /* 为 mainbody 添加动画效果 */
-  .mainbody {
-
-    z-index: 3;
-    position: relative;
+  to {
+    transform: translateY(0);
     opacity: 1;
-    animation-duration: 2s;
-    animation-name: slidein;
-    animation-timing-function: ease-out;
   }
+}
+
+/* 为 mainbody 添加动画效果 */
+.mainbody {
+
+  z-index: 3;
+  position: relative;
+  opacity: 1;
+  animation-duration: 2s;
+  animation-name: slidein;
+  animation-timing-function: ease-out;
+}
 
 
 
 
 .mainbody-title{
-  font-size:53px;
-  font-weight:500;
-  color: white;
+font-size:53px;
+font-weight:500;
+color: white;
 }
 
 .selection{
-  margin-top: 400px;
+margin-top: 400px;
 }
 
 .cd{
-  margin-top: 20px;
+margin-top: 20px;
 }
 
 
 .card-title{
-  color: white;
-  margin-bottom: 20px;
+color: white;
+margin-bottom: 20px;
 }
 
 .text-input-father{
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
+display: flex;
+justify-content: center;
+margin-top: 10px;
 }
 
 .text-input{
-  width:100%;
-  max-width: 1000px;
-  height:55px;
-  margin-left: 80px;
-  /* background-color:rgb(252, 251, 236); */
+width:100%;
+max-width: 1000px;
+height:55px;
+margin-left: 80px;
+/* background-color:rgb(252, 251, 236); */
 }
 
 
 .submit-button{
-  margin-top: 10px;
-  margin-left:2px;
-  height: 55px;
-  font-weight: 800;
+margin-top: 10px;
+margin-left:2px;
+height: 55px;
+font-weight: 800;
 }
 
 
 .taste{
-  font-weight:600;
+font-weight:600;
 }
 
 .method{
-  font-weight:600;
+font-weight:600;
 }
 
 .time{
-  font-weight:600;
+font-weight:600;
 }
 
 
 /* 使版权信息始终在底部 */
 .footer-fixed {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color:rgb(252, 251, 236);
-  padding: 2px 0;
-  text-align: center;
-  color: #6c757d;
-  font-size: 14px;
-  z-index: 10; /* 保证在最上层 */
-  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom:0px;
+position: fixed;
+bottom: 0;
+width: 100%;
+background-color:rgb(252, 251, 236);
+padding: 2px 0;
+text-align: center;
+color: #6c757d;
+font-size: 14px;
+z-index: 10; /* 保证在最上层 */
+box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+margin-bottom:0px;
 }
 
 .footer-fixed p {
-  margin: 0; /* 去掉 <p> 元素的默认 margin */
+margin: 0; /* 去掉 <p> 元素的默认 margin */
 }
 
 /* 确保页面内容不与版权信息重叠 */
 .home-container {
-  padding-bottom: 20px; /* 为页面内容留出空间 */
+padding-bottom: 20px; /* 为页面内容留出空间 */
 }
 
 
 .custom-modal .modal-content{
-  background-color: rgb(255, 255, 255); /* 自定义背景颜色 */
-  color:#2c3b4b;
-  padding:0px;
+background-color: rgb(255, 255, 255); /* 自定义背景颜色 */
+color:#2c3b4b;
+padding:0px;
 }
 
 .cutom-input{
-  background-color:rgb(255, 255, 255);
-  border-color:#2c3b4b;
+background-color:rgb(255, 255, 255);
+border-color:#2c3b4b;
 }
 
 .custom-botton-save{
-  background-color:#2c3b4b;
-  border-color: #2c3b4b;
+background-color:#2c3b4b;
+border-color: #2c3b4b;
 }
 .custom-botton-save:hover{
-  background-color:#ff5a1f;
-  border-color: #ff5a1f;
+background-color:#ff5a1f;
+border-color: #ff5a1f;
 }

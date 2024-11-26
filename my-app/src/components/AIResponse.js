@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
+import NearbyStores from "./NearbyStores";
 import "../css/AiReponse.css";
 
 const AIResponse = ({ isLoggedIn }) => {
@@ -126,7 +127,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
   const handleUnlikeRecipe = async () => {
     showAlertMessage("You have unliked this recipe!");
-    await fetch("https://cookai-55f9.onrender.com/delete", {
+    await fetch("http://127.0.0.1:8000/delete", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -148,7 +149,7 @@ const AIResponse = ({ isLoggedIn }) => {
     };
 
     try {
-      await fetch("https://cookai-55f9.onrender.com/create", {
+      await fetch("http://127.0.0.1:8000/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -156,7 +157,7 @@ const AIResponse = ({ isLoggedIn }) => {
         body: JSON.stringify(body),
       });
 
-      await fetch("https://cookai-55f9.onrender.com/share", {
+      await fetch("http://127.0.0.1:8000/share", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -186,7 +187,7 @@ const AIResponse = ({ isLoggedIn }) => {
     };
 
     try {
-      await fetch("https://cookai-55f9.onrender.com/create", {
+      await fetch("http://127.0.0.1:8000/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -280,14 +281,15 @@ const AIResponse = ({ isLoggedIn }) => {
         </div>
       )}
 
-      <div className="row image-part">
-        <div className="col-10 image-left-part">
+      <div className="row image-part d-flex flex-wrap">
+        <div className="col-4"> </div>
+        <div className="col-4 image-left-part-airesponse text-center">
           {imageUrl && (
             <img src={imageUrl} alt="Generated Recipe" className="image" />
           )}
         </div>
 
-        <div className="col-2 like-right-part">
+        <div className="col-4 like-right-part d-flex justify-content-end">
           <div className="row button-part">
             <div className="col-auto">
               <OverlayTrigger
@@ -456,11 +458,6 @@ const AIResponse = ({ isLoggedIn }) => {
             Click here for Video
           </div>
         </div>
-        {/* <div className="generate_video">
-          <div className="generate_video_button" onClick={handleYoutubeClick}>
-            Find Youtube Tutorials
-          </div>
-        </div> */}
       </div>
 
       <div className="row nutrition-part">
@@ -510,6 +507,10 @@ const AIResponse = ({ isLoggedIn }) => {
           </div>
         )}
       </div>
+
+      
+      <NearbyStores />
+
 
       {/* 版权信息 */}
       <div className="row foots text-center">
