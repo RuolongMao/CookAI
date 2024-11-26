@@ -3,10 +3,17 @@
     padding-right:60px;
 }
 
-.navbar {
-    background-color: #2c3b4b;
-    
+
+/*  两种逻辑判断 */
+.navbar-home {
+    background-color: #2c3b4b00;
 }
+
+.navbar-other {
+    background-color: #2c3b4b; /* 深色背景 */
+    transition: background-color 2s ease; 
+  }
+
 
 
 .fixed-top {
@@ -59,10 +66,10 @@
 .name::after {
     content: '';
     display: block;
-    width: 25%; /* 设置下划线的宽度 */
+    width: 35%; /* 设置下划线的宽度 */
     height: 2px;
     background-color: rgb(252, 251, 236); /* 下划线的颜色 */
-    margin: 7px auto 0 auto; /* 自动计算左右边距，确保居中 */
+    /* margin: 7px auto 0 auto;  */
 
 }
 

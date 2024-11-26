@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { Modal, Button } from "react-bootstrap";
@@ -41,9 +41,14 @@ const Home = () => {
 
 
 
-  const handleImageLoad = () => {
+  // const handleImageLoad = () => {
+  //   setLoadedImages(prevCount => prevCount + 1);
+  // };
+
+  const handleImageLoad = useCallback(() => {
+    console.log("Image loaded, current count:", loadedImages + 1); 
     setLoadedImages(prevCount => prevCount + 1);
-  };
+  }, []);
 
 
 // 在组件挂载时，将图片路径设置为 CSS 变量
