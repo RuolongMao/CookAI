@@ -7,9 +7,8 @@ const RecipeInstruction = ({ isLoggedIn }) => {
   const location = useLocation();
   const recipe = location.state?.recipe;
   const username = localStorage.getItem("username");
-  const response = location.state?.response || null;
   
-  const [comments, setComments] = useState(recipe?.details?.comments || []);
+  const [comments, setComments] = useState(recipe.comments || []);
   const [newComment, setNewComment] = useState("");
 
   const {
@@ -19,10 +18,9 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     steps,
     estimated_cost,
     estimate_time,
-  } = response || {};
+  } = recipe || {};
 
   const handleAddComment = async () => {
-    console.log(isLoggedIn);
     if (!isLoggedIn) {
       // 如果用户未登录，跳转到登录页面
       navigate("/signin");
@@ -30,7 +28,6 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     }
 
     if (!newComment.trim()) return;
-   
     const response = await fetch("http://127.0.0.1:8000/comment", {
       method: "POST",
       headers: {
@@ -40,9 +37,9 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     });
 
     if (response.ok) {
-      const updatedComments = await response.json();
-      setComments(updatedComments); // Update state with new comments
-      setNewComment(""); // Clear input
+      const newCommentData = { username, comment: newComment };
+      setComments((prevComments) => [...prevComments, newCommentData]);
+      setNewComment("");
     } else {
       console.error("Failed to add comment");
     }

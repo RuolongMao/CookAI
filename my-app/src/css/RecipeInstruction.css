@@ -253,3 +253,28 @@
     width: 45px;
     height: 48px;
   }
+
+  .comment-section {
+    margin-top: 20px;
+    padding: 20px;
+    border-top: 1px solid #ccc;
+  }
+  
+  .comment-list {
+    margin-bottom: 10px;
+  }
+  
+  .comment-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .comment-input textarea {
+    width: 100%;
+    resize: none;
+  }
+  
+  .comment-input button {
+    float: right;
+  }
+  
