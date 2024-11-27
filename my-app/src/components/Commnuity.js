@@ -42,7 +42,7 @@ function Community() {
     async function fetchRecipes() {
       setIsLoading(true);
       try {
-        const response = await fetch('https://cookai-55f9.onrender.com/get');
+        const response = await fetch('http://localhost:8000/get');
         const data = await response.json();
         setRecipes(data);
         setAllRecipes(data);
@@ -122,7 +122,7 @@ function Community() {
 
     // Fetch filtered recipes from the backend
     try {
-      const response = await fetch('https://cookai-55f9.onrender.com/filter', {
+      const response = await fetch('http://localhost:8000/filter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
