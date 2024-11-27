@@ -39,6 +39,10 @@
     color: gray;
 }
 
+.commu-clear-icon:hover {
+    color: var(--bs-primary);
+}
+
 .commu-search-icon {
     cursor: pointer;
     font-size: 20px;
