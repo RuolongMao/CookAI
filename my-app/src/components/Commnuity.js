@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Badge, Button, Card} from 'react-bootstrap';
 import { MdClear, MdOutlineSearch} from "react-icons/md";
-// import Ratio from 'react-bootstrap/Ratio';
+import { Riple } from "react-loading-indicators";
 import { useNavigate } from 'react-router-dom';
 import "../css/Community.css";
 
@@ -17,6 +17,7 @@ function Community() {
   const [allRecipes, setAllRecipes] = useState([]);
   const navigate = useNavigate();
   const [navbarHeight, setNavbarHeight] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const hasInvalidRanges = () => {
     return (costRange.min && costRange.max && Number(costRange.min) > Number(costRange.max)) ||
           (cookingTime.min && cookingTime.max && Number(cookingTime.min) > Number(cookingTime.max)) ||
@@ -39,11 +40,18 @@ function Community() {
 
   useEffect(() => {
     async function fetchRecipes() {
-      const response = await fetch('http://localhost:8000/get');
-      const data = await response.json();
-      setRecipes(data);
-      setAllRecipes(data);
-    }
+      setIsLoading(true);
+      try {
+        const response = await fetch('https://cookai-55f9.onrender.com/get');
+        const data = await response.json();
+        setRecipes(data);
+        setAllRecipes(data);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }    
     fetchRecipes();
   }, []);
   
@@ -114,7 +122,7 @@ function Community() {
 
     // Fetch filtered recipes from the backend
     try {
-      const response = await fetch('http://localhost:8000/filter', {
+      const response = await fetch('https://cookai-55f9.onrender.com/filter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -313,47 +321,56 @@ function Community() {
           </Form>
         </Col>
 
-        <Col
-          md={9}
-          className="p-3 commu-recipe-column"
+  <Col md={9} className="p-3 commu-recipe-column">
+    {isLoading ? (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
+        <Riple color="#6E757D" size="large" />
+      </div>
+    ) : recipes.length === 0 ? (
+      <div className="commu-empty-state">
+        <div className="commu-empty-state-icon">📚</div>
+        <h3 className="commu-empty-state-title">Be the first to contribute!</h3>
+      </div>
+    ) : (
+    <Row>
+      {recipes.map((recipe, index) => (
+        <Card 
+          key={index} 
+          style={{ width: '19.1rem' }} 
+          className="mb-3 ms-4 ps-0 pe-0 commu-card"
+          onClick={() => navigate('/recipe', { state: { recipe } })}
         >
-          <Row>
-            {recipes.map((recipe, index) => (
-              <Card 
-                key={index} 
-                style={{ width: '19.1rem' }} 
-                className="mb-3 ms-4 ps-0 pe-0 commu-card"
-                onClick={() => navigate('/recipe', { state: { recipe } })} 
-              >
-                <Card.Img 
-                  variant="top" 
-                  src={recipe.image_url} 
-                  alt="Recipe Image" 
-                  className="img-fluid commu-card-img"
-                />
-                <Card.Body className="d-flex flex-column gap-2">
-                  <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
-                    {recipe.recipe_name}
-                  </Card.Title>
-                  <p className="text-muted mb-0">{recipe.user_name}</p>
-                  <div className="d-flex">
-                    <Badge className="me-2 commu-timecost-badge">
-                      <i className="bi bi-clock"></i> {recipe.details.estimate_time}
-                    </Badge>
-                    <Badge className="me-2 commu-timecost-badge">
-                      <i className="bi bi-currency-dollar"></i> {recipe.details.estimated_cost}
-                    </Badge>
-                  </div>
-                  <div>
-                    <Badge bg="secondary">
-                      {recipe.details.nutrition_facts.calories} cal
-                    </Badge>
-                  </div>
-                </Card.Body>
-              </Card>
-            ))}
-          </Row>
-        </Col>
+          <Card.Img 
+            variant="top" 
+            src={recipe.image_url} 
+            alt="Recipe Image" 
+            className="img-fluid commu-card-img"
+          />
+          <Card.Body className="d-flex flex-column gap-2">
+            <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
+              {recipe.recipe_name}
+            </Card.Title>
+            <p className="text-muted mb-0">{recipe.user_name}</p>
+            <div className="d-flex">
+              <Badge className="me-2 commu-timecost-badge">
+                <i className="bi bi-clock"></i> {recipe.details.estimate_time}
+              </Badge>
+              <Badge className="me-2 commu-timecost-badge">
+                <i className="bi bi-currency-dollar"></i> {recipe.details.estimated_cost}
+              </Badge>
+            </div>
+            <div>
+              <Badge bg="secondary">
+                {recipe.details.nutrition_facts.calories} cal
+              </Badge>
+            </div>
+          </Card.Body>
+        </Card>
+      ))}
+    </Row>
+  )}
+</Col>
+
       </Row>
     </Container>
   );

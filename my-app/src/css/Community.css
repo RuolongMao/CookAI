@@ -80,11 +80,40 @@
     overflow-y: auto;
 }
 
+.commu-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: white;
+    border-radius: 15px;
+    margin: 145px auto; 
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+.commu-empty-state-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+  }
+  
+.commu-empty-state-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3b4b;
+    margin-bottom: 10px;
+  }
+  
+.commu-empty-state-text {
+    font-size: 16px;
+    color: #666;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+
 .commu-card {
     transition: all 0.3s ease;
     border: none !important;  
     box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-  }
+}
   
 .commu-card:hover {
     transform: translateY(-5px);
