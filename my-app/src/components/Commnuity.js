@@ -62,6 +62,7 @@ function Community() {
       return;
     }
   
+    setIsLoading(true); // 开始加载
     try {
       const response = await fetch('http://localhost:8000/search', {
         method: 'POST',
@@ -72,8 +73,11 @@ function Community() {
       setRecipes(data);
     } catch (error) {
       console.error('Error fetching searched recipes:', error);
+    } finally {
+      setIsLoading(false); // 加载完成
     }
   };
+  
   
   // Modify the handleFilter function to trigger filtering when the Search button is clicked
   const handleFilter = async () => {
@@ -119,8 +123,9 @@ function Community() {
     }
 
     setSelectedFilters(selected);
+    setIsLoading(true); // 开始加载
 
-    // Fetch filtered recipes from the backend
+  // Fetch filtered recipes from the backend
     try {
       const response = await fetch('http://localhost:8000/filter', {
         method: 'POST',
@@ -139,6 +144,8 @@ function Community() {
       setRecipes(data);
     } catch (error) {
       console.error('Error fetching filtered recipes:', error);
+    } finally {
+      setIsLoading(false); // 加载完成
     }
   };
 
