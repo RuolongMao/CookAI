@@ -198,10 +198,11 @@ function Community() {
 
           </div>
 
-            <h5>Filters</h5>
+            {/* <h5>Filters</h5> */}
             {['Taste', 'Dietary', 'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
               <Form.Group key={index} className="mt-3">
-                <Form.Label>{label}</Form.Label>
+                <Form.Label className="fs-5 fst-italic">{label}</Form.Label>
+
                 {label === 'Taste' && (
                   <Row xs={2} className="commu-taste-row">
                     {['Sweet', 'Sour', 'Salty', 'Spicy'].map((flavor) => (
@@ -296,16 +297,19 @@ function Community() {
               </Form.Group>
             ))}
 
-            <Form.Group className="mt-3">
-              <Form.Label>Selected Filters</Form.Label>
-              <div className="mt-2">
-                {selectedFilters.map((filter, index) => (
-                  <Badge key={index} bg="secondary" className="me-2">
-                    {filter}
-                  </Badge>
-                ))}
-              </div>
-            </Form.Group>
+            {selectedFilters.length > 0 && (
+              <Form.Group className="mt-3">
+                <Form.Label className="fs-5 fst-italic">Selected Filters</Form.Label>
+                <div className="mt-2">
+                  {selectedFilters.map((filter, index) => (
+                    <Badge key={index} bg="secondary" className="me-2">
+                      {filter}
+                    </Badge>
+                  ))}
+                </div>
+              </Form.Group>
+            )}
+
 
 
             <Form.Group className="d-flex justify-content-between mt-4">
