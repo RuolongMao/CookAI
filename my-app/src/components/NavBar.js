@@ -124,6 +124,7 @@ const Navbar = ({ isLoggedIn, username, onLogout }) => {
                   background: "none",
                   border: "none",
                   boxShadow: "none",
+                  
                 }}
               >
                 <svg

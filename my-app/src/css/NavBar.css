@@ -34,7 +34,6 @@
 
 .nav-1 a:hover{
     color: rgb(255, 123, 0);
-
 }
 
 .nav-1{
@@ -67,20 +66,22 @@
     text-decoration: none;
     color: rgb(252, 251, 236);
     margin-bottom: 5px;
-    display: inline-block; /* 确保文本宽度自适应内容 */
+    display: inline-block; 
+    text-decoration-line: underline;
+    margin-left:40px;
     
 }
 
 
-.name::after {
+/* .name::after {
     content: '';
     display: block;
-    width: 40%; /* 设置下划线的宽度 */
+    width: 40%; 
     height: 2px;
-    background-color: rgb(252, 251, 236); /* 下划线的颜色 */
-    /* margin: 7px auto 0 auto;  */
+    background-color: rgb(252, 251, 236);
 
-}
+
+} */
 
 
 .right-side{
@@ -152,3 +153,10 @@
     fill: white; /* 设置图标颜色为白色 */
   }
   
+
+.dropdown-toggle{
+    background: "none";
+    border: "none";
+    box-shadow: "none";
+    padding-bottom:8px;
+}

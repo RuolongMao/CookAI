@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import { Carousel } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
-import Youtube from "./Youtube";
 import "../css/Video.css";
 // import bk4 from "../images/bk4.jpg";
 // import bk5 from "../images/bk5.jpg";
@@ -145,7 +144,6 @@ const Video = () => {
             <div className="progress" style={{ width: `${progress}%` }}></div>
           </div>
           <div>
-            <Youtube />
           </div>
         </div>
       )}
