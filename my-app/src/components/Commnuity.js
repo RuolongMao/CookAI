@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Badge, Button, Card} from 'react-bootstrap';
 import { MdClear, MdOutlineSearch} from "react-icons/md";
+import { BsThreeDots } from "react-icons/bs";
 import { Riple } from "react-loading-indicators";
 import { useNavigate } from 'react-router-dom';
 import "../css/Community.css";
@@ -45,8 +46,11 @@ function Community() {
       try {
         const response = await fetch('http://localhost:8000/get');
         const data = await response.json();
-        setRecipes(data);
-        setAllRecipes(data);
+        const publishedRecipes = data.filter(recipe => recipe.publish === true);
+        console.log('Fetched data:', data);
+        console.log('publishedRecipes:', publishedRecipes);
+        setRecipes(publishedRecipes);
+        setAllRecipes(publishedRecipes);
       } catch (error) {
         console.error('Error fetching recipes:', error);
       } finally {
@@ -128,7 +132,7 @@ function Community() {
 
   // Fetch filtered recipes from the backend
     try {
-      const response = await fetch('http://localhost:8000/filter', {
+      const response = await fetch('https://cookai-55f9.onrender.com/filter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -357,7 +361,8 @@ function Community() {
             src={recipe.image_url} 
             alt="Recipe Image" 
             className="img-fluid commu-card-img"
-          />
+          /> 
+          <BsThreeDots className="commu-3dot" />      
           <Card.Body className="d-flex flex-column gap-2">
             <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
               {recipe.recipe_name}
