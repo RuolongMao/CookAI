@@ -215,7 +215,7 @@ const AIResponse = ({ isLoggedIn }) => {
   };
 
   return (
-    <div className="airesponse-container--fluid">
+    <div className="airesponse-container--fluid" style={{ height: 'calc(100vh - 72px)'}}>
       {showAlert && (
         <div className="alert-container">
           <div className="alert">
@@ -271,7 +271,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
       {/* 主内容区域 */}
       <div className="main-content flex-grow-1">
-        <div className="row h-100">
+        <div className="row h-auto">
           {/* 左边列 */}
           <div className="col main-part-ai-left d-flex flex-column">
             <div className="row-ap-left1 flex-grow-1 ">
