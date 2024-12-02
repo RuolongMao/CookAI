@@ -274,84 +274,92 @@ const AIResponse = ({ isLoggedIn }) => {
         <div className="row h-100">
           {/* 左边列 */}
           <div className="col main-part-ai-left d-flex flex-column">
-            {/* 按钮部分 */}
-            <div className="like-right-part d-flex justify-content-center justify-content-md-end">
-              <div className="button-group d-flex gap-3">
-                <OverlayTrigger
-                  placement="top"
-                  overlay={
-                    <Tooltip id="regenerate-tooltip">Regenerate</Tooltip>
-                  }
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="refresh-button bi bi-arrow-clockwise"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                    onClick={handleRegenerate}
-                    style={{ cursor: "pointer" }}
+            <div className="row-ap-left1 flex-grow-1 ">
+              {/* 按钮部分 */}
+              <div className="like-right-part d-flex justify-content-center justify-content-md-end">
+                <div className="button-group d-flex gap-3">
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip id="regenerate-tooltip">Regenerate</Tooltip>
+                    }
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
-                    />
-                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
-                  </svg>
-                </OverlayTrigger>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="refresh-button bi bi-arrow-clockwise"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                      onClick={handleRegenerate}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
+                      />
+                      <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                    </svg>
+                  </OverlayTrigger>
 
-                <OverlayTrigger
-                  placement="top"
-                  overlay={<Tooltip id="like-tooltip">Like</Tooltip>}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`heart-icon ${liked ? "liked" : ""}`}
-                    viewBox="-1 -1 18 16"
-                    onClick={handleToggleLike}
-                    style={{ cursor: "pointer" }}
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="like-tooltip">Like</Tooltip>}
                   >
-                    <path
-                      fillRule="evenodd"
-                      stroke={liked ? "black" : "black"}
-                      strokeWidth={liked ? "0.7" : "1"}
-                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                    />
-                  </svg>
-                </OverlayTrigger>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`heart-icon ${liked ? "liked" : ""}`}
+                      viewBox="-1 -1 18 16"
+                      onClick={handleToggleLike}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path
+                        fillRule="evenodd"
+                        stroke={liked ? "black" : "black"}
+                        strokeWidth={liked ? "0.7" : "1"}
+                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                      />
+                    </svg>
+                  </OverlayTrigger>
 
-                <OverlayTrigger
-                  placement="top"
-                  overlay={<Tooltip id="share-tooltip">Share</Tooltip>}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    className="bi bi-share-fill share-button"
-                    viewBox="0 0 16 16"
-                    onClick={handleShare}
-                    style={{ cursor: "pointer" }}
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="share-tooltip">Share</Tooltip>}
                   >
-                    <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
-                  </svg>
-                </OverlayTrigger>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      className="bi bi-share-fill share-button"
+                      viewBox="0 0 16 16"
+                      onClick={handleShare}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
+                    </svg>
+                  </OverlayTrigger>
+                </div>
+              </div>
+
+              {/* 图片部分 */}
+              <div className="image-left-part-airesponse d-flex justify-content-center align-items-center">
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt="Generated Recipe"
+                    className="image"
+                  />
+                )}
+              </div>
+
+              {/* 标题部分 */}
+              <div className="recipe_name-part-air">
+                {recipe_name && (
+                  <p className="recipe_name text-center">
+                    {recipe_name.toUpperCase()}
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* 图片部分 */}
-            <div className="image-left-part-airesponse d-flex justify-content-center align-items-center">
-              {imageUrl && (
-                <img src={imageUrl} alt="Generated Recipe" className="image" />
-              )}
-            </div>
-
-            {/* 标题部分 */}
-            <div className="recipe_name-part">
-              {recipe_name && (
-                <p className="recipe_name text-center">
-                  {recipe_name.toUpperCase()}
-                </p>
-              )}
-            </div>
+            <div className="row-ap-left2 flex-grow-1">dierbufen</div>
           </div>
 
           {/* 右边列 */}
@@ -366,7 +374,8 @@ const AIResponse = ({ isLoggedIn }) => {
                   {/* Overview Content */}
                   <div className="tab-content flex-grow-1">
                     <div className="overview-content">
-                      <div className="estimate">
+                      <h2 className="overview-content-title">Overview</h2>
+                      <div className="estimate-air">
                         <div className="row cost-airesponse">
                           <div className="col-1">
                             <svg
@@ -433,7 +442,7 @@ const AIResponse = ({ isLoggedIn }) => {
                             {nutrition_facts && (
                               <div className="row justify-content-start nutrition-section-airesponse">
                                 <div className="col-auto">
-                                  <div className="nutrition-card">
+                                  <div className="nutrition-card-air">
                                     <div className="card-circle">
                                       {nutrition_facts.calories}
                                     </div>
@@ -441,7 +450,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                   </div>
                                 </div>
                                 <div className="col-auto">
-                                  <div className="nutrition-card">
+                                  <div className="nutrition-card-air">
                                     <div className="card-circle">
                                       {nutrition_facts.fiber}g
                                     </div>
@@ -450,7 +459,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 </div>
 
                                 <div className="col-auto">
-                                  <div className="nutrition-card">
+                                  <div className="nutrition-card-air">
                                     <div className="card-circle">
                                       {nutrition_facts.protein}g
                                     </div>
@@ -459,7 +468,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 </div>
 
                                 <div className="col-auto">
-                                  <div className="nutrition-card">
+                                  <div className="nutrition-card-air">
                                     <div className="card-circle">
                                       {nutrition_facts.carbs}g
                                     </div>
@@ -468,7 +477,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 </div>
 
                                 <div className="col-auto">
-                                  <div className="nutrition-card">
+                                  <div className="nutrition-card-air">
                                     <div className="card-circle">
                                       {nutrition_facts.fats}g
                                     </div>
@@ -477,7 +486,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 </div>
 
                                 <div className="col-auto">
-                                  <div className="nutrition-card">
+                                  <div className="nutrition-card-air">
                                     <div className="card-circle">
                                       {nutrition_facts.sugar}g
                                     </div>
@@ -582,7 +591,7 @@ const AIResponse = ({ isLoggedIn }) => {
                     </div>
                   </div>
                 </Tab>
-{/* 
+                {/* 
                 <Tab eventKey="stores" title="Nearby Stores">
                   Nearby Stores Content
                   <div className="tab-content flex-grow-1">
@@ -595,13 +604,24 @@ const AIResponse = ({ isLoggedIn }) => {
                   <div className="tab-content flex-grow-1">
                     <Youtube />
                     <div className="generate_video">
-                        <div
-                          className="generate_video_button"
-                          onClick={handleGenerateClick}
+                      <div
+                        className="generate_video_button"
+                        onClick={handleGenerateClick}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="25"
+                          fill="currentColor"
+                          class="bi bi-robot"
+                          viewBox="2 0 16 16"
                         >
-                          Click here for Video
-                        </div>
+                          <path d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5M3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.6 26.6 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.93.93 0 0 1-.765.935c-.845.147-2.34.346-4.235.346s-3.39-.2-4.235-.346A.93.93 0 0 1 3 9.219zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a25 25 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25 25 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.135" />
+                          <path d="M8.5 1.866a1 1 0 1 0-1 0V3h-2A4.5 4.5 0 0 0 1 7.5V8a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1v-.5A4.5 4.5 0 0 0 10.5 3h-2zM14 7.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.5A3.5 3.5 0 0 1 5.5 4h5A3.5 3.5 0 0 1 14 7.5" />
+                        </svg>
+                        Generate AI Video
                       </div>
+                    </div>
                   </div>
                 </Tab>
               </Tabs>

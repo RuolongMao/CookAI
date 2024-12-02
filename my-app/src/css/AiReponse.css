@@ -5,21 +5,22 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden; /* 防止内容溢出 */
+
 }
 
 /* 主内容区域 */
 .main-content {
   flex: 1;
   display: flex;
-  overflow: hidden;
+  /* overflow: hidden; */
+  overflow-y:auto;
 }
 
 /* 确保 row 和列占满高度 */
 .main-content .row {
   flex: 1;
   display: flex;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* 左右列 */
@@ -28,7 +29,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 /* 左侧部分 */
@@ -42,6 +43,7 @@
 .main-part-ai-right {
   padding-left: 60px;
   border-style: solid;
+
 }
 
 /* Tabs 容器 */
@@ -49,7 +51,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* overflow: hidden; */
   margin-top:20px;
 }
 
@@ -57,6 +59,7 @@
 .tab-content {
   flex: 1;
   overflow-y: auto;
+  
 }
 
 /* 调整 Tabs 导航 */
@@ -72,6 +75,13 @@
   align-items: center;
 }
 
+/* 
+.image-left-part-airesponse img{
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; 
+} */
+ 
 /* 图片样式 */
 .image {
   width: 100%;
@@ -79,14 +89,14 @@
   height: auto;
   border-radius: 30px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform: perspective(1000px) rotateY(0deg);
+  /* transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: perspective(1000px) rotateY(0deg); */
 }
 
-.image:hover {
+/* .image:hover {
   transform: perspective(1000px) rotateY(-10deg) scale(1.05);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
+} */
 
 /* 按钮部分 */
 .like-right-part {
@@ -117,10 +127,10 @@
 }
 
 /* 标题部分 */
-.recipe_name-part {
+.recipe_name-part-air {
   flex-shrink: 0;
   margin-top: 30px;
-  border-bottom: 4px solid #2c3b4b;
+  /* border-bottom: 4px solid #2c3b4b; */
   padding-bottom: 15px;
   margin-bottom: 15px;
 }
@@ -134,28 +144,51 @@
 
 /* Overview 内容 */
 .overview-content {
-  /* 根据需要添加样式 */
+  background-color:rgb(250, 240, 217);
+  padding: 20px;
+  border-radius:10px;
+}
+
+
+.overview-content-title {
+  text-align: center;
+
 }
 
 /* Estimate 部分 */
-.estimate {
+.estimate-air {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding-top:30px;
+  gap: 5px;
 }
 
 .cost-airesponse{
-  color: rgb(3, 30, 86);
+
   text-align: center;
-  margin-bottom:20px;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 
-.time-airesponse{
-  color: rgb(3, 30, 86);
+.cost-airesponse:hover{
+
   text-align: center;
-  margin-bottom:20px;
+  background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
+  transform: scale(1.02);
+}
+
+
+
+.time-airesponse{
+  text-align: center;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.time-airesponse:hover{
+  text-align: center;
+  background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
+  transform: scale(1.02);
 }
 
 
@@ -172,14 +205,29 @@
   margin-left:30px;
 }
 
+
+
 /* Nutrition 部分 */
+
+.airesponse-nutrition-part{
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  padding-bottom:10px;
+}
+
+.airesponse-nutrition-part:hover{
+  background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
+  transform: scale(1.02);
+}
+
+
 
 .airesponse-nutrition-part h2 {
   margin-bottom: 20px;
   color: #2c3b4b;
   margin-top:18px;
   margin-left:30px;
-  margin-bottom:30px;
+  /* margin-bottom:30px; */
 }
 
 .nutrition-section-airesponse {
@@ -188,11 +236,13 @@
 
 }
 
+
+
 .clip-board{
   margin-left:5px;
 }
 
-.nutrition-card {
+.nutrition-card-air {
   margin-top:20px;
   background-color: rgb(250, 239, 205);
   height: 130px;
@@ -202,14 +252,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
 }
 
-.nutrition-card:hover {
+/* .nutrition-card:hover {
   cursor: pointer;
   transform: translate(0, -20px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
+} */
 
 .card-circle {
   border-width: 2px;
@@ -316,6 +366,7 @@
   width: 240px;
   display: flex;
   justify-content: center;
+  font-size:18px;
 }
 
 .generate_video_button:hover {
