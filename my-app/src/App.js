@@ -72,7 +72,7 @@ function App() {
         <Route path="/youtube" element={<Youtube />} />
         <Route path="/qa" element={<QandA />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/recipe" element={<RecipeInstruction isLoggedIn={isLoggedIn} />} />
+        <Route path="/recipe/:recipe_name" element={<RecipeInstruction isLoggedIn={isLoggedIn} />} />
         <Route path="/nearby-stores" element={<NearbyStores />} />
       </Routes>
     </Router>

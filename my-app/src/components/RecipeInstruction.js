@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import "../css/RecipeInstruction.css";
 
 const RecipeInstruction = ({ isLoggedIn }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const recipe = location.state?.recipe;
+  const { recipe_name } = useParams();
   const username = localStorage.getItem("username");
-  
-  const [comments, setComments] = useState(recipe.comments || []);
+  const [recipe, setRecipeData] = useState({});
   const [newComment, setNewComment] = useState("");
 
-  const {
-    recipe_name,
-    nutrition_facts,
-    ingredients,
-    steps,
-    estimated_cost,
-    estimate_time,
-  } = recipe || {};
+  const fetchRecipeData = async () => {
+    const response = await fetch("http://127.0.0.1:8000/get_one", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recipe_name: recipe_name}),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Fetched recipe data:", data);
+      setRecipeData(data);
+    } else {
+      console.error("Failed to fetch recipe data");
+    }
+  };
 
   const handleAddComment = async () => {
     if (!isLoggedIn) {
@@ -28,6 +34,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     }
 
     if (!newComment.trim()) return;
+    console.log(newComment)
     const response = await fetch("http://127.0.0.1:8000/comment", {
       method: "POST",
       headers: {
@@ -37,9 +44,8 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     });
 
     if (response.ok) {
-      const newCommentData = { username, comment: newComment };
-      setComments((prevComments) => [...prevComments, newCommentData]);
       setNewComment("");
+      await fetchRecipeData();
     } else {
       console.error("Failed to add comment");
     }
@@ -51,6 +57,12 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     return cost.replace('$', '').trim();
   };
 
+  useEffect(() => {
+    console.log(recipe_name)
+    if (recipe_name) {
+      fetchRecipeData();
+    }
+  }, [recipe_name]);
 
   return (
     <div className="container--fluid">
@@ -103,49 +115,49 @@ const RecipeInstruction = ({ isLoggedIn }) => {
       {/* Ingredients and Estimates Section */}
       <div className="row section1">
         <div className="col ingredients-part">
-            <h2>Ingredients</h2>
-            <div className="ingredients-list">
+          <h2>Ingredients</h2>
+          <div className="ingredients-list">
             {recipe?.details?.ingredients && recipe.details.ingredients.length > 0 ? (
-                <ul>
+              <ul>
                 {recipe.details.ingredients.map((ingredient, index) => (
-                    <li key={index} className="ingredient-item">
+                  <li key={index} className="ingredient-item">
                     <div className="form-check d-flex justify-content-between align-items-center">
-                        <div>
+                      <div>
                         <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`ingredient-checkbox-${index}`}
+                          className="form-check-input"
+                          type="checkbox"
+                          id={`ingredient-checkbox-${index}`}
                         />
                         <label className="form-check-label" htmlFor={`ingredient-checkbox-${index}`}>
-                            <span className="ingredient-name">{ingredient.name}</span>
+                          <span className="ingredient-name">{ingredient.name}</span>
                         </label>
-                        </div>
-                        <div>
+                      </div>
+                      <div>
                         <label className="form-check-label" htmlFor={`ingredient-checkbox-${index}`}>
-                            <span className="ingredient-info">
+                          <span className="ingredient-info">
                             {ingredient.quantity} ({ingredient.cost})
-                            </span>
+                          </span>
                         </label>
-                        </div>
+                      </div>
                     </div>
-                    </li>
+                  </li>
                 ))}
-                </ul>
+              </ul>
             ) : (
-                <p className="text-center mt-3">No ingredients available</p>
+              <p className="text-center mt-3">No ingredients available</p>
             )}
-            </div>
+          </div>
         </div>
 
         <div className="col estimate">
-            <div className="row cost">
-                <div className="cost-name">
-                <h2>Estimated Total Cost</h2>
-                </div>
-                <div className="estimate-cost">
-                <p>${formatCost(recipe?.details?.estimated_cost)}</p>
-                </div>
+          <div className="row cost">
+            <div className="cost-name">
+              <h2>Estimated Total Cost</h2>
             </div>
+            <div className="estimate-cost">
+              <p>${formatCost(recipe?.details?.estimated_cost)}</p>
+            </div>
+          </div>
 
           <div className="row time1">
             <div className="time-name">
@@ -162,11 +174,11 @@ const RecipeInstruction = ({ isLoggedIn }) => {
       <div className="row steps-part">
         <h2>Steps</h2>
         <ol>
-        {recipe?.details?.steps?.map((step, index) => (
+          {recipe?.details?.steps?.map((step, index) => (
             <li key={index}>
-            <strong>{step.explanation}</strong> - {step.instruction}
+              <strong>{step.explanation}</strong> - {step.instruction}
             </li>
-        ))}
+          ))}
         </ol>
 
         <div className="generate_video">
@@ -177,64 +189,69 @@ const RecipeInstruction = ({ isLoggedIn }) => {
       </div>
 
       {/* Nutrition Section */}
-        <div className="row nutrition-part">
-            <h2>Nutrition</h2>
-            <div className="row justify-content-center nutrition-section">
-                {recipe?.details?.nutrition_facts ? (
-                <>
-                    <div className="col-auto">
-                    <div className="nutrition-card">
-                        <div className="card-circle">{recipe.details.nutrition_facts.calories}</div>
-                        <div className="card-name">Calories</div>
-                    </div>
-                    </div>
-                    <div className="col-auto">
-                    <div className="nutrition-card">
-                        <div className="card-circle">{recipe.details.nutrition_facts.fiber}g</div>
-                        <div className="card-name">Fiber</div>
-                    </div>
-                    </div>
-                    <div className="col-auto">
-                    <div className="nutrition-card">
-                        <div className="card-circle">{recipe.details.nutrition_facts.protein}g</div>
-                        <div className="card-name">Protein</div>
-                    </div>
-                    </div>
-                    <div className="col-auto">
-                    <div className="nutrition-card">
-                        <div className="card-circle">{recipe.details.nutrition_facts.carbs}g</div>
-                        <div className="card-name">Carbs</div>
-                    </div>
-                    </div>
-                    <div className="col-auto">
-                    <div className="nutrition-card">
-                        <div className="card-circle">{recipe.details.nutrition_facts.fats}g</div>
-                        <div className="card-name">Fats</div>
-                    </div>
-                    </div>
-                    <div className="col-auto">
-                    <div className="nutrition-card">
-                        <div className="card-circle">{recipe.details.nutrition_facts.sugar}g</div>
-                        <div className="card-name">Sugar</div>
-                    </div>
-                    </div>
-                </>
-                ) : (
-                <div className="text-center">
-                    <p>Nutrition information not available</p>
+      <div className="row nutrition-part">
+        <h2>Nutrition</h2>
+        <div className="row justify-content-center nutrition-section">
+          {recipe?.details?.nutrition_facts ? (
+            <>
+              <div className="col-auto">
+                <div className="nutrition-card">
+                  <div className="card-circle">{recipe.details.nutrition_facts.calories}</div>
+                  <div className="card-name">Calories</div>
                 </div>
-                )}
+              </div>
+              <div className="col-auto">
+                <div className="nutrition-card">
+                  <div className="card-circle">{recipe.details.nutrition_facts.fiber}g</div>
+                  <div className="card-name">Fiber</div>
+                </div>
+              </div>
+              <div className="col-auto">
+                <div className="nutrition-card">
+                  <div className="card-circle">{recipe.details.nutrition_facts.protein}g</div>
+                  <div className="card-name">Protein</div>
+                </div>
+              </div>
+              <div className="col-auto">
+                <div className="nutrition-card">
+                  <div className="card-circle">{recipe.details.nutrition_facts.carbs}g</div>
+                  <div className="card-name">Carbs</div>
+                </div>
+              </div>
+              <div className="col-auto">
+                <div className="nutrition-card">
+                  <div className="card-circle">{recipe.details.nutrition_facts.fats}g</div>
+                  <div className="card-name">Fats</div>
+                </div>
+              </div>
+              <div className="col-auto">
+                <div className="nutrition-card">
+                  <div className="card-circle">{recipe.details.nutrition_facts.sugar}g</div>
+                  <div className="card-name">Sugar</div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-center">
+              <p>Nutrition information not available</p>
             </div>
-            </div>
+          )}
+        </div>
+      </div>
 
       {/* Comment Section */}
       <div className="row comment-section">
         <h2>Comments</h2>
         <div className="comment-list">
-          {comments.length > 0 ? (
-            comments.map((comment, index) => (
+          {recipe?.comments && Object.keys(recipe?.comments).length > 0 ? (
+            Object.entries(recipe?.comments).map(([username, userComments], index) => (
               <div key={index} className="comment-item">
-                <strong>{comment.username}:</strong> {comment.comment}
+                <strong>{username}:</strong>
+                <ul>
+                  {userComments.map((comment, commentIndex) => (
+                    <li key={commentIndex}>{comment}</li>
+                  ))}
+                </ul>
               </div>
             ))
           ) : (

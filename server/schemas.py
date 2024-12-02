@@ -16,6 +16,7 @@ class RecipeGet(RecipeBase):
     id: int
     user_name: str
     created_time: date
+    comments: Optional[dict] = None
 
 class RecipeSearch(BaseModel):
     recipe_name: str

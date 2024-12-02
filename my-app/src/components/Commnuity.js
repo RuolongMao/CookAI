@@ -349,7 +349,7 @@ function Community() {
           key={index} 
           style={{ width: '19.1rem' }} 
           className="mb-3 ms-4 ps-0 pe-0 commu-card"
-          onClick={() => navigate('/recipe', { state: { recipe } })}
+          onClick={() => navigate(`/recipe/${recipe.recipe_name}`)}
         >
           <Card.Img 
             variant="top" 
