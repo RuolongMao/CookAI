@@ -57,7 +57,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     }, 2000);
   };
 
-  const handleToggleLike = async() => {
+  const handleToggleLike = async () => {
     if (!isLoggedIn) {
       // 如果用户未登录，跳转到登录页面
       navigate("/signin");
@@ -108,7 +108,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ recipe_name: recipe_name}),
+      body: JSON.stringify({ recipe_name: recipe_name }),
     });
     if (response.ok) {
       const data = await response.json();
@@ -360,12 +360,15 @@ const RecipeInstruction = ({ isLoggedIn }) => {
             rows="3"
             className="form-control"
           />
-          <button
-            onClick={handleAddComment}
-            className="btn btn-primary mt-2"
-          >
-            Submit
-          </button>
+          <div className="comment-button text-end">
+            <button
+              onClick={handleAddComment}
+              className="btn btn-dark"
+            >
+              Submit
+            </button>
+          </div>
+
         </div>
       </div>
 
