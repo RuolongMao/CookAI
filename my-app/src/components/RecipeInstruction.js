@@ -1,13 +1,106 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import "../css/RecipeInstruction.css";
 
 const RecipeInstruction = ({ isLoggedIn }) => {
   const navigate = useNavigate();
   const { recipe_name } = useParams();
+  const [liked, setLiked] = useState(false);
   const username = localStorage.getItem("username");
   const [recipe, setRecipeData] = useState({});
   const [newComment, setNewComment] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+
+  const location = useLocation();
+
+  const details = location.state?.details || null;
+  const imageUrl = location.state?.image_url || null;
+  const estimated_cost = location.state?.est_cost || null;
+
+
+  const handleShare = async () => {
+    const shareData = {
+      title: recipe_name || "Check out this recipe!",
+      text: `Here's a recipe you might enjoy: ${recipe_name}.`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        showAlertMessage("Recipe shared successfully!");
+      } else {
+        showAlertMessage("Sharing is not supported on this device.");
+      }
+    } catch (err) {
+      showAlertMessage("Failed to share the recipe.");
+      console.error("Error sharing:", err);
+    }
+  };
+
+  const showAlertMessage = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+
+    // Hide the alert after 3 seconds
+    setTimeout(() => {
+      const alertElement = document.querySelector(".alert");
+      if (alertElement) {
+        alertElement.classList.add("alert-exit");
+
+        // Remove the alert from DOM after animation
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 300); // Match this with the animation duration
+      }
+    }, 2000);
+  };
+
+  const handleToggleLike = async() => {
+    if (!isLoggedIn) {
+      // 如果用户未登录，跳转到登录页面
+      navigate("/signin");
+      return;
+    }
+
+    const newLikedState = !liked;
+
+    if (newLikedState) {
+      setLiked(true);
+
+      const body = {
+        recipe_name: recipe_name,
+        user_name: username,
+        image_url: imageUrl,
+        details: details,
+        est_cost: estimated_cost,
+      };
+
+      await fetch("http://127.0.0.1:8000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+    } else {
+      // 用户取消点赞
+      setLiked(newLikedState);
+      handleUnlikeRecipe();
+    }
+  };
+
+  const handleUnlikeRecipe = async () => {
+    showAlertMessage("You have unliked this recipe!");
+    await fetch("http://127.0.0.1:8000/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recipe_name: recipe_name }),
+    });
+  };
 
   const fetchRecipeData = async () => {
     const response = await fetch("http://127.0.0.1:8000/get_one", {
@@ -19,7 +112,6 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     });
     if (response.ok) {
       const data = await response.json();
-      console.log("Fetched recipe data:", data);
       setRecipeData(data);
     } else {
       console.error("Failed to fetch recipe data");
@@ -77,14 +169,15 @@ const RecipeInstruction = ({ isLoggedIn }) => {
             <div className="col-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="heart-icon"
+                className={`heart-icon ${liked ? "liked" : ""}`}
                 viewBox="-1 -1 18 16"
+                onClick={handleToggleLike}
                 style={{ cursor: "pointer" }}
               >
                 <path
                   fillRule="evenodd"
-                  stroke="black"
-                  strokeWidth="1"
+                  stroke={liked ? "black" : "black"}
+                  strokeWidth={liked ? "0.7" : "1"}
                   d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
                 />
               </svg>
@@ -96,6 +189,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
                 fill="currentColor"
                 className="bi bi-share-fill share-button"
                 viewBox="0 0 16 16"
+                onClick={handleShare}
                 style={{ cursor: "pointer" }}
               >
                 <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />

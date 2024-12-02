@@ -295,7 +295,7 @@ def delete_recipe(recipe: schemas.RecipeDelete, db: Session = Depends(get_db)):
 def search_recipes(query: schemas.RecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.search_recipes(db, query.recipe_name)
 
-@app.get("/get", response_model=List[schemas.RecipeGet])
+@app.get("/get")
 def read_recipes(db: Session = Depends(get_db)):
     recipes = dashboard_crud.get_recipes(db)
     return recipes

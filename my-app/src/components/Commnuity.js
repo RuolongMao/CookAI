@@ -23,6 +23,7 @@ function Community() {
           (cookingTime.min && cookingTime.max && Number(cookingTime.min) > Number(cookingTime.max)) ||
           (caloriesRange.min && caloriesRange.max && Number(caloriesRange.min) > Number(caloriesRange.max));
   };
+  console.log(recipes)
 
   useEffect(() => {
     const navbar = document.querySelector('.navbar');
@@ -349,7 +350,7 @@ function Community() {
           key={index} 
           style={{ width: '19.1rem' }} 
           className="mb-3 ms-4 ps-0 pe-0 commu-card"
-          onClick={() => navigate(`/recipe/${recipe.recipe_name}`)}
+          onClick={() => navigate(`/recipe/${recipe.recipe_name}`, { state: { details: recipe.details, image_url: recipe.image_url, est_cost: recipe.est_cost} })}
         >
           <Card.Img 
             variant="top" 
