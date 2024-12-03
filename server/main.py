@@ -133,7 +133,12 @@ async def sign_in(user: UserLogin, db: Session = Depends(get_db)):
 
 
 SystemPrompt = '''
-Reflect the user's requirement. Especially pay attention to the user's allergen, you could be creative and adapt the common recipe to suit the user's need.
+You are a helpful assistant that generates cooking recipes. Provide detailed instructions to guide the user to cook.
+The cooking steps should be as detailed as possible as if the user has no cook experience at all.
+Reflect the user's requirement, focus on the taste, cooking method, and style the user asked.
+If the user gives vague prompt, be creative and do your best to fulfill their demand.
+Make sure the ingredients, seasonsings, cooking steps, equipments are accesible to typical home cooks.
+Especially pay attention to the user's allergen, you could be creative and adapt the common recipe to suit the user's need.
 For the flavour field, find the most suitable tag from the following: Sweet, Sour, Salty, Spicy.
 To notify the user, for the allergen field, included all suitable tag from the following: Peanut, Milk, Egg, Shellfish, Fish, Soy, Wheat, Sesame, Gluten, Lactose.
 Leave allergen as an empty list [] if no allergen is included in the recipe.
@@ -222,8 +227,8 @@ async def query_openai(request: QueryRequest):
             completion = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                  messages=[
-                {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                {"role": "user", "content": request.prompt + SystemPrompt + StructureReminder}
+                {"role": "system", "content": SystemPrompt + StructureReminder},
+                {"role": "user", "content": request.prompt}
                 ]   
             )
             response_content = completion.choices[0].message["content"]
@@ -234,8 +239,8 @@ async def query_openai(request: QueryRequest):
             completion = client.beta.chat.completions.parse(
                 model="gpt-4o-mini",
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant that generates cooking recipes."},
-                    {"role": "user", "content": request.prompt + SystemPrompt}
+                    {"role": "system", "content": SystemPrompt},
+                    {"role": "user", "content": request.prompt}
                 ],
                 response_format=RecipeOutput
             )
