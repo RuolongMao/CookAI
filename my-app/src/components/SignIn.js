@@ -19,6 +19,7 @@ const SignIn = ({ onSignInSuccess }) => {
 
 
   const handleRegisterNavigation = () => {
+    console.log(location.state?.from);
     navigate('/register', { 
       state: { from: location.state?.from || '/' } 
     });
