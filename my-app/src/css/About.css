@@ -1,5 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
+:root {
+  /* 渐变文本颜色变量 */
+  --gradient-start: #f29468;
+  --gradient-middle1: #e2f48e;
+  --gradient-middle2: #bbb6ff;
+  --gradient-end: #ffb6ff;
+
+  /* FeaturesGrid 图标颜色变量 */
+  --icon-bg-sparkles: #ffe0b2;
+  --icon-color-sparkles: #ff9800;
+
+  --icon-bg-video: #c8e6c9;
+  --icon-color-video: #4caf50;
+
+  --icon-bg-users: #bbdefb;
+  --icon-color-users: #2196f3;
+
+  /* How It Works 图标颜色变量 */
+  --icon-bg-chefhat: #d1c4e9;
+  --icon-color-chefhat: #673ab7;
+
+  --icon-bg-utensils: #ffe0b2;
+  --icon-color-utensils: #ff9800;
+
+  /* TechStack 图标颜色变量 */
+  --icon-bg-code: #e1bee7;
+  --icon-color-code: #ba68c8;
+
+  /* 技术项文本渐变 */
+  --tech-text-gradient-start: #a5f3fc;
+  --tech-text-gradient-end: #7dd3fc;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -40,7 +73,7 @@
 }
 
 /* 确保导航栏内容在伪元素上方 */
-.‌navbar .container-fluid {
+.navbar .container-fluid {
   position: relative;
   z-index: 1;
 }
@@ -76,15 +109,15 @@
   display: block;
   background: linear-gradient(
     -45deg,
-    #f29468,
-    #e2f48e,
-    #bbb6ff,
+    var(--gradient-start),
+    var(--gradient-middle1),
+    var(--gradient-middle2),
     #fff2b6,
-    #ffb6ff,
-    #b344ff,
+    var(--gradient-end),
+    var(--gradient-middle2),
     #6a5acd,
     #9ed1e2,
-    #ffb6ff
+    var(--gradient-end)
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -97,20 +130,21 @@
   color: transparent;
   background: linear-gradient(
     -45deg,
-    #f29468,
-    #e2f48e,
-    #bbb6ff,
+    var(--gradient-start),
+    var(--gradient-middle1),
+    var(--gradient-middle2),
     #fff2b6,
-    #ffb6ff,
-    #b344ff,
+    var(--gradient-end),
+    var(--gradient-middle2),
     #6a5acd,
     #9ed1e2,
-    #ffb6ff
+    var(--gradient-end)
   );
   background-clip: text;
   -webkit-background-clip: text;
   background-size: 400% 100%;
   animation: textScroll 7s infinite linear;
+
 }
 
 .features-container {
@@ -129,15 +163,15 @@
   margin-bottom: 30px;
   background: linear-gradient(
     -45deg,
-    #f29468,
-    #e2f48e,
-    #bbb6ff,
+    var(--gradient-start),
+    var(--gradient-middle1),
+    var(--gradient-middle2),
     #fff2b6,
-    #ffb6ff,
-    #b344ff,
+    var(--gradient-end),
+    var(--gradient-middle2),
     #6a5acd,
     #9ed1e2,
-    #ffb6ff
+    var(--gradient-end)
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -161,6 +195,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 300px; /* 确保每个卡片宽度一致 */
+
 }
 
 .feature-card:hover {
@@ -171,7 +206,7 @@
 .icon-container {
   width: 48px;
   height: 48px;
-  background: #f9f7f3;
+  background: #f9f7f3; /* 默认背景颜色，可被特定类覆盖 */
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -180,7 +215,7 @@
 }
 
 .icon-container svg {
-  color: #484848;
+  color: #484848; /* 默认图标颜色，可被特定类覆盖 */
 }
 
 .feature-title {
@@ -201,23 +236,23 @@
 }
 
 .section-title {
-  font-size:3rem;
+  font-size: 3rem;
   text-align: center;
-  font-weight:600;
+  font-weight: 600;
   color: transparent;
   margin-bottom: 50px;
-  margin-top:-50px;
+  margin-top: -50px;
   background: linear-gradient(
     -45deg,
-    #f29468,
-    #e2f48e,
-    #bbb6ff,
+    var(--gradient-start),
+    var(--gradient-middle1),
+    var(--gradient-middle2),
     #fff2b6,
-    #ffb6ff,
-    #b344ff,
+    var(--gradient-end),
+    var(--gradient-middle2),
     #6a5acd,
     #9ed1e2,
-    #ffb6ff
+    var(--gradient-end)
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -243,7 +278,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width:300px;
+  width: 300px;
 }
 
 .step:hover {
@@ -254,7 +289,7 @@
 .step-icon {
   width: 64px;
   height: 64px;
-  background: #f9f7f3;
+  background: #f9f7f3; /* 默认背景颜色，可被特定类覆盖 */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -263,7 +298,7 @@
 }
 
 .step-icon svg {
-  color: #484848;
+  color: #484848; /* 默认图标颜色，可被特定类覆盖 */
 }
 
 .step-title {
@@ -280,12 +315,16 @@
 
 /* 技术栈样式 */
 .tech-container {
-  margin: 2rem 3rem;
-  background: linear-gradient(135deg, #1e293b, #334155);
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
   padding: 2rem;
-  color: white;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  background: #ffffff; /* 统一背景色 */
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .tech-header {
@@ -296,11 +335,27 @@
   margin-bottom: 2rem;
 }
 
-.tech-header h2 {
+.section-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: transparent;
+  background: linear-gradient(
+    -45deg,
+    var(--gradient-start),
+    var(--gradient-middle1),
+    var(--gradient-middle2),
+    #fff2b6,
+    var(--gradient-end),
+    var(--gradient-middle2),
+    #6a5acd,
+    #9ed1e2,
+    var(--gradient-end)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 400% 100%;
+  animation: textScroll 7s infinite linear;
 
-  font-size: 2rem;
-  letter-spacing: 1px;
-  margin: 0;
 }
 
 .tech-header svg {
@@ -315,27 +370,43 @@
 }
 
 .tech-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: #f0f0f0; /* 更柔和的背景色 */
   backdrop-filter: blur(4px);
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 12px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .tech-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: #e0e0e0; /* Hover 时背景色稍微变深 */
 }
 
-.tech-item p {
+/* 新增的 .tech-item-enhanced 类 */
+.tech-item-enhanced {
+  background: linear-gradient(135deg, #ece9e6, #ffffff);
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.tech-item-enhanced:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #d4d4d4, #f0f0f0);
+}
+
+.tech-text {
   font-size: 1.2rem;
   margin: 0;
-  background: linear-gradient(120deg, #a5f3fc, #7dd3fc);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333333; /* 更深的文字颜色 */
+  font-weight: bold;
 }
 
 /* 版权信息样式 */
@@ -345,6 +416,8 @@
   text-align: center;
   color: #4a4a4a;
   background-color: #ffffff;
+  padding: 1rem 0;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 响应式设计 */
@@ -368,5 +441,9 @@
 
   .tech-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section-title {
+    font-size: 2.5rem;
   }
 }

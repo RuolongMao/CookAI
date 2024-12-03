@@ -334,25 +334,23 @@ const HowItWorks = () => (
 
 const TechStack = () => (
   <div className="tech-container">
-    <div className="tech-header">
-      <Code size={32} />
-      <h2>Powered By</h2>
-    </div>
+    <h2 className="section-title gradient-text">Powered By</h2>
     <div className="tech-grid">
-      <div className="tech-item">
-        <p>OpenAI</p>
+      <div className="tech-item tech-item-enhanced">
+        <p className="tech-text">OpenAI</p>
       </div>
-      <div className="tech-item">
-        <p>DALL·E</p>
+      <div className="tech-item tech-item-enhanced">
+        <p className="tech-text">DALL·E</p>
       </div>
-      <div className="tech-item">
-        <p>Youtube API</p>
+      <div className="tech-item tech-item-enhanced">
+        <p className="tech-text">YouTube API</p>
       </div>
-      <div className="tech-item">
-        <p>GoogleMap API</p>
+      <div className="tech-item tech-item-enhanced">
+        <p className="tech-text">GoogleMap API</p>
       </div>
     </div>
   </div>
 );
+
 
 export default About;

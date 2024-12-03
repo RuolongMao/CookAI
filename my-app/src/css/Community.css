@@ -1,9 +1,10 @@
 
 .commu-container {
-    background-color: rgb(252, 251, 236);
+    /* background-color: rgb(252, 251, 236); */
     height: calc(100vh - var(--navbar-height));
     margin-top: 71px;
     overflow-y: hidden;
+
 }
 
 /* filter column */
@@ -81,7 +82,7 @@
 
 /* recipe column */
 .commu-recipe-column {
-    background-color: rgb(252, 251, 236);
+    /* background-color: rgb(252, 251, 236); */
     height: calc(100vh - var(--navbar-height) - 1rem);
     overflow-y: auto;
 }
@@ -118,7 +119,8 @@
 .commu-card {
     transition: all 0.3s ease;
     border: none !important;  
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+    background-color: rgba(182, 184, 187, 0.179);
 }
   
 .commu-card:hover {
