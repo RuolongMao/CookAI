@@ -308,7 +308,7 @@
 }
 
 .tech-grid {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1.5rem;
   text-align: center;
@@ -341,10 +341,10 @@
 /* 版权信息样式 */
 .footer-fixed {
   position: fixed;
-  bottom: 10px;
   width: 100%;
   text-align: center;
   color: #4a4a4a;
+  background-color: #ffffff;
 }
 
 /* 响应式设计 */
