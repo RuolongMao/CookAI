@@ -67,12 +67,12 @@ function App() {
         <Route path="/loading" element={<Loading />} />
         <Route path="/response" element={<AIResponse isLoggedIn={isLoggedIn} />} />
         <Route path="/video" element={<Video />} />
-        <Route path="/community" element={<Community />} />
+        <Route path="/community" element={<Community isLoggedIn={isLoggedIn}/>} />
         <Route path="/about" element={<About />} />
         <Route path="/youtube" element={<Youtube />} />
         <Route path="/qa" element={<QandA />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/recipe" element={<RecipeInstruction />} />
+        <Route path="/recipe/:recipe_name" element={<RecipeInstruction isLoggedIn={isLoggedIn} />} />
         <Route path="/nearby-stores" element={<NearbyStores />} />
       </Routes>
     </Router>
