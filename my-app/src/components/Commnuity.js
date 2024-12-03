@@ -84,7 +84,7 @@ function Community({ isLoggedIn }) {
         est_cost: recipe.est_cost
       };
       
-      const response = await fetch("http://localhost:8000/create", {
+      const response = await fetch("https://cookai-55f9.onrender.com/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +117,8 @@ function Community({ isLoggedIn }) {
         body: JSON.stringify({ recipe_name: searchTerm }),
       });
       const data = await response.json();
-      setRecipes(data);
+      const filteredData = data.filter(recipe => recipe.publish === true);
+      setRecipes(filteredData);
     } catch (error) {
       console.error('Error fetching searched recipes:', error);
     } finally {
@@ -174,7 +175,7 @@ function Community({ isLoggedIn }) {
 
   // Fetch filtered recipes from the backend
     try {
-      const response = await fetch('https://cookai-55f9.onrender.com/filter', {
+      const response = await fetch('http://localhost:8000/filter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -188,7 +189,8 @@ function Community({ isLoggedIn }) {
         }),
       });
       const data = await response.json();
-      setRecipes(data);
+      const filteredData = data.filter(recipe => recipe.publish === true);
+      setRecipes(filteredData);
     } catch (error) {
       console.error('Error fetching filtered recipes:', error);
     } finally {
@@ -255,8 +257,8 @@ function Community({ isLoggedIn }) {
 
           </div>
 
-            {/* <h5>Filters</h5> */}
-            {['Taste', 'Dietary', 'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
+            {/* <h5>Filters</h5> 'Dietary',*/}
+            {['Taste',  'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
               <Form.Group key={index} className="mt-3">
                 <Form.Label className="fs-5 fst-italic">{label}</Form.Label>
 
@@ -273,14 +275,14 @@ function Community({ isLoggedIn }) {
                     ))}
                   </Row>
                 )}
-                {label === 'Dietary' && 
+                {/* {label === 'Dietary' && 
                 <Form.Check
                   type="checkbox"
                   label="Vegan"
                   checked={dietaryOptions.Vegan}
                   onChange={(e) => setDietaryOptions({ ...dietaryOptions, Vegan: e.target.checked })}
                 />
-                }
+                } */}
 
                 {label === 'Cost Range' && (
                   <Form.Group className="mb-3 d-flex align-items-center">
