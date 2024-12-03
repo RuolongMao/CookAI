@@ -159,14 +159,15 @@ const RecipeInstruction = ({ isLoggedIn }) => {
   return (
     <div className="container--fluid">
       {/* Image and Action Buttons Section */}
-      <div className="row image-part">
+      <div className="start">
         <div className="col-10 image-left-part">
           <img src={recipe?.image_url || "/api/placeholder/400/300"} alt="Recipe" className="image" />
         </div>
+      
 
         <div className="col-2 like-right-part">
           <div className="row button-part">
-            <div className="col-auto">
+            <div className="col-auto image-recipe">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`heart-icon ${liked ? "liked" : ""}`}
@@ -183,7 +184,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
               </svg>
             </div>
 
-            <div className="col-auto share-part">
+            <div className="col-auto share-part image-recipe">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -201,7 +202,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
 
       {/* Recipe Name Section */}
       <div className="row recipe_name-part">
-        <p className="recipe_name text-center">
+        <p className="recipe_name text-center recipe-font">
           {recipe?.recipe_name?.toUpperCase() || "NO RECIPE NAME"}
         </p>
       </div>
