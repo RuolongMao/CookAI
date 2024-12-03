@@ -43,21 +43,22 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  height: 100%;
 }
 
 /* 左侧部分 */
 .main-part-ai-left {
-  padding-right: 60px;
-  padding-top: 30px;
+  padding-right: 3rem;
+  padding-top: 1rem;
   border-style: solid;
+  overflow-y: hidden;
 }
 
 /* 右侧部分 */
 .main-part-ai-right {
-  padding-left: 60px;
+  padding-left: 3rem;
   border-style: solid;
-  overflow-y: scroll;
+  padding: 20px;
 }
 
 /* Tabs 容器 */
@@ -67,7 +68,6 @@
   flex-direction: column;
   /* overflow: hidden; */
   overflow-y: auto;
-  margin-top:20px;
 }
 
 /* Tab 内容区域 */
@@ -78,16 +78,46 @@
 }
 
 /* 调整 Tabs 导航 */
-.nav-tabs-custom .nav-tabs {
-  flex-shrink: 0;
+.nav-tabs-custom {
+  border: 0;
+  padding: 10px 0 0 0;
 }
+
+.nav-tabs-custom .nav-tabs {
+  border-bottom: none;
+  margin-bottom: 1rem;
+}
+
+.nav-tabs-custom .nav-link {
+  color: rgb(252, 251, 236);
+  background-color: rgba(44, 59, 75, 0.5);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs-custom .nav-link:hover {
+  color: #2c3b4b;
+  background-color: rgba(44, 59, 75, 0.5);
+}
+
+.nav-tabs-custom .nav-link.active {
+  color: #2c3b4b;
+  background-color: rgb(250, 240, 217);
+  border: none;
+}
+
+/* .nav-tabs-custom .nav-link.active:hover {
+  color: #2c3b4b;
+  background-color: white;
+} */
 
 /* 图片部分 */
 .image-left-part-airesponse {
   flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  max-height: 65%;
 }
 
 /* 
@@ -99,9 +129,9 @@
  
 /* 图片样式 */
 .image {
-  width: 100%;
+  width: auto;
   max-width: 400px;
-  height: auto;
+  height: 100%;
   border-radius: 30px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   /* transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -117,7 +147,13 @@
 .like-right-part {
   flex-shrink: 0;
   padding-bottom: 20px;
-  height: 10%;
+  height: 12%;
+  justify-content: flex-end;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* 保留原始按钮样式 */
@@ -146,16 +182,18 @@
 
 .recipe_name {
   font-family: 'Cormorant Garamond', sans-serif;
-  font-size: 36px;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0px;
+  padding: 10px;
+  margin: 0;
 }
 
 /* Overview 内容 */
 .overview-content {
   background-color:rgb(250, 240, 217);
   padding: 20px;
-  border-radius:10px;
+  border-radius: 0 10px 10px 10px;
 }
 
 
@@ -172,21 +210,18 @@
 }
 
 .cost-airesponse{
-
   text-align: center;
   transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 
 .cost-airesponse:hover{
-
   text-align: center;
   background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
   transform: scale(1.02);
+  border-radius: 10px;
 }
-
-
 
 .time-airesponse{
   text-align: center;
@@ -198,23 +233,22 @@
   background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
   transform: scale(1.02);
+  border-radius: 10px;
 }
-
 
 .cost-airesponse h2,
 .time-airesponse h2 {
-  margin-bottom: 10px;
-  margin-left:30px;
-  margin-top:18px;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+  margin-top: 1rem;
 }
 
 .cost-airesponse p,
 .time-airesponse p {
-  font-size: 25px;
-  margin-left:30px;
+  font-size: 1.2rem;
+  margin-left:1rem;
 }
-
-
 
 /* Nutrition 部分 */
 
@@ -227,33 +261,31 @@
   background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
   transform: scale(1.02);
+  border-radius: 10px;
 }
 
-
-
 .airesponse-nutrition-part h2 {
-  margin-bottom: 20px;
   color: #2c3b4b;
-  margin-top:18px;
-  margin-left:30px;
   /* margin-bottom:30px; */
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+  margin-top: 1rem;
 }
 
 .nutrition-section-airesponse {
-  margin-left:25px;
+  margin-left:5px;
   gap:20px;
 
 }
-
-
 
 .clip-board{
   margin-left:5px;
 }
 
 .nutrition-card-air {
-  margin-top:20px;
-  background-color: rgb(250, 239, 205);
+  margin-top:0.3rem;
+  background-color: rgb(252, 251, 236);
   height: 130px;
   width: 90px;
   border-radius: 60px;
@@ -297,9 +329,9 @@
 .ingredients-part-airesponse {
   background-color: rgb(250, 240, 217);
   color: #2c3b4b;
-  border-radius: 10px;
+  border-radius: 0 10px 10px 10px;
   padding: 20px;
-  height:580px;
+  height: auto;
 }
 
 .ingredients-part-airesponse h2 {
@@ -339,9 +371,9 @@
 .steps-part-airesponse {
   background-color: rgb(250, 240, 217);
   color: #2c3b4b;
-  border-radius: 10px;
+  border-radius: 0 10px 10px 10px;
   padding: 20px;
-  height:580px;
+  height: auto;
 }
 
 .steps-part-airesponse h2 {

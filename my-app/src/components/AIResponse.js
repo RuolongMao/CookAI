@@ -276,8 +276,8 @@ const AIResponse = ({ isLoggedIn }) => {
           <div className="col main-part-ai-left d-flex flex-column">
             <div className="row-ap-left1 flex-grow-1 ">
               {/* 按钮部分 */}
-              <div className="like-right-part d-flex justify-content-center justify-content-md-end">
-                <div className="button-group d-flex gap-3">
+              <div className="like-right-part d-flex">
+                <div className="button-group gap-3">
                   <OverlayTrigger
                     placement="top"
                     overlay={
@@ -358,8 +358,6 @@ const AIResponse = ({ isLoggedIn }) => {
                 )}
               </div>
             </div>
-
-            <div className="row-ap-left2 flex-grow-1">dierbufen</div>
           </div>
 
           {/* 右边列 */}
@@ -368,7 +366,7 @@ const AIResponse = ({ isLoggedIn }) => {
               <Tabs
                 defaultActiveKey="overview"
                 id="recipe-tabs"
-                className="mb-3 nav-tabs-custom"
+                className="nav-tabs-custom"
               >
                 <Tab eventKey="overview" title="Overview">
                   {/* Overview Content */}
