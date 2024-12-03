@@ -138,6 +138,7 @@ html, body {
   .mainbody {
     z-index: 3;
     position: relative;
+    top: 20%;
     opacity: 1;
     animation-duration: 2s;
     animation-name: slidein;
