@@ -60,7 +60,9 @@ const RecipeInstruction = ({ isLoggedIn }) => {
   const handleToggleLike = async () => {
     if (!isLoggedIn) {
       // 如果用户未登录，跳转到登录页面
-      navigate("/signin");
+      navigate('/signin', { 
+        state: { from: location.state?.from || '/' } 
+      });
       return;
     }
 
@@ -121,7 +123,9 @@ const RecipeInstruction = ({ isLoggedIn }) => {
   const handleAddComment = async () => {
     if (!isLoggedIn) {
       // 如果用户未登录，跳转到登录页面
-      navigate("/signin");
+      navigate('/signin', { 
+        state: { from: location.pathname } 
+      });
       return;
     }
 

@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Badge, Button, Card, Dropdown, Alert} from '
 import { MdClear, MdOutlineSearch} from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import { Riple } from "react-loading-indicators";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import "../css/Community.css";
 
 function Community({ isLoggedIn }) {
@@ -18,6 +18,7 @@ function Community({ isLoggedIn }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [allRecipes, setAllRecipes] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const [navbarHeight, setNavbarHeight] = useState(0); 
   const [isLoading, setIsLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
@@ -69,7 +70,9 @@ function Community({ isLoggedIn }) {
   
   const handleSaveToDashboard = async (recipe) => {
     if (!isLoggedIn) {
-      navigate("/signin");
+      navigate('/signin', { 
+        state: { from: location.pathname } 
+      });
       return;
     }
 

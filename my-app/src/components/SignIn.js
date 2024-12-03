@@ -11,6 +11,8 @@ const SignIn = ({ onSignInSuccess }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  console.log(location.state?.from);
+
 
   useEffect(() => {
     // 当组件加载时，设置为可见
@@ -19,6 +21,7 @@ const SignIn = ({ onSignInSuccess }) => {
 
 
   const handleRegisterNavigation = () => {
+    console.log(location.state?.from);
     navigate('/register', { 
       state: { from: location.state?.from || '/' } 
     });

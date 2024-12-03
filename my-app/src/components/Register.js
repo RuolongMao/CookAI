@@ -16,6 +16,7 @@ const Register = ({ onRegisterSuccess }) => {
   // const [recaptchaValue, setRecaptchaValue] = useState(null); // 新增状态变量
   // const recaptchaRef = useRef(); // 用于重置 reCAPTCHA
 
+
   useEffect(() => {
     // 当组件加载时，设置为可见
     setIsVisible(true);
