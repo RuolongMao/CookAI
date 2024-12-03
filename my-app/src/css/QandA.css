@@ -1,6 +1,7 @@
 .qa-container {
   min-height: 100vh;
   background-color: rgb(252, 251, 236);
+  margin-top: 71px;
   padding-top: 50px;
   padding-bottom: 48px;
   opacity: 0;
