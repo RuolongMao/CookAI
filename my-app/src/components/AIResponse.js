@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Tooltip, OverlayTrigger, Tabs, Tab } from "react-bootstrap";
 import NearbyStores from "./NearbyStores";
 import Youtube from "./Youtube";
@@ -9,6 +9,7 @@ import "../css/AiReponse.css";
 const AIResponse = ({ isLoggedIn }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { recipe_Name } = useParams();
 
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
@@ -64,7 +65,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const handleShare = async () => {
     const shareData = {
       title: recipe_name || "Check out this recipe!",
-      text: `Here's a recipe you might enjoy: ${recipe_name}.`,
+      text: `Here's a recipe you might enjoy: ${recipe_Name}.`,
       url: window.location.href,
     };
 
