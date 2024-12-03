@@ -245,3 +245,20 @@ html, body {
   background-color:#ff5a1f;
   border-color: #ff5a1f;
 }
+
+
+
+
+/* Home.css */
+.fade-out {
+  animation: fadeOut 0.5s forwards; /* 动画时长 0.5 秒 */
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1; /* 初始不透明 */
+  }
+  to {
+    opacity: 0; /* 最终完全透明 */
+  }
+}

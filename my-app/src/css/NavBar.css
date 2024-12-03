@@ -6,7 +6,7 @@
 /* 新增：背景填充效果 */
 .navbar {
     position: relative;
-    overflow: hidden;
+
 }
 
 /* 伪元素定义，用于背景填充 */
@@ -18,19 +18,22 @@
     height: 100%;
     width: 100%;
     background-color: #2c3b4b;
-    transform: translateX(-100%);
+    transform-origin: left;
+    transform: scaleX(1);
     transition: transform 2s ease;
     z-index: -1;
 }
-
 /* 首页样式 */
 .navbar-home::before {
-    transform: translateX(-100%);
+    transform: scaleX(0);
 }
+/* .navbar-home::before {
+    transform: translateX(-100%);
+} */
 
 /* 其他页面样式 */
 .navbar-other::before {
-    transform: translateX(0%);
+    transform: scaleX(1);
 }
 
 /* 确保导航栏内容在伪元素上方 */
@@ -60,9 +63,7 @@
     color: rgb(255, 123, 0);
 }
 
-.nav-1 {
-    /* 如果需要，可以调整导航项的顶部间距 */
-}
+
 
 .nav-reg-sig {
     width: 20%;
@@ -159,11 +160,13 @@
 
 /* 伪元素动画和导航栏整体设置 */
 .navbar-home {
-    background-color: #2c3b4b00;
-    transition:background-color 2s ease; 
+    background-color: transparent;
+    /* background-color: #2c3b4b00;
+    transition:background-color 2s ease;  */
 }
 
 .navbar-other {
-    background-color: #2c3b4b;
-    transition: background-color 2s ease; 
+    background-color: transparent;
+    /* background-color: #2c3b4b;
+    transition: background-color 2s ease;  */
 }

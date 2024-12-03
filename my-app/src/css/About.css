@@ -1,36 +1,63 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 
-
-
 @keyframes fadeIn {
   from {
     opacity: 0;
-
   }
   to {
     opacity: 1;
+  }
+}
 
+@keyframes textScroll {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
   }
 }
 
 .about-container {
-  min-height: 100vh;
-  background: rgb(252, 251, 236);
-  padding-bottom: 20px;
+  position: relative;
+  height: 400vh; /* 因为有4个部分，每个部分占据一个视口高度 */
+}
 
-  /* 添加动画 */
+.section {
+  position: fixed; /* 固定定位，覆盖整个视口 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   opacity: 0;
-  animation: fadeIn 2s ease-out forwards;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none; /* 禁用鼠标事件，防止与隐藏部分交互 */
 }
 
+.section.active {
+  opacity: 1;
+  pointer-events: auto; /* 启用鼠标事件 */
+}
 
+/* 确保导航栏内容在伪元素上方 */
+.‌navbar .container-fluid {
+  position: relative;
+  z-index: 1;
+}
 
-.about-container {
-    min-height: 100vh;
-    background:  rgb(252, 251, 236);
-    padding-bottom: 20px;
-  }
-  
+/* 调整部分内容的内边距和布局 */
+.hero-section,
+.features-container,
+.how-it-works,
+.tech-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .hero-section {
   text-align: center;
   padding: 5rem 1rem 2rem 1rem;
@@ -38,35 +65,102 @@
   margin: 0 auto;
 }
 
-.hero-title {
-  color: #ff6b35;
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-}
-
 .hero-description {
-  color: #4a4a4a;
-  font-size: 1.2rem;
+  color: transparent;
+  font-size: 40px;
+  font-weight: 700;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
+  overflow: hidden;
+  display: block;
+  background: linear-gradient(
+    -45deg,
+    #f29468,
+    #e2f48e,
+    #bbb6ff,
+    #fff2b6,
+    #ffb6ff,
+    #b344ff,
+    #6a5acd,
+    #9ed1e2,
+    #ffb6ff
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 400% 100%;
+  animation: textScroll 7s infinite linear;
+}
+
+/* 新增渐变文本类 */
+.gradient-text {
+  color: transparent;
+  background: linear-gradient(
+    -45deg,
+    #f29468,
+    #e2f48e,
+    #bbb6ff,
+    #fff2b6,
+    #ffb6ff,
+    #b344ff,
+    #6a5acd,
+    #9ed1e2,
+    #ffb6ff
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 400% 100%;
+  animation: textScroll 7s infinite linear;
+}
+
+.features-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 1rem;
+}
+
+.features-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: transparent;
+  text-align: center;
+  margin-bottom: 30px;
+  background: linear-gradient(
+    -45deg,
+    #f29468,
+    #e2f48e,
+    #bbb6ff,
+    #fff2b6,
+    #ffb6ff,
+    #b344ff,
+    #6a5acd,
+    #9ed1e2,
+    #ffb6ff
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 400% 100%;
+  animation: textScroll 7s infinite linear;
 }
 
 .features-grid {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 2rem;
+  max-width: 1200px;
 }
 
 .feature-card {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 2rem; /* 增加内边距以匹配 HeroSection */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 300px; /* 确保每个卡片宽度一致 */
 }
 
 .feature-card:hover {
@@ -77,7 +171,7 @@
 .icon-container {
   width: 48px;
   height: 48px;
-  background: #fff5e6;
+  background: #f9f7f3;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -86,13 +180,14 @@
 }
 
 .icon-container svg {
-  color: #ff6b35;
+  color: #484848;
 }
 
 .feature-title {
   font-size: 1.25rem;
   color: #2d2d2d;
   margin-bottom: 0.75rem;
+  font-weight: bold;
 }
 
 .feature-description {
@@ -100,16 +195,34 @@
   line-height: 1.5;
 }
 
+/* How It Works Section */
 .how-it-works {
-  background: white;
   padding: 4rem 1rem;
 }
 
 .section-title {
+  font-size:3rem;
   text-align: center;
-  font-size: 2rem;
-  color: #2d2d2d;
-  margin-bottom: 3rem;
+  font-weight:600;
+  color: transparent;
+  margin-bottom: 50px;
+  margin-top:-50px;
+  background: linear-gradient(
+    -45deg,
+    #f29468,
+    #e2f48e,
+    #bbb6ff,
+    #fff2b6,
+    #ffb6ff,
+    #b344ff,
+    #6a5acd,
+    #9ed1e2,
+    #ffb6ff
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 400% 100%;
+  animation: textScroll 7s infinite linear;
 }
 
 .steps-container {
@@ -125,12 +238,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: white;
+  padding: 2rem; /* 增加内边距以匹配其他卡片 */
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width:300px;
+}
+
+.step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .step-icon {
   width: 64px;
   height: 64px;
-  background: #fff5e6;
+  background: #f9f7f3;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -139,27 +263,22 @@
 }
 
 .step-icon svg {
-  color: #ff6b35;
+  color: #484848;
 }
 
 .step-title {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #2d2d2d;
   margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 .step-description {
   color: #666;
+  line-height: 1.5;
 }
 
-/* Keep all previous CSS styles and add/update these tech stack styles */
-
-.tech-stack {
-  max-width: 1200px;
-  margin: 4rem auto;
-  padding: 2rem 1rem;
-}
-
+/* 技术栈样式 */
 .tech-container {
   margin: 2rem 3rem;
   background: linear-gradient(135deg, #1e293b, #334155);
@@ -178,7 +297,7 @@
 }
 
 .tech-header h2 {
-  font-family: 'Space Mono', monospace;
+
   font-size: 2rem;
   letter-spacing: 1px;
   margin: 0;
@@ -206,12 +325,10 @@
 
 .tech-item:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .tech-item p {
-  font-family: 'Space Mono', monospace;
   font-size: 1.2rem;
   margin: 0;
   background: linear-gradient(120deg, #a5f3fc, #7dd3fc);
@@ -221,19 +338,34 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 版权信息样式 */
+.footer-fixed {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  color: #4a4a4a;
+}
+
+/* 响应式设计 */
 @media (max-width: 768px) {
-  .hero-title {
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .features-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .features-title {
     font-size: 2rem;
   }
-  
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  
+
   .steps-container {
     grid-template-columns: 1fr;
   }
-  
+
   .tech-grid {
     grid-template-columns: repeat(2, 1fr);
   }
