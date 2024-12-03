@@ -143,6 +143,17 @@
     cursor: pointer;
   }
 
+.commu-3dot:active {
+    transform: scale(0.9);
+    background-color: rgba(0, 0, 0, 0.1); /* 添加点击的视觉反馈 */
+    border-radius: 50%;
+}
+
+.commu-3dot:hover {
+    transform: scale(0.8);
+}
+
+
   .commu-dropdown {
     position: absolute !important;
     right: 0 !important;
