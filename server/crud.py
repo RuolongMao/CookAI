@@ -15,7 +15,7 @@ class DashboardCRUD:
             recipe_name=recipe.recipe_name,
             created_time=date.today(), 
             details=recipe.details,
-            publish=False,
+            publish=recipe.publish,
             est_cost=recipe.est_cost
         )
         db.add(new_recipe)

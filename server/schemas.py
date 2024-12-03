@@ -11,6 +11,7 @@ class RecipeBase(BaseModel):
 class RecipeCreate(RecipeBase):
     user_name: str
     est_cost: float
+    publish: bool
 
 class RecipeGet(RecipeBase):
     id: int
