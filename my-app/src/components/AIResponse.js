@@ -63,20 +63,6 @@ const AIResponse = ({ isLoggedIn }) => {
 
   // 分享功能
   const handleShare = async () => {
-    const response = await fetch('https://api-ssl.bitly.com/v4/shorten', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer 030d36f2b8b45d7e11049a8a402173fd5539acba',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        long_url: window.location.href
-      })
-    });
-    const data = await response.json();
-    const shortLink = data.link;
-    console.log(shortLink);
-
     const shareData = {
       title: recipe_name || "Check out this recipe!",
       text: `Here's a recipe you might enjoy: ${recipe_Name}.`,
