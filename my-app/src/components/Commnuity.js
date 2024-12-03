@@ -84,7 +84,8 @@ function Community({ isLoggedIn }) {
         user_name: username,
         image_url: recipe.image_url,
         details: recipe.details,
-        est_cost: recipe.est_cost
+        est_cost: recipe.est_cost,
+        publish: 0
       };
       
       const response = await fetch("https://cookai-55f9.onrender.com/create", {

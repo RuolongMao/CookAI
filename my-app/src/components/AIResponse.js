@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams} from "react-router-dom";
 import { Tooltip, OverlayTrigger, Tabs, Tab } from "react-bootstrap";
 import NearbyStores from "./NearbyStores";
 import Youtube from "./Youtube";
@@ -14,6 +14,8 @@ const AIResponse = ({ isLoggedIn }) => {
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
   const prompt = location.state?.prompt || null;
+  const ai_recipe = useParams();
+  const [recipe, setRecipeData] = useState({});
 
   const [checkedIngredients, setCheckedIngredients] = useState({});
   const [liked, setLiked] = useState(false);
@@ -23,14 +25,29 @@ const AIResponse = ({ isLoggedIn }) => {
 
   const [showShareDialog, setShowShareDialog] = useState(false);
 
+  const fetchRecipeData = async () => {
+    const response = await fetch("http://127.0.0.1:8000/get_one", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ recipe_name: ai_recipe.ai_recipe }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setRecipeData(data);
+      console.log(data);
+    } else {
+      console.error("Failed to fetch recipe data");
+    }
+  };
+
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
-    if (!response) {
-      navigate("/");
+    console.log(ai_recipe);
+    if(ai_recipe.ai_recipe) {
+      fetchRecipeData();
     }
-    console.log("AI Response: ", response);
-    console.log("img", imageUrl);
-    console.log("Prompt: ", prompt);
   }, [response, imageUrl, prompt, navigate]);
 
   // 解析 response 中的内容
@@ -65,7 +82,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const handleShare = async () => {
     const shareData = {
       title: recipe_name || "Check out this recipe!",
-      text: `Here's a recipe you might enjoy: ${recipe_Name}.`,
+      text: `Here's a recipe you might enjoy: ${ai_recipe.ai_recipe}.`,
       url: window.location.href,
     };
     
@@ -128,7 +145,7 @@ const AIResponse = ({ isLoggedIn }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ recipe_name: recipe_name }),
+      body: JSON.stringify({ recipe_name: ai_recipe.ai_recipe }),
     });
   };
 
@@ -137,11 +154,12 @@ const AIResponse = ({ isLoggedIn }) => {
     setShowShareDialog(false);
 
     const body = {
-      recipe_name: recipe_name,
+      recipe_name: recipe.recipe_name,
       user_name: username,
-      image_url: imageUrl,
-      details: response,
-      est_cost: parseFloat(estimated_cost.slice(1)),
+      image_url: recipe.image_url,
+      details: recipe.details,
+      est_cost: recipe.est_cost,
+      publish: 1
     };
 
     try {
@@ -151,14 +169,6 @@ const AIResponse = ({ isLoggedIn }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
-      });
-
-      await fetch("https://cookai-55f9.onrender.com/share", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ recipe_name: recipe_name }),
       });
 
       showAlertMessage(
@@ -175,11 +185,12 @@ const AIResponse = ({ isLoggedIn }) => {
     setShowShareDialog(false);
 
     const body = {
-      recipe_name: recipe_name,
+      recipe_name: recipe.recipe_name,
       user_name: username,
-      image_url: imageUrl,
-      details: response,
-      est_cost: parseFloat(estimated_cost.slice(1)),
+      image_url: recipe.image_url,
+      details: recipe.details,
+      est_cost: recipe.est_cost,
+      publish: 0
     };
 
     try {
@@ -200,7 +211,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
   const handleGenerateClick = () => {
     // Check if response exists and contains required data
-    if (!response || !response.recipe_name || !response.steps) {
+    if (!recipe.details || !recipe.recipe_name || !recipe.details.steps) {
       console.error("Missing required recipe data");
       return;
     }
@@ -209,8 +220,8 @@ const AIResponse = ({ isLoggedIn }) => {
     navigate("/video", {
       state: {
         response: {
-          recipe_name: response.recipe_name,
-          steps: response.steps,
+          recipe_name: recipe.recipe_name,
+          steps: recipe.details.steps,
         },
       },
     });
@@ -270,7 +281,7 @@ const AIResponse = ({ isLoggedIn }) => {
           </div>
         </div>
       )}
-
+    
       {/* 主内容区域 */}
       <div className="main-content flex-grow-1">
         <div className="row h-auto">
@@ -342,9 +353,9 @@ const AIResponse = ({ isLoggedIn }) => {
 
               {/* 图片部分 */}
               <div className="image-left-part-airesponse d-flex justify-content-center align-items-center">
-                {imageUrl && (
+                {recipe?.image_url && (
                   <img
-                    src={imageUrl}
+                    src={recipe?.image_url}
                     alt="Generated Recipe"
                     className="image"
                   />
@@ -353,9 +364,9 @@ const AIResponse = ({ isLoggedIn }) => {
 
               {/* 标题部分 */}
               <div className="recipe_name-part-air">
-                {recipe_name && (
+                {recipe?.recipe_name && (
                   <p className="recipe_name text-center">
-                    {recipe_name.toUpperCase()}
+                    {recipe?.recipe_name.toUpperCase()}
                   </p>
                 )}
               </div>
@@ -393,7 +404,7 @@ const AIResponse = ({ isLoggedIn }) => {
                           </div>
                           <div className="col-11 text-start">
                             <h2>Estimated Total Cost</h2>
-                            <p>{estimated_cost}</p>
+                            <p>{recipe?.est_cost}</p>
                           </div>
                         </div>
 
@@ -413,7 +424,7 @@ const AIResponse = ({ isLoggedIn }) => {
                           </div>
                           <div className="col-11 text-start">
                             <h2>Estimated Time</h2>
-                            <p>{estimate_time}</p>
+                            <p>{recipe?.details?.est_time}</p>
                           </div>
                         </div>
 
@@ -439,12 +450,12 @@ const AIResponse = ({ isLoggedIn }) => {
 
                           <div className="col-11">
                             <h2>Nutrition</h2>
-                            {nutrition_facts && (
+                            {recipe?.details?.nutrition_facts && (
                               <div className="row justify-content-start nutrition-section-airesponse">
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {nutrition_facts.calories}
+                                      {recipe?.details.nutrition_facts.calories}
                                     </div>
                                     <div className="card-name">Calories</div>
                                   </div>
@@ -452,7 +463,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {nutrition_facts.fiber}g
+                                      {recipe?.details.nutrition_facts.fiber}g
                                     </div>
                                     <div className="card-name">Fiber</div>
                                   </div>
@@ -461,7 +472,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {nutrition_facts.protein}g
+                                      {recipe?.details.nutrition_facts.protein}g
                                     </div>
                                     <div className="card-name">Protein</div>
                                   </div>
@@ -470,7 +481,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {nutrition_facts.carbs}g
+                                      {recipe?.details.nutrition_facts.carbs}g
                                     </div>
                                     <div className="card-name">Carbs</div>
                                   </div>
@@ -479,7 +490,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {nutrition_facts.fats}g
+                                      {recipe?.details.nutrition_facts.fats}g
                                     </div>
                                     <div className="card-name">Fats</div>
                                   </div>
@@ -488,7 +499,7 @@ const AIResponse = ({ isLoggedIn }) => {
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {nutrition_facts.sugar}g
+                                      {recipe?.details.nutrition_facts.sugar}g
                                     </div>
                                     <div className="card-name">Sugar</div>
                                   </div>
@@ -508,9 +519,9 @@ const AIResponse = ({ isLoggedIn }) => {
                     <div className="ingredients-part-airesponse">
                       <h2>Ingredients</h2>
                       <div className="ingredients-list-airesponse">
-                        {ingredients && ingredients.length > 0 ? (
+                        {recipe?.details?.ingredients && recipe?.details.ingredients.length > 0 ? (
                           <ul>
-                            {ingredients.map((ingredient, index) => (
+                            {recipe?.details.ingredients.map((ingredient, index) => (
                               <li key={index} className="ingredient-item">
                                 <div className="form-check d-flex justify-content-between align-items-center">
                                   <div>
@@ -575,9 +586,9 @@ const AIResponse = ({ isLoggedIn }) => {
                     <div className="steps-part-airesponse">
                       <h2>Steps</h2>
                       <div className="steps-list-part-airesponse">
-                        {steps && steps.length > 0 ? (
+                        {recipe?.details?.steps && recipe?.details.steps?.length > 0 ? (
                           <ol>
-                            {steps.map((step, index) => (
+                            {recipe?.details.steps.map((step, index) => (
                               <li key={index}>
                                 <strong>{step.explanation}</strong> -{" "}
                                 {step.instruction}

@@ -77,6 +77,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
         image_url: imageUrl,
         details: details,
         est_cost: estimated_cost,
+        publish: 0,
       };
 
       await fetch("https://cookai-55f9.onrender.com/create", {

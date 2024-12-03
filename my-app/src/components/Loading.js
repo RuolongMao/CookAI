@@ -11,6 +11,7 @@ const Loading = () => {
   const prompt = location.state?.prompt || null;
   const hasFetchedRef = useRef(false); // 使用 useRef 来跟踪请求状态
   const [isEntering, setIsEntering] = useState(false); 
+  const username = localStorage.getItem("username");
 
   useEffect(() => {
     setIsEntering(true);
@@ -25,8 +26,24 @@ const Loading = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
+          console.log(data);
           navigate(`/response/${data.response.recipe_name}`, { state: { response: data.response, image_url: data.image_url, prompt: prompt, } });
+          const body = {
+            recipe_name: data.response.recipe_name,
+            user_name: "tmp",
+            image_url: data.image_url,
+            details: data.response,
+            est_cost: parseFloat(data.response.estimated_cost.slice(1)),
+            publish: 0
+          };
+        
+          fetch("http://127.0.0.1:8000/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
