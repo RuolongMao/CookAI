@@ -239,9 +239,6 @@ const About = () => {
       ))}
 
       {/* 版权信息 */}
-      <footer className="text-center footer-fixed">
-        <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
-      </footer>
     </div>
   );
 };
