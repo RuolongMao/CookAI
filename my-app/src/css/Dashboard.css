@@ -1,6 +1,6 @@
 .dashboard-container {
     min-height: 90vh;
-    background-color: rgb(252, 251, 236);
+    background-color: white;
     padding: 20px;
     margin-top:70px;
   }
@@ -70,7 +70,7 @@ margin: 0px 20px 20px 20px
 }
   
   .recipe-card-container {
-    background: white;
+    background: rgba(182, 184, 187, 0.179);
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
