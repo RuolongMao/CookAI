@@ -19,6 +19,7 @@ from typing import List, Optional
 import httpx
 import base64
 import requests
+import urllib.parse
 
 # Add these imports at the top of main.py
 from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
@@ -302,7 +303,7 @@ def delete_recipe(recipe: schemas.RecipeDelete, db: Session = Depends(get_db)):
 def search_recipes(query: schemas.RecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.search_recipes(db, query.recipe_name)
 
-@app.get("/get", response_model=List[schemas.RecipeGet])
+@app.get("/get")
 def read_recipes(db: Session = Depends(get_db)):
     recipes = dashboard_crud.get_recipes(db)
     return recipes
@@ -322,6 +323,12 @@ def filter_recipes(query: schemas.RecipeFilter, db: Session = Depends(get_db)):
     return recipes
         
 
+@app.post("/get_one")
+def search_recipes(query: schemas.RecipeDelete, db: Session = Depends(get_db)):
+    recipe_name = urllib.parse.unquote(query.recipe_name)
+    print(recipe_name)
+    return dashboard_crud.get_recipe(db, recipe_name)        
+
 @app.post("/dashboard")
 def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(get_db)):
     return dashboard_crud.get_personal_recipes(db, query.user_name)
@@ -329,6 +336,10 @@ def search_recipes(query: schemas.PersonalRecipeSearch, db: Session = Depends(ge
 @app.post("/share")
 def is_share(body: schemas.RecipeDelete, db: Session = Depends(get_db)):
     return dashboard_crud.share(db, body.recipe_name)
+
+@app.post("/comment")
+def add_comment(body: schemas.CommentAdd, db: Session = Depends(get_db)):
+    return dashboard_crud.add_comment(db, body.recipe_name, body.username, body.comments)
 
 
 if os.name == 'nt':  # for Windows

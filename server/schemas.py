@@ -16,6 +16,7 @@ class RecipeGet(RecipeBase):
     id: int
     user_name: str
     created_time: date
+    comments: Optional[dict] = None
 
 class RecipeSearch(BaseModel):
     recipe_name: str
@@ -34,3 +35,8 @@ class PersonalRecipeSearch(BaseModel):
 
 class RecipeDelete(BaseModel):
     recipe_name: str
+
+class CommentAdd(BaseModel):
+    recipe_name: str
+    username: str
+    comments: str

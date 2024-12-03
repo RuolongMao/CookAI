@@ -3,6 +3,7 @@ from typing import List, Optional
 from datetime import date
 import models, schemas, json
 from sqlalchemy import func, Integer, Float, or_
+from sqlalchemy.orm.attributes import flag_modified
 
 
 class DashboardCRUD:
@@ -29,8 +30,8 @@ class DashboardCRUD:
         db.refresh(result)
         return result
 
-    def get_recipe(self, db: Session, recipe_id: str) -> Optional[models.Recipes]:
-        return db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    def get_recipe(self, db: Session, recipe_name: str):
+        return db.query(models.Recipes).filter(models.Recipes.recipe_name == recipe_name).first()
 
     def get_recipes(self, db: Session) -> List[models.Recipes]:
         print("Fetching recipes from database...")
@@ -143,5 +144,25 @@ class DashboardCRUD:
         #     print(f"Filtered Recipe: {r.recipe_name}, Cost: {r.details.get('estimated_cost')}")
         
         return result
+    
+    def add_comment(self, db: Session, recipe_name: str, username: str, user_comment: str):
+        recipe = db.query(models.Recipes).filter(models.Recipes.recipe_name == recipe_name).first()
+        if not recipe:
+            raise ValueError("Recipe not found")
+        comments = recipe.comments if recipe.comments else {}
+        if username in comments:
+            comments[username].append(user_comment)
+        else:
+            comments[username] = [user_comment]
+
+        flag_modified(recipe, 'comments')
+
+        recipe.comments = comments
+        db.commit()
+        db.refresh(recipe)
+
+        return comments
+
+
     
 dashboard_crud = DashboardCRUD()

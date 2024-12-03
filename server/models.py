@@ -14,3 +14,4 @@ class Recipes(Base):
     details = Column(JSON, nullable=False)
     est_cost = Column(Double, nullable=False)
     publish = Column(Boolean, nullable=True)
+    comments = Column(JSON, nullable=True)
