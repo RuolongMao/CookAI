@@ -353,7 +353,7 @@ const backgroundImages = [bk2, bk5, bk4, bk6, bk7, loadingGif];
       </Modal>
 
       {/* 版权信息 */}
-      <footer className="text-center footer-fixed">
+      <footer className="text-center home-footer-fixed">
         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
       </footer>
     </div>

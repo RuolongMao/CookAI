@@ -1,7 +1,9 @@
 
 .commu-container {
     background-color: rgb(252, 251, 236);
-    min-height: calc(100vh - var(--navbar-height));
+    height: calc(100vh - var(--navbar-height));
+    margin-top: 71px;
+    overflow-y: hidden;
 }
 
 /* filter column */

@@ -1,15 +1,17 @@
 
 html, body {
-    height: 100%; /* 使页面的高度始终是 100% */
+    /* height: 100%; 使页面的高度始终是 100% */
     margin: 0; /* 确保没有额外的边距 */
   }
 
 
 .home-container{
-  margin-top:10%;
+  /* margin-top:72px; */
+  height: 100vh;
+  overflow-y: hidden;
 }
 .navbar {
-    position: relative; /* 让z-index生效 */
+    /* position: relative; 让z-index生效 */
     z-index: 10; /* 确保它比背景高 */
   }
 
@@ -202,7 +204,7 @@ html, body {
 
 
 /* 使版权信息始终在底部 */
-.footer-fixed {
+.home-footer-fixed {
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -216,7 +218,7 @@ html, body {
   margin-bottom:0px;
 }
 
-.footer-fixed p {
+.home-footer-fixed p {
   margin: 0; /* 去掉 <p> 元素的默认 margin */
 }
 
