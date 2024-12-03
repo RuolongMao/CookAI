@@ -160,12 +160,8 @@ const RecipeInstruction = ({ isLoggedIn }) => {
     <div className="container--fluid">
       {/* Image and Action Buttons Section */}
       <div className="start">
-        <div className="col-10 image-left-part">
-          <img src={recipe?.image_url || "/api/placeholder/400/300"} alt="Recipe" className="image" />
-        </div>
-      
 
-        <div className="col-2 like-right-part">
+      <div className="col-2 like-right-part">
           <div className="row button-part">
             <div className="col-auto image-recipe">
               <svg
@@ -198,6 +194,13 @@ const RecipeInstruction = ({ isLoggedIn }) => {
             </div>
           </div>
         </div>
+        
+        <div className="col-10 image-left-part">
+          <img src={recipe?.image_url || "/api/placeholder/400/300"} alt="Recipe" className="image" />
+        </div>
+      
+
+
       </div>
 
       {/* Recipe Name Section */}

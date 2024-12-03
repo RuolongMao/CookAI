@@ -259,8 +259,8 @@ function Community({ isLoggedIn }) {
 
             {/* <h5>Filters</h5> 'Dietary',*/}
             {['Taste',  'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
-              <Form.Group key={index} className="mt-3">
-                <Form.Label className="fs-5 fst-italic">{label}</Form.Label>
+              <Form.Group key={index} className="mt-4">
+                <Form.Label className="fs-6 fw-bold">{label}</Form.Label>
 
                 {label === 'Taste' && (
                   <Row xs={2} className="commu-taste-row">
@@ -357,8 +357,8 @@ function Community({ isLoggedIn }) {
             ))}
 
             {selectedFilters.length > 0 && (
-              <Form.Group className="mt-3">
-                <Form.Label className="fs-5 fst-italic">Selected Filters</Form.Label>
+              <Form.Group className="mt-5">
+                <Form.Label className="fs-6 fw-bold">Selected Filters</Form.Label>
                 <div className="mt-2">
                   {selectedFilters.map((filter, index) => (
                     <Badge key={index} bg="secondary" className="me-2">
@@ -443,7 +443,7 @@ function Community({ isLoggedIn }) {
             <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
               {recipe.recipe_name}
             </Card.Title>
-            <p className="text-muted mb-0">{recipe.user_name}</p>
+            <p className="text-muted mb-0">Shared by {recipe.user_name}</p>
             <div className="d-flex">
               <Badge className="me-2 commu-timecost-badge">
                 <i className="bi bi-clock"></i> {recipe.details.estimate_time}
