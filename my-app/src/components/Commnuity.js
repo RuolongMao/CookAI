@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Badge, Button, Card} from 'react-bootstrap';
+import { Container, Row, Col, Form, Badge, Button, Card, Dropdown, Alert} from 'react-bootstrap';
 import { MdClear, MdOutlineSearch} from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import { Riple } from "react-loading-indicators";
 import { useNavigate } from 'react-router-dom';
 import "../css/Community.css";
 
-function Community() {
+function Community({ isLoggedIn }) {
   const [recipes, setRecipes] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [tasteOptions, setTasteOptions] = useState({ Sweet: false, Sour: false, Salty: false, Spicy: false });
   const [dietaryOptions, setDietaryOptions] = useState({ Vegan: false });
   const [costRange, setCostRange] = useState({ min: '', max: '' });
+  const username = localStorage.getItem("username");
   const [cookingTime, setCookingTime] = useState({ min: '', max: '' });
   const [caloriesRange, setCaloriesRange] = useState({ min: '', max: '' });
   const [searchTerm, setSearchTerm] = useState('');
   const [allRecipes, setAllRecipes] = useState([]);
   const navigate = useNavigate();
-  const [navbarHeight, setNavbarHeight] = useState(0);
+  const [navbarHeight, setNavbarHeight] = useState(0); 
   const [isLoading, setIsLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const showAlertMessage = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000); // Alert hides after 3 seconds
+  };
+
   const hasInvalidRanges = () => {
     return (costRange.min && costRange.max && Number(costRange.min) > Number(costRange.max)) ||
           (cookingTime.min && cookingTime.max && Number(cookingTime.min) > Number(cookingTime.max)) ||
@@ -36,8 +45,6 @@ function Community() {
   useEffect(() => {
     document.documentElement.style.setProperty('--navbar-height', `${navbarHeight}px`);
   }, [navbarHeight]);
-
-
 
 
   useEffect(() => {
@@ -60,7 +67,42 @@ function Community() {
     fetchRecipes();
   }, []);
   
+  const handleSaveToDashboard = async (recipe) => {
+    if (!isLoggedIn) {
+      navigate("/signin");
+      return;
+    }
 
+    console.log(recipe);
+  
+    try {
+      const dashboardRecipe = {
+        recipe_name: recipe.recipe_name,
+        user_name: username,
+        image_url: recipe.image_url,
+        details: recipe.details,
+        est_cost: recipe.est_cost
+      };
+      
+      const response = await fetch("http://localhost:8000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dashboardRecipe),
+      });
+  
+    if (response.ok) {
+      showAlertMessage("Recipe saved to dashboard successfully!");
+    } else {
+      showAlertMessage("Failed to save the recipe. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error saving recipe to dashboard:", error);
+    showAlertMessage("An error occurred while saving the recipe.");
+  }
+};
+  
   const handleSearch = async () => {
     if (!searchTerm) {
       setRecipes(allRecipes);
@@ -166,6 +208,16 @@ function Community() {
   };
 
   return (
+    <>
+    {showAlert && (
+    <Alert
+      variant="warning"
+      className="text-center position-fixed commu-alert"
+    >
+      {alertMessage}
+    </Alert>
+  )}
+
     <Container fluid className="commu-container">
       <Row>
       <Col
@@ -351,18 +403,40 @@ function Community() {
     <Row>
       {recipes.map((recipe, index) => (
         <Card 
-          key={index} 
-          style={{ width: '19.1rem' }} 
-          className="mb-3 ms-4 ps-0 pe-0 commu-card"
-          onClick={() => navigate(`/recipe/${recipe.recipe_name}`, { state: { details: recipe.details, image_url: recipe.image_url, est_cost: recipe.est_cost} })}
-        >
+        key={index} 
+        style={{ width: '19.1rem' }} 
+        className="mb-3 ms-4 ps-0 pe-0 commu-card"
+        onClick={(e) => {
+          if (!e.target.closest('.dropdown')) {
+            navigate(`/recipe/${recipe.recipe_name}`, { 
+              state: { 
+                details: recipe.details, 
+                image_url: recipe.image_url, 
+                est_cost: recipe.est_cost
+              } 
+            });
+          }
+        }}
+      >
           <Card.Img 
             variant="top" 
             src={recipe.image_url} 
             alt="Recipe Image" 
             className="img-fluid commu-card-img"
           /> 
-          <BsThreeDots className="commu-3dot" />      
+          <Dropdown className="commu-dropdown">
+            <Dropdown.Toggle as={BsThreeDots} className="commu-3dot" variant="link" />
+            <Dropdown.Menu>
+              <Dropdown.Item 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSaveToDashboard(recipe);
+                }}
+              >
+                Save to Dashboard
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           <Card.Body className="d-flex flex-column gap-2">
             <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
               {recipe.recipe_name}
@@ -390,6 +464,7 @@ function Community() {
 
       </Row>
     </Container>
+    </>
   );
 }
 
