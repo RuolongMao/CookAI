@@ -1,19 +1,33 @@
 /* 总容器 */
 .airesponse-container--fluid {
-  background-color: rgb(252, 251, 236);
+  height: calc(100vh - 72px);
   padding: 20px 50px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-
+  overflow-y: auto;
+  background-color: rgb(252, 251, 236);
 }
 
 /* 主内容区域 */
 .main-content {
   flex: 1;
   display: flex;
-  /* overflow: hidden; */
-  overflow-y:auto;
+  overflow: hidden;
+  min-height: 0;
+  /* overflow-y:auto; */
+}
+
+.row-ap-left1 {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 15px;
+}
+
+/* Bottom row of left column */
+.row-ap-left2 {
+  height: 50%;
+  padding-top: 15px;
 }
 
 /* 确保 row 和列占满高度 */
@@ -29,7 +43,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 /* 左侧部分 */
@@ -43,7 +57,7 @@
 .main-part-ai-right {
   padding-left: 60px;
   border-style: solid;
-
+  overflow-y: scroll;
 }
 
 /* Tabs 容器 */
@@ -52,6 +66,7 @@
   display: flex;
   flex-direction: column;
   /* overflow: hidden; */
+  overflow-y: auto;
   margin-top:20px;
 }
 
@@ -102,13 +117,12 @@
 .like-right-part {
   flex-shrink: 0;
   padding-bottom: 20px;
+  height: 10%;
 }
 
 /* 保留原始按钮样式 */
 .heart-icon {
   fill: rgba(255, 255, 255, 0);
-  width: 50px;
-  height: 50px;
   cursor: pointer;
 }
 
@@ -116,14 +130,9 @@
   fill: red;
 }
 
-.share-button {
-  width: 45px;
-  height: 48px;
-}
-
-.refresh-button {
-  height: 50px;
-  width: 50px;
+.heart-icon, .share-button, .refresh-button {
+  height: 100%;
+  width: 100%;
 }
 
 /* 标题部分 */

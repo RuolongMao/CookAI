@@ -274,16 +274,14 @@
   }
   
   .comment-item {
-    background-color: #f9f9f9;
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+    padding: 5px;
+    border-bottom: solid rgb(197, 194, 194) 1px
   }
   
   .comment-item strong {
     font-size: 18px;
-    color: #ff5a1f;
+    color: #2c3b4b;
     font-weight: bold;
     display: block;
     margin-bottom: 8px;
@@ -335,9 +333,14 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  
-  .comment-form button:hover {
-    background-color: #ff5a1f;
+
+  .comment-button {
+    margin-top: 5px;
+    justify-content: center;
+  }
+
+  .comment-list {
+    margin-bottom: 15px;
   }
 
   
