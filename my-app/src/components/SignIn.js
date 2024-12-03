@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import signpic from "../images/sign1.jpeg";
 import "../css/SignIn.css";
 
@@ -9,6 +9,9 @@ const SignIn = ({ onSignInSuccess }) => {
   const [message, setMessage] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  console.log(location.state?.from);
 
 
   useEffect(() => {
@@ -18,7 +21,10 @@ const SignIn = ({ onSignInSuccess }) => {
 
 
   const handleRegisterNavigation = () => {
-    navigate("/register"); // 使用useNavigate跳转到SignIn页面
+    console.log(location.state?.from);
+    navigate('/register', { 
+      state: { from: location.state?.from || '/' } 
+    });
   };
 
 
@@ -37,7 +43,7 @@ const SignIn = ({ onSignInSuccess }) => {
       const data = await response.json();
       setMessage("Login successful");
       onSignInSuccess(username); // 通知父组件用户已登录
-      navigate(-1); // 登录成功后跳转到 Chat 页面
+      navigate(location.state?.from || '/'); // 登录成功后跳转到 Chat 页面
     } else {
       const errorData = await response.json();
       setMessage(errorData.detail);

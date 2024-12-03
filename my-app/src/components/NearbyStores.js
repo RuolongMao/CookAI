@@ -116,69 +116,27 @@ const NearbyStores = () => {
 
   return (
     <div className="nearby-stores-container">
-      <h2>Nearby Stores</h2>
-      {errorMsg && <p className="error">{errorMsg}</p>}
+      {/* {errorMsg && <p className="error">{errorMsg}</p>}
       {!location && !errorMsg && <p>Getting your location...</p>}
       {location && !stores.length && !errorMsg && (
         <p>Searching for nearby stores...</p>
-      )}
-
+      )} */}
       {stores.length > 0 && (
         <div className="nstore-row">
-          <div className="store-part row">
-            {stores.slice(0, 6).map((store) => (
-              <div key={store.place_id} className="col-md-2">
-                <div className="store-card">
-                  <div className="store-card-img-container">
-                    {store.photos && store.photos.length > 0 ? (
-                      <img
-                        src={store.photos[0].getUrl({
-                          maxWidth: 800,
-                          maxHeight: 600,
-                        })}
-                        alt={store.name}
-                        className="store-card-img-top"
-                      />
-                    ) : (
-                      <div className="store-placeholder-img">
-                        No Image Available
-                      </div>
-                    )}
-                  </div>
-                  <div className="card-body">
-                    <p className="store-name">{store.name}</p>
-                    <p className="card-text-vicinity">{store.vicinity}</p>
-                    {/* {store.rating && (
-                      <p className="card-text">Rating: {store.rating}</p>
-                    )} */}
-                    {store.rating && (
-                      <div className="card-text-rating">
-                        <p className="card-rating-text">
-                          Rating: {store.rating}
-                        </p>
-                        <StarRating rating={store.rating} />
-                      </div>
-                    )}
-                    {store.distance && (
-                      <p className="card-text">
-                        Distance: {store.distance.toFixed(2)} km
-                      </p>
-                    )}
-                    <a
-                      href={`https://www.google.com/maps/place/?q=place_id:${store.place_id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="unique-modal-store-link1"
-                    >
-                      View Details
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
           <div className="show-more-arrow" onClick={handleShowMore}>
-            <i className="show-more-button">show more</i>
+            <button className="show-more-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="25"
+                fill="currentColor"
+                class="bi bi-cart3"
+                viewBox="3 0 16 16"
+              >
+                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
+              </svg>
+              Nearby Stores
+            </button>
           </div>
         </div>
       )}

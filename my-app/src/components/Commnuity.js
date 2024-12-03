@@ -1,27 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Badge, Button, Card} from 'react-bootstrap';
+import { Container, Row, Col, Form, Badge, Button, Card, Dropdown, Alert} from 'react-bootstrap';
 import { MdClear, MdOutlineSearch} from "react-icons/md";
-// import Ratio from 'react-bootstrap/Ratio';
-import { useNavigate } from 'react-router-dom';
+import { BsThreeDots } from "react-icons/bs";
+import { Riple } from "react-loading-indicators";
+import { useNavigate, useLocation } from 'react-router-dom';
 import "../css/Community.css";
 
-function Community() {
+function Community({ isLoggedIn }) {
   const [recipes, setRecipes] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [tasteOptions, setTasteOptions] = useState({ Sweet: false, Sour: false, Salty: false, Spicy: false });
   const [dietaryOptions, setDietaryOptions] = useState({ Vegan: false });
   const [costRange, setCostRange] = useState({ min: '', max: '' });
+  const username = localStorage.getItem("username");
   const [cookingTime, setCookingTime] = useState({ min: '', max: '' });
   const [caloriesRange, setCaloriesRange] = useState({ min: '', max: '' });
   const [searchTerm, setSearchTerm] = useState('');
   const [allRecipes, setAllRecipes] = useState([]);
   const navigate = useNavigate();
-  const [navbarHeight, setNavbarHeight] = useState(0);
+  const location = useLocation();
+  const [navbarHeight, setNavbarHeight] = useState(0); 
+  const [isLoading, setIsLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const showAlertMessage = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000); // Alert hides after 3 seconds
+  };
+
   const hasInvalidRanges = () => {
     return (costRange.min && costRange.max && Number(costRange.min) > Number(costRange.max)) ||
           (cookingTime.min && cookingTime.max && Number(cookingTime.min) > Number(cookingTime.max)) ||
           (caloriesRange.min && caloriesRange.max && Number(caloriesRange.min) > Number(caloriesRange.max));
   };
+  console.log(recipes)
 
   useEffect(() => {
     const navbar = document.querySelector('.navbar');
@@ -35,25 +48,71 @@ function Community() {
   }, [navbarHeight]);
 
 
-
-
   useEffect(() => {
     async function fetchRecipes() {
-      const response = await fetch('https://cookai-55f9.onrender.com/get');
-      const data = await response.json();
-      setRecipes(data);
-      setAllRecipes(data);
-    }
+      setIsLoading(true);
+      try {
+        const response = await fetch('https://cookai-55f9.onrender.com/get');
+        const data = await response.json();
+        const publishedRecipes = data.filter(recipe => recipe.publish === true);
+        console.log('Fetched data:', data);
+        console.log('publishedRecipes:', publishedRecipes);
+        setRecipes(publishedRecipes);
+        setAllRecipes(publishedRecipes);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }    
     fetchRecipes();
   }, []);
   
+  const handleSaveToDashboard = async (recipe) => {
+    if (!isLoggedIn) {
+      navigate('/signin', { 
+        state: { from: location.pathname } 
+      });
+      return;
+    }
 
+    console.log(recipe);
+  
+    try {
+      const dashboardRecipe = {
+        recipe_name: recipe.recipe_name,
+        user_name: username,
+        image_url: recipe.image_url,
+        details: recipe.details,
+        est_cost: recipe.est_cost
+      };
+      
+      const response = await fetch("https://cookai-55f9.onrender.com/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dashboardRecipe),
+      });
+  
+    if (response.ok) {
+      showAlertMessage("Recipe saved to dashboard successfully!");
+    } else {
+      showAlertMessage("Failed to save the recipe. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error saving recipe to dashboard:", error);
+    showAlertMessage("An error occurred while saving the recipe.");
+  }
+};
+  
   const handleSearch = async () => {
     if (!searchTerm) {
       setRecipes(allRecipes);
       return;
     }
   
+    setIsLoading(true); // 开始加载
     try {
       const response = await fetch('https://cookai-55f9.onrender.com/search', {
         method: 'POST',
@@ -61,11 +120,15 @@ function Community() {
         body: JSON.stringify({ recipe_name: searchTerm }),
       });
       const data = await response.json();
-      setRecipes(data);
+      const filteredData = data.filter(recipe => recipe.publish === true);
+      setRecipes(filteredData);
     } catch (error) {
       console.error('Error fetching searched recipes:', error);
+    } finally {
+      setIsLoading(false); // 加载完成
     }
   };
+  
   
   // Modify the handleFilter function to trigger filtering when the Search button is clicked
   const handleFilter = async () => {
@@ -111,8 +174,9 @@ function Community() {
     }
 
     setSelectedFilters(selected);
+    setIsLoading(true); // 开始加载
 
-    // Fetch filtered recipes from the backend
+  // Fetch filtered recipes from the backend
     try {
       const response = await fetch('https://cookai-55f9.onrender.com/filter', {
         method: 'POST',
@@ -128,9 +192,12 @@ function Community() {
         }),
       });
       const data = await response.json();
-      setRecipes(data);
+      const filteredData = data.filter(recipe => recipe.publish === true);
+      setRecipes(filteredData);
     } catch (error) {
       console.error('Error fetching filtered recipes:', error);
+    } finally {
+      setIsLoading(false); // 加载完成
     }
   };
 
@@ -146,6 +213,16 @@ function Community() {
   };
 
   return (
+    <>
+    {showAlert && (
+    <Alert
+      variant="warning"
+      className="text-center position-fixed commu-alert"
+    >
+      {alertMessage}
+    </Alert>
+  )}
+
     <Container fluid className="commu-container">
       <Row>
       <Col
@@ -183,10 +260,11 @@ function Community() {
 
           </div>
 
-            <h5>Filters</h5>
-            {['Taste', 'Dietary', 'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
-              <Form.Group key={index} className="mt-3">
-                <Form.Label>{label}</Form.Label>
+            {/* <h5>Filters</h5> 'Dietary',*/}
+            {['Taste',  'Cost Range', 'Cooking Time', 'Calories'].map((label, index) => (
+              <Form.Group key={index} className="mt-4">
+                <Form.Label className="fs-6 fw-bold">{label}</Form.Label>
+
                 {label === 'Taste' && (
                   <Row xs={2} className="commu-taste-row">
                     {['Sweet', 'Sour', 'Salty', 'Spicy'].map((flavor) => (
@@ -200,14 +278,14 @@ function Community() {
                     ))}
                   </Row>
                 )}
-                {label === 'Dietary' && 
+                {/* {label === 'Dietary' && 
                 <Form.Check
                   type="checkbox"
                   label="Vegan"
                   checked={dietaryOptions.Vegan}
                   onChange={(e) => setDietaryOptions({ ...dietaryOptions, Vegan: e.target.checked })}
                 />
-                }
+                } */}
 
                 {label === 'Cost Range' && (
                   <Form.Group className="mb-3 d-flex align-items-center">
@@ -281,16 +359,19 @@ function Community() {
               </Form.Group>
             ))}
 
-            <Form.Group className="mt-3">
-              <Form.Label>Selected Filters</Form.Label>
-              <div className="mt-2">
-                {selectedFilters.map((filter, index) => (
-                  <Badge key={index} bg="secondary" className="me-2">
-                    {filter}
-                  </Badge>
-                ))}
-              </div>
-            </Form.Group>
+            {selectedFilters.length > 0 && (
+              <Form.Group className="mt-5">
+                <Form.Label className="fs-6 fw-bold">Selected Filters</Form.Label>
+                <div className="mt-2">
+                  {selectedFilters.map((filter, index) => (
+                    <Badge key={index} bg="secondary" className="me-2">
+                      {filter}
+                    </Badge>
+                  ))}
+                </div>
+              </Form.Group>
+            )}
+
 
 
             <Form.Group className="d-flex justify-content-between mt-4">
@@ -313,49 +394,82 @@ function Community() {
           </Form>
         </Col>
 
-        <Col
-          md={9}
-          className="p-3 commu-recipe-column"
-        >
-          <Row>
-            {recipes.map((recipe, index) => (
-              <Card 
-                key={index} 
-                style={{ width: '19.1rem' }} 
-                className="mb-3 ms-4 ps-0 pe-0 commu-card"
-                onClick={() => navigate('/recipe', { state: { recipe } })} 
+  <Col md={9} className="p-3 commu-recipe-column">
+    {isLoading ? (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
+        <Riple color="#6E757D" size="large" />
+      </div>
+    ) : recipes.length === 0 ? (
+      <div className="commu-empty-state">
+        <div className="commu-empty-state-icon">📚</div>
+        <h3 className="commu-empty-state-title">Be the first to contribute!</h3>
+      </div>
+    ) : (
+    <Row>
+      {recipes.map((recipe, index) => (
+        <Card 
+        key={index} 
+        style={{ width: '19.1rem' }} 
+        className="mb-3 ms-4 ps-0 pe-0 commu-card"
+        onClick={(e) => {
+          if (!e.target.closest('.dropdown')) {
+            navigate(`/recipe/${recipe.recipe_name}`, { 
+              state: { 
+                details: recipe.details, 
+                image_url: recipe.image_url, 
+                est_cost: recipe.est_cost
+              } 
+            });
+          }
+        }}
+      >
+          <Card.Img 
+            variant="top" 
+            src={recipe.image_url} 
+            alt="Recipe Image" 
+            className="img-fluid commu-card-img"
+          /> 
+          <Dropdown className="commu-dropdown">
+            <Dropdown.Toggle as={BsThreeDots} className="commu-3dot" variant="link" />
+            <Dropdown.Menu>
+              <Dropdown.Item 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSaveToDashboard(recipe);
+                }}
               >
-                <Card.Img 
-                  variant="top" 
-                  src={recipe.image_url} 
-                  alt="Recipe Image" 
-                  className="img-fluid commu-card-img"
-                />
-                <Card.Body className="d-flex flex-column gap-2">
-                  <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
-                    {recipe.recipe_name}
-                  </Card.Title>
-                  <p className="text-muted mb-0">{recipe.user_name}</p>
-                  <div className="d-flex">
-                    <Badge className="me-2 commu-timecost-badge">
-                      <i className="bi bi-clock"></i> {recipe.details.estimate_time}
-                    </Badge>
-                    <Badge className="me-2 commu-timecost-badge">
-                      <i className="bi bi-currency-dollar"></i> {recipe.details.estimated_cost}
-                    </Badge>
-                  </div>
-                  <div>
-                    <Badge bg="secondary">
-                      {recipe.details.nutrition_facts.calories} cal
-                    </Badge>
-                  </div>
-                </Card.Body>
-              </Card>
-            ))}
-          </Row>
-        </Col>
+                Save to Dashboard
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Card.Body className="d-flex flex-column gap-2">
+            <Card.Title className="text-dark text-wrap mb-3" style={{ minHeight: '48px' }}>
+              {recipe.recipe_name}
+            </Card.Title>
+            <p className="text-muted mb-0">Shared by {recipe.user_name}</p>
+            <div className="d-flex">
+              <Badge className="me-2 commu-timecost-badge">
+                <i className="bi bi-clock"></i> {recipe.details.estimate_time}
+              </Badge>
+              <Badge className="me-2 commu-timecost-badge">
+                <i className="bi bi-currency-dollar"></i> {recipe.details.estimated_cost}
+              </Badge>
+            </div>
+            <div>
+              <Badge bg="secondary">
+                {recipe.details.nutrition_facts.calories} cal
+              </Badge>
+            </div>
+          </Card.Body>
+        </Card>
+      ))}
+    </Row>
+  )}
+</Col>
+
       </Row>
     </Container>
+    </>
   );
 }
 

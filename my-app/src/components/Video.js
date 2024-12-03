@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import { Carousel } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
-import Youtube from "./Youtube";
 import "../css/Video.css";
 // import bk4 from "../images/bk4.jpg";
 // import bk5 from "../images/bk5.jpg";
@@ -37,7 +36,6 @@ const Video = () => {
         setRecipeName(recipeName || "Recipe");
 
         const response = await fetch("https://cookai-55f9.onrender.com/generate_video", {
-        // const response = await fetch("https://cookai-55f9.onrender.com/test_video_local", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -68,7 +66,7 @@ const Video = () => {
   useEffect(() => {
     let interval;
     if (isLoading) {
-      const totalTime = 360; // 预估总时间（秒）
+      const totalTime = 120; // 预估总时间（秒）
       const increment = 100 / totalTime; // 每秒进度增量
       interval = setInterval(() => {
         setProgress((prevProgress) => {
@@ -96,31 +94,44 @@ const Video = () => {
 
   return (
     <div className="video-container">
-       {/* {isLoading && (
-              <Carousel interval={2000} pause={false}>
-              <Carousel.Item>
-                <img
-                  src={bk6}
-                  d-block
-                  w-100
-                  className="video-loading-pic"
-                  alt="First slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  src={bk7}
-                  d-block
-                  w-100
-                  className="video-loading-pic"
-                  alt="Third slide"
-                />
-              </Carousel.Item>
-            </Carousel>
-        
-      )}
-       */}
-
+      {/* <Carousel interval={2000} pause={false}>
+        <Carousel.Item>
+          <img
+            src={bk6}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="First slide"
+          />
+        </Carousel.Item> */}
+        {/* <Carousel.Item>
+          <img
+            src={bk4}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="Second slide"
+          />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            src={bk5}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="Third slide"
+          />
+        </Carousel.Item> */}
+        {/* <Carousel.Item>
+          <img
+            src={bk7}
+            d-block
+            w-100
+            className="video-loading-pic"
+            alt="Third slide"
+          />
+        </Carousel.Item>
+      </Carousel> */}
 
       {isLoading && (
         <div className="loading-section">
@@ -133,7 +144,6 @@ const Video = () => {
             <div className="progress" style={{ width: `${progress}%` }}></div>
           </div>
           <div>
-            <Youtube />
           </div>
         </div>
       )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Home.css";
 import { Modal, Button } from "react-bootstrap";
@@ -19,7 +19,8 @@ const Home = () => {
   const [taste, setTaste] = useState([]);
   const [cookingMethod, setCookingMethod] = useState([]);
   const [allergen, setAllergen] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(""); // 记录当前自定义的分类
+  const [activeCategory, setActiveCategory] = useState("");
+  const [isExiting, setIsExiting] = useState(false); 
 
   const [showContent, setShowContent] = useState(false);
   const [slideUp, setSlideUp] = useState(false);
@@ -44,6 +45,11 @@ const Home = () => {
   const handleImageLoad = () => {
     setLoadedImages(prevCount => prevCount + 1);
   };
+
+  // const handleImageLoad = useCallback(() => {
+  //   console.log("Image loaded, current count:", loadedImages + 1); 
+  //   setLoadedImages(prevCount => prevCount + 1);
+  // }, []);
 
 
 // 在组件挂载时，将图片路径设置为 CSS 变量
@@ -148,9 +154,7 @@ const backgroundImages = [bk2, bk5, bk4, bk6, bk7, loadingGif];
 
   const sendMessage = () => {
     if (message === "") return;
-
     let prompt = `This is what I want to cook today: ${message}.`;
-
     // 处理 Taste
     if (taste.length > 0 || customTasteInput) {
       const tasteList = [...taste];
@@ -178,16 +182,22 @@ const backgroundImages = [bk2, bk5, bk4, bk6, bk7, loadingGif];
       prompt += ` The allergen is ${mealList.join(", ")}.`;
     }
 
+
+    setIsExiting(true);
+
+    setTimeout(() => {
+      navigate("/loading", { state: { prompt: prompt } });
+    }, 500);
+
     // 输出检测
     console.log("Generated prompt is: ", prompt);
 
-    navigate("/loading", { state: { prompt: prompt } });
   };
 
   
 
   return (
-    <div className="home-container">
+    <div className={`home-container ${isExiting ? 'fade-out' : ''}`}>
 
 {backgroundImages.map((src, index) => (
   <PreloadImage key={index} src={src} onLoad={handleImageLoad} />
@@ -343,7 +353,7 @@ const backgroundImages = [bk2, bk5, bk4, bk6, bk7, loadingGif];
       </Modal>
 
       {/* 版权信息 */}
-      <footer className="text-center footer-fixed">
+      <footer className="text-center home-footer-fixed">
         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
       </footer>
     </div>

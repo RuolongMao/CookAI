@@ -1,6 +1,6 @@
 .qa-container {
   min-height: 100vh;
-  background-color: rgb(252, 251, 236);
+  margin-top: 71px;
   padding-top: 50px;
   padding-bottom: 48px;
   opacity: 0;
@@ -21,9 +21,28 @@
   font-size: 2.25rem;
   font-weight: bold;
   text-align: center;
-  color: #ff6b35;
   margin-bottom: 32px;
+
+  /* 添加渐变文本效果 */
+  color: transparent;
+  background: linear-gradient(
+    -45deg,
+    var(--gradient-start),
+    var(--gradient-middle1),
+    var(--gradient-middle2),
+    #fff2b6,
+    var(--gradient-end),
+    var(--gradient-middle2),
+    #6a5acd,
+    #9ed1e2,
+    var(--gradient-end)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-size: 400% 100%;
+  animation: textScroll 7s infinite linear;
 }
+
 
 .qa-subtitle {
   color: #666;
@@ -40,7 +59,7 @@
 @keyframes fadeInUp {
   0% {
     opacity: 0;
-    transform: translateY(300px); /* 初始状态向下偏移 */
+    transform: translateY(500px); /* 初始状态向下偏移 */
   }
   100% {
     opacity: 1;
@@ -53,7 +72,7 @@
   border-radius: 8px;
   overflow: hidden;
   transition: box-shadow 0.3s ease;
-  margin-top:10px;
+  margin-top:40px;
   opacity: 0; /* 初始状态不可见 */
   animation: fadeInUp 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
@@ -85,6 +104,7 @@
 
 .faq-question {
   font-weight: 600;
+  font-size:20px;
   color: #1f2937;
 }
 
@@ -120,4 +140,39 @@
 
 .contact-text {
   color: #666;
+}
+
+
+.contact-section {
+  background: #fff5e6;
+  padding: 3rem 1rem;
+  text-align: center;
+  border-top: 2px solid #ff6b35;
+  margin-top: 140px;
+  opacity: 0; /* 初始状态不可见 */
+  animation: fadeInUp 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.contact-title {
+  font-size: 2rem;
+  color: #2d2d2d;
+  margin-bottom: 20px;;
+}
+
+.contact-description {
+
+  font-size: 1rem;
+  color: #4a4a4a;
+  line-height: 1.5;
+}
+
+.contact-description .email-link {
+  color: #ff6b35;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.contact-description .email-link:hover {
+  text-decoration: underline;
+  color: #d9534f;
 }

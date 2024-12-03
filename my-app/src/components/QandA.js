@@ -93,9 +93,21 @@ const QandA = () => {
           ))}
         </div>
       </div>
+
+      <div className="contact-section">
+        <h2 className="contact-title">Have More Questions?</h2>
+        <p className="contact-description">
+          Feel free to reach out to us at{" "}
+          <a href="mailto:yuqi40350@gmail.com" className="email-link">
+            yuqi40350@gmail.com
+          </a>
+          . We’re happy to help!
+        </p>
+      </div>
+
       <footer className="text-center footer-fixed">
-         <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
-       </footer>
+        <p>&copy; 2024 CookingAI. All Rights Reserved.</p>
+      </footer>
     </div>
   );
 };
