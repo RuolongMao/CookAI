@@ -46,12 +46,15 @@ const AIResponse = ({ isLoggedIn }) => {
     if (ai_recipe) {
       fetchRecipeData();
     }
-    localStorage.setItem("hasReloaded", "false");
-    const hasReloaded = localStorage.getItem("hasReloaded");
-
-    if (recipe && !hasReloaded) {
-      localStorage.setItem("hasReloaded", "true");
-      window.location.reload();
+    if (!recipe) {
+      const hasReloaded = sessionStorage.getItem("hasReloaded");
+      if (!hasReloaded) {
+        sessionStorage.setItem("hasReloaded", "true");
+        window.location.reload();
+      }
+    } else {
+      // Recipe is loaded, remove the flag for future navigations
+      sessionStorage.removeItem("hasReloaded");
     }
   }, [ai_recipe, recipe]);
 
