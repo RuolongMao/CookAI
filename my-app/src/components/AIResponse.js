@@ -13,7 +13,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
   const prompt = location.state?.prompt || null;
-  const ai_recipe = useParams();
+  const {ai_recipe} = useParams();
   const [recipe, setRecipeData] = useState({});
 
   const [checkedIngredients, setCheckedIngredients] = useState({});
@@ -30,7 +30,7 @@ const AIResponse = ({ isLoggedIn }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ recipe_name: ai_recipe.ai_recipe }),
+      body: JSON.stringify({ recipe_name: ai_recipe }),
     });
     if (response.ok) {
       const data = await response.json();
@@ -43,11 +43,13 @@ const AIResponse = ({ isLoggedIn }) => {
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
-    console.log(ai_recipe);
-    if(ai_recipe.ai_recipe) {
+    if(ai_recipe) {
       fetchRecipeData();
     }
-  }, [response, imageUrl, prompt, navigate]);
+    if (recipe === null) {
+      window.location.reload();
+    }
+  }, [ai_recipe, recipe]);
 
   // 解析 response 中的内容
   const {
@@ -81,7 +83,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const handleShare = async () => {
     const shareData = {
       title: recipe_name || "Check out this recipe!",
-      text: `Here's a recipe you might enjoy: ${ai_recipe.ai_recipe}.`,
+      text: `Here's a recipe you might enjoy: ${ai_recipe}.`,
       url: window.location.href,
     };
     
@@ -144,7 +146,7 @@ const AIResponse = ({ isLoggedIn }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ recipe_name: ai_recipe.ai_recipe }),
+      body: JSON.stringify({ recipe_name: ai_recipe }),
     });
   };
 
