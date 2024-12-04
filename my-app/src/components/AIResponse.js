@@ -46,9 +46,6 @@ const AIResponse = ({ isLoggedIn }) => {
     if(ai_recipe) {
       fetchRecipeData();
     }
-    if (recipe === null) {
-      window.location.reload();
-    }
   }, [ai_recipe, recipe]);
 
   // 解析 response 中的内容
