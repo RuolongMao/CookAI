@@ -423,7 +423,7 @@ const AIResponse = ({ isLoggedIn }) => {
                           </div>
                           <div className="col-11 text-start">
                             <h2>Estimated Time</h2>
-                            <p>{recipe?.details?.est_time}</p>
+                            <p>{recipe?.details?.estimate_time}</p>
                           </div>
                         </div>
 
