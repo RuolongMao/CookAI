@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  background-color: rgb(252, 251, 236);
+  background-color: #f8f9fa; 
 }
 
 /* 主内容区域 */
@@ -90,8 +90,8 @@
 }
 
 .nav-tabs-custom .nav-link {
-  color:rgb(44, 59, 75) ;
-  background-color: rgb(250, 240, 217);
+  background-color: #ffffff;  
+  color: #2c3b4b;
   border: none;
   padding: 0.7rem 1.5rem;
   font-weight: 500;
@@ -192,7 +192,7 @@
 
 /* Overview 内容 */
 .overview-content {
-  background-color:rgb(250, 240, 217);
+  background-color:#ffffff;
   padding: 20px;
   border-radius: 0 10px 10px 10px;
 }
@@ -218,7 +218,7 @@
 
 .cost-airesponse:hover{
   text-align: center;
-  background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
+  background-color: #ffffff; /* 背景颜色变化 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
   transform: scale(1.02);
   border-radius: 10px;
@@ -231,7 +231,7 @@
 
 .time-airesponse:hover{
   text-align: center;
-  background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
+  background-color: #ffffff; /* 背景颜色变化 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
   transform: scale(1.02);
   border-radius: 10px;
@@ -259,7 +259,7 @@
 }
 
 .airesponse-nutrition-part:hover{
-  background-color: rgba(255, 240, 210, 0.8); /* 背景颜色变化 */
+  background-color: #ffffff; /* 背景颜色变化 */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 增加阴影 */
   transform: scale(1.02);
   border-radius: 10px;
@@ -328,7 +328,7 @@
 
 /* Ingredients 部分 */
 .ingredients-part-airesponse {
-  background-color: rgb(250, 240, 217);
+  background-color: #ffffff;
   color: #2c3b4b;
   border-radius: 0 10px 10px 10px;
   padding: 20px;
@@ -370,7 +370,7 @@
 
 /* Steps 部分 */
 .steps-part-airesponse {
-  background-color: rgb(250, 240, 217);
+  background-color: #ffffff;
   color: #2c3b4b;
   border-radius: 0 10px 10px 10px;
   padding: 20px;
