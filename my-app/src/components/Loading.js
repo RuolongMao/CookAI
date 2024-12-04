@@ -37,7 +37,7 @@ const Loading = () => {
             publish: 0
           };
         
-          fetch("http://127.0.0.1:8000/create", {
+          fetch("https://cookai-55f9.onrender.com/create", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

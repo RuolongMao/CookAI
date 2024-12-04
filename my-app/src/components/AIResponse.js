@@ -25,7 +25,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   const fetchRecipeData = async () => {
-    const response = await fetch("http://127.0.0.1:8000/get_one", {
+    const response = await fetch("https://cookai-55f9.onrender.com/get_one", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
