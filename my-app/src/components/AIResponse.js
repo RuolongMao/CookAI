@@ -9,7 +9,6 @@ import "../css/AiReponse.css";
 const AIResponse = ({ isLoggedIn }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { recipe_Name } = useParams();
 
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
