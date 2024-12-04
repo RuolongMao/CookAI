@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams} from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Tooltip, OverlayTrigger, Tabs, Tab } from "react-bootstrap";
 import NearbyStores from "./NearbyStores";
 import Youtube from "./Youtube";
@@ -13,7 +13,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const response = location.state?.response || null;
   const imageUrl = location.state?.image_url || null;
   const prompt = location.state?.prompt || null;
-  const {ai_recipe} = useParams();
+  const { ai_recipe } = useParams();
   const [recipe, setRecipeData] = useState({});
 
   const [checkedIngredients, setCheckedIngredients] = useState({});
@@ -43,8 +43,15 @@ const AIResponse = ({ isLoggedIn }) => {
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
-    if(ai_recipe) {
+    if (ai_recipe) {
       fetchRecipeData();
+    }
+    localStorage.setItem("hasReloaded", "false");
+    const hasReloaded = localStorage.getItem("hasReloaded");
+
+    if (recipe && !hasReloaded) {
+      localStorage.setItem("hasReloaded", "true");
+      window.location.reload();
     }
   }, [ai_recipe, recipe]);
 
@@ -83,7 +90,6 @@ const AIResponse = ({ isLoggedIn }) => {
       text: `Here's a recipe you might enjoy: ${ai_recipe}.`,
       url: window.location.href,
     };
-    
 
     try {
       if (navigator.share) {
@@ -157,7 +163,7 @@ const AIResponse = ({ isLoggedIn }) => {
       image_url: recipe.image_url,
       details: recipe.details,
       est_cost: recipe.est_cost,
-      publish: 1
+      publish: 1,
     };
 
     try {
@@ -188,7 +194,7 @@ const AIResponse = ({ isLoggedIn }) => {
       image_url: recipe.image_url,
       details: recipe.details,
       est_cost: recipe.est_cost,
-      publish: 0
+      publish: 0,
     };
 
     try {
@@ -226,7 +232,10 @@ const AIResponse = ({ isLoggedIn }) => {
   };
 
   return (
-    <div className="airesponse-container--fluid" style={{ height: 'calc(100vh - 72px)'}}>
+    <div
+      className="airesponse-container--fluid"
+      style={{ height: "calc(100vh - 72px)" }}
+    >
       {showAlert && (
         <div className="alert-container">
           <div className="alert">
@@ -279,7 +288,7 @@ const AIResponse = ({ isLoggedIn }) => {
           </div>
         </div>
       )}
-    
+
       {/* 主内容区域 */}
       <div className="main-content flex-grow-1">
         <div className="row h-auto">
@@ -517,55 +526,58 @@ const AIResponse = ({ isLoggedIn }) => {
                     <div className="ingredients-part-airesponse">
                       <h2>Ingredients</h2>
                       <div className="ingredients-list-airesponse">
-                        {recipe?.details?.ingredients && recipe?.details.ingredients.length > 0 ? (
+                        {recipe?.details?.ingredients &&
+                        recipe?.details.ingredients.length > 0 ? (
                           <ul>
-                            {recipe?.details.ingredients.map((ingredient, index) => (
-                              <li key={index} className="ingredient-item">
-                                <div className="form-check d-flex justify-content-between align-items-center">
-                                  <div>
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      value=""
-                                      id={`ingredient-checkbox-${index}`}
-                                      checked={
-                                        checkedIngredients[index] || false
-                                      }
-                                      onChange={() =>
-                                        handleCheckboxChange(index)
-                                      }
-                                    />
-                                    <label
-                                      className={`form-check-label ${
-                                        checkedIngredients[index]
-                                          ? "text-decoration-line-through"
-                                          : ""
-                                      }`}
-                                      htmlFor={`ingredient-checkbox-${index}`}
-                                    >
-                                      <span className="ingredient-name">
-                                        {ingredient.name}
-                                      </span>
-                                    </label>
+                            {recipe?.details.ingredients.map(
+                              (ingredient, index) => (
+                                <li key={index} className="ingredient-item">
+                                  <div className="form-check d-flex justify-content-between align-items-center">
+                                    <div>
+                                      <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        value=""
+                                        id={`ingredient-checkbox-${index}`}
+                                        checked={
+                                          checkedIngredients[index] || false
+                                        }
+                                        onChange={() =>
+                                          handleCheckboxChange(index)
+                                        }
+                                      />
+                                      <label
+                                        className={`form-check-label ${
+                                          checkedIngredients[index]
+                                            ? "text-decoration-line-through"
+                                            : ""
+                                        }`}
+                                        htmlFor={`ingredient-checkbox-${index}`}
+                                      >
+                                        <span className="ingredient-name">
+                                          {ingredient.name}
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div>
+                                      <label
+                                        className={`form-check-label ${
+                                          checkedIngredients[index]
+                                            ? "text-decoration-line-through"
+                                            : ""
+                                        }`}
+                                        htmlFor={`ingredient-checkbox-${index}`}
+                                      >
+                                        <span className="ingredient-info">
+                                          {ingredient.quantity} (
+                                          {ingredient.cost})
+                                        </span>
+                                      </label>
+                                    </div>
                                   </div>
-                                  <div>
-                                    <label
-                                      className={`form-check-label ${
-                                        checkedIngredients[index]
-                                          ? "text-decoration-line-through"
-                                          : ""
-                                      }`}
-                                      htmlFor={`ingredient-checkbox-${index}`}
-                                    >
-                                      <span className="ingredient-info">
-                                        {ingredient.quantity} ({ingredient.cost}
-                                        )
-                                      </span>
-                                    </label>
-                                  </div>
-                                </div>
-                              </li>
-                            ))}
+                                </li>
+                              )
+                            )}
                           </ul>
                         ) : (
                           <p>No ingredients provided.</p>
@@ -584,7 +596,8 @@ const AIResponse = ({ isLoggedIn }) => {
                     <div className="steps-part-airesponse">
                       <h2>Steps</h2>
                       <div className="steps-list-part-airesponse">
-                        {recipe?.details?.steps && recipe?.details.steps?.length > 0 ? (
+                        {recipe?.details?.steps &&
+                        recipe?.details.steps?.length > 0 ? (
                           <ol>
                             {recipe?.details.steps.map((step, index) => (
                               <li key={index}>
