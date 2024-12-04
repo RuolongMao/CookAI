@@ -52,7 +52,7 @@ function Community({ isLoggedIn }) {
     async function fetchRecipes() {
       setIsLoading(true);
       try {
-        const response = await fetch('http://localhost:8000/get');
+        const response = await fetch('https://cookai-55f9.onrender.com/get');
         const data = await response.json();
         const publishedRecipes = data.filter(recipe => recipe.publish === true);
         console.log('Fetched data:', data);

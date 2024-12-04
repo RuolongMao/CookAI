@@ -1,5 +1,5 @@
 .container--fluid {
-  background-color: rgb(252, 251, 236);
+  background-color: #f8f9fa;
   padding-left: 50px;
   padding-right: 50px;
   padding-top: 100px;
@@ -44,7 +44,7 @@
 }
 
 .ingredients-part {
-  background-color: rgb(250, 240, 217);
+  background-color: #ffffff; 
   color: #2c3b4b;
   border-radius: 10px;
   margin-right: 20px;
@@ -199,7 +199,7 @@
 }
 
 .nutrition-card {
-  background-color: rgb(250, 239, 205);
+  background-color: rgb(236, 236, 236);
   height: 130px;
   width: 90px;
   border-radius: 60px;
