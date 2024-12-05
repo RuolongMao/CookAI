@@ -43,7 +43,7 @@ const AIResponse = ({ isLoggedIn }) => {
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
-    if (ai_recipe) {
+    if (!recipe && ai_recipe) {
       fetchRecipeData();
     }
     if (!recipe) {
