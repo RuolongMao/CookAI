@@ -43,10 +43,19 @@ const AIResponse = ({ isLoggedIn }) => {
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
-    console.log(ai_recipe);
     if(ai_recipe.ai_recipe) {
       fetchRecipeData();
     }
+    if (!recipe) {
+      const hasReloaded = sessionStorage.getItem("hasReloaded");
+      if (!hasReloaded) {
+      sessionStorage.setItem("hasReloaded", "true");
+      window.location.reload();
+      }
+      } else {
+      // Recipe is loaded, remove the flag for future navigations
+      sessionStorage.removeItem("hasReloaded");
+      }
   }, [response, imageUrl, prompt, navigate]);
 
   // 解析 response 中的内容
