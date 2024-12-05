@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useLocation, useParams} from "react-router-dom";
 import { Tooltip, OverlayTrigger, Tabs, Tab } from "react-bootstrap";
 import NearbyStores from "./NearbyStores";
 import Youtube from "./Youtube";
@@ -14,6 +14,7 @@ const AIResponse = ({ isLoggedIn }) => {
   const imageUrl = location.state?.image_url || null;
   const prompt = location.state?.prompt || null;
   const { ai_recipe } = useParams();
+  const hasFetched = useRef(false);
   const [recipe, setRecipeData] = useState({});
 
   const [checkedIngredients, setCheckedIngredients] = useState({});
@@ -43,18 +44,14 @@ const AIResponse = ({ isLoggedIn }) => {
 
   // 如果 response 不存在，则自动返回主页
   useEffect(() => {
-    if (!recipe && ai_recipe) {
+    if (ai_recipe) {
       fetchRecipeData();
     }
     if (!recipe) {
-      const hasReloaded = sessionStorage.getItem("hasReloaded");
-      if (!hasReloaded) {
-        sessionStorage.setItem("hasReloaded", "true");
+      if (!hasFetched.current) {
         window.location.reload();
+        hasFetched.current = true;
       }
-    } else {
-      // Recipe is loaded, remove the flag for future navigations
-      sessionStorage.removeItem("hasReloaded");
     }
   }, [ai_recipe, recipe]);
 
@@ -530,7 +527,7 @@ const AIResponse = ({ isLoggedIn }) => {
                       <h2>Ingredients</h2>
                       <div className="ingredients-list-airesponse">
                         {recipe?.details?.ingredients &&
-                        recipe?.details.ingredients.length > 0 ? (
+                          recipe?.details.ingredients.length > 0 ? (
                           <ul>
                             {recipe?.details.ingredients.map(
                               (ingredient, index) => (
@@ -550,11 +547,10 @@ const AIResponse = ({ isLoggedIn }) => {
                                         }
                                       />
                                       <label
-                                        className={`form-check-label ${
-                                          checkedIngredients[index]
+                                        className={`form-check-label ${checkedIngredients[index]
                                             ? "text-decoration-line-through"
                                             : ""
-                                        }`}
+                                          }`}
                                         htmlFor={`ingredient-checkbox-${index}`}
                                       >
                                         <span className="ingredient-name">
@@ -564,11 +560,10 @@ const AIResponse = ({ isLoggedIn }) => {
                                     </div>
                                     <div>
                                       <label
-                                        className={`form-check-label ${
-                                          checkedIngredients[index]
+                                        className={`form-check-label ${checkedIngredients[index]
                                             ? "text-decoration-line-through"
                                             : ""
-                                        }`}
+                                          }`}
                                         htmlFor={`ingredient-checkbox-${index}`}
                                       >
                                         <span className="ingredient-info">
@@ -600,7 +595,7 @@ const AIResponse = ({ isLoggedIn }) => {
                       <h2>Steps</h2>
                       <div className="steps-list-part-airesponse">
                         {recipe?.details?.steps &&
-                        recipe?.details.steps?.length > 0 ? (
+                          recipe?.details.steps?.length > 0 ? (
                           <ol>
                             {recipe?.details.steps.map((step, index) => (
                               <li key={index}>
