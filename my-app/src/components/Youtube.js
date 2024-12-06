@@ -1,36 +1,193 @@
+// import React, { useState, useEffect } from "react";
+// import { useNavigate, useLocation } from "react-router-dom";
+// import "../css/Youtube.css";
+
+// const Youtube = () => {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const [videos, setVideos] = useState([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [selectedVideo, setSelectedVideo] = useState(null);
+//   const [recipeName, setRecipeName] = useState("");
+
+//   useEffect(() => {
+//     const fetchYoutubeVideos = async () => {
+//       try {
+//         const recipe = location.state?.response?.recipe_name;
+
+//         if (!recipe) {
+//           throw new Error(
+//             "Recipe name not found. Please go back and try again."
+//           );
+//         }
+
+//         setRecipeName(recipe);
+
+//         const response = await fetch("https://cookai-55f9.onrender.com/search_youtube", {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify({
+//             recipe_name: recipe,
+//           }),
+//         });
+
+//         if (!response.ok) {
+//           const errorData = await response.json();
+//           throw new Error(errorData.detail || "Failed to fetch videos");
+//         }
+
+//         const data = await response.json();
+//         setVideos(data.videos);
+//         if (data.videos.length > 0) {
+//           setSelectedVideo(data.videos[0]);
+//         }
+//       } catch (err) {
+//         console.error("Video fetch error:", err);
+//         setError(err.message);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchYoutubeVideos();
+//   }, [location.state]);
+
+//   const handleVideoSelect = (video) => {
+//     setSelectedVideo(video);
+//     // Smooth scroll to top when selecting a new video
+//     window.scrollTo({ top: 0, behavior: "smooth" });
+//   };
+
+//   const handleBackClick = () => {
+//     navigate("/response", {
+//       replace: true,
+//       state: location.state,
+//     });
+//   };
+
+//   return (
+//     <div className="video-container">
+//       {isLoading && (
+//         <div className="loading-section">
+//           <div className="spinner"></div>
+//           <p>Finding similar videos from Youtube</p>
+//         </div>
+//       )}
+
+//       {error && (
+//         <div className="error-section">
+//           <p className="error-message">{error}</p>
+//           {/* <button className="back-button" onClick={handleBackClick}>
+//             Back to Recipe
+//           </button> */}
+//         </div>
+//       )}
+
+//       {!isLoading && !error && videos.length > 0 && (
+//         <>
+//           <div className="video-section">
+//             <div className="main-video">
+//               {selectedVideo && (
+//                 <>
+//                   <iframe
+//                     src={`https://www.youtube.com/embed/${selectedVideo.videoId}`}
+//                     title="YouTube video player"
+//                     frameBorder="0"
+//                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//                     allowFullScreen
+//                     className="tutorial-video"
+//                   ></iframe>
+//                   <div className="main-video-info">
+//                     <h2 className="main-video-title">{selectedVideo.title}</h2>
+//                     <p className="main-video-channel">
+//                       by {selectedVideo.channelTitle}
+//                     </p>
+//                   </div>
+//                 </>
+//               )}
+//             </div>
+//           </div>
+
+//           <h2 className="more-videos-title">More Tutorials</h2>
+
+//           <div className="video-list-container">
+//             <div className="video-list">
+//               {videos.map((video) => (
+//                 <div
+//                   key={video.videoId}
+//                   className={`video-item ${
+//                     selectedVideo?.videoId === video.videoId ? "selected" : ""
+//                   }`}
+//                   onClick={() => handleVideoSelect(video)}
+//                 >
+//                   <img
+//                     src={video.thumbnail}
+//                     alt={video.title}
+//                     className="video-thumbnail"
+//                   />
+//                   <div className="video-info">
+//                     <h3>{video.title}</h3>
+//                     <p>{video.channelTitle}</p>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+
+//           {/* <div className="video-controls">
+//             <button className="back-button" onClick={handleBackClick}>
+//               Back to Recipe
+//             </button>
+//           </div> */}
+//         </>
+//       )}
+
+//       {!isLoading && !error && videos.length === 0 && (
+//         <div className="no-videos-section">
+//           <p>No tutorial videos found for this recipe.</p>
+//           {/* <button className="back-button" onClick={handleBackClick}>
+//             Back to Recipe
+//           </button> */}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Youtube;
+
+
+
+
+
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Youtube.css";
 
-const Youtube = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const Youtube = ({ recipe_name }) => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [recipeName, setRecipeName] = useState("");
 
   useEffect(() => {
     const fetchYoutubeVideos = async () => {
       try {
-        const recipe = location.state?.response?.recipe_name;
-
-        if (!recipe) {
-          throw new Error(
-            "Recipe name not found. Please go back and try again."
-          );
+        // 如果没有传入 recipe_name，直接抛出错误
+        if (!recipe_name) {
+          throw new Error("Recipe name not found. Please go back and try again.");
         }
 
-        setRecipeName(recipe);
-
+        // 请求后端获取Youtube视频列表
         const response = await fetch("https://cookai-55f9.onrender.com/search_youtube", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            recipe_name: recipe,
+            recipe_name: recipe_name,
           }),
         });
 
@@ -53,19 +210,12 @@ const Youtube = () => {
     };
 
     fetchYoutubeVideos();
-  }, [location.state]);
+  }, [recipe_name]);
 
   const handleVideoSelect = (video) => {
     setSelectedVideo(video);
-    // Smooth scroll to top when selecting a new video
+    // 切换视频后滚动到顶部
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleBackClick = () => {
-    navigate("/response", {
-      replace: true,
-      state: location.state,
-    });
   };
 
   return (
@@ -80,9 +230,7 @@ const Youtube = () => {
       {error && (
         <div className="error-section">
           <p className="error-message">{error}</p>
-          {/* <button className="back-button" onClick={handleBackClick}>
-            Back to Recipe
-          </button> */}
+          {/* 如果需要返回按钮，可以在这里加上 navigate 逻辑 */}
         </div>
       )}
 
@@ -136,21 +284,13 @@ const Youtube = () => {
               ))}
             </div>
           </div>
-
-          {/* <div className="video-controls">
-            <button className="back-button" onClick={handleBackClick}>
-              Back to Recipe
-            </button>
-          </div> */}
         </>
       )}
 
       {!isLoading && !error && videos.length === 0 && (
         <div className="no-videos-section">
           <p>No tutorial videos found for this recipe.</p>
-          {/* <button className="back-button" onClick={handleBackClick}>
-            Back to Recipe
-          </button> */}
+          {/* 如需返回按钮，可在此添加 */}
         </div>
       )}
     </div>
@@ -158,3 +298,4 @@ const Youtube = () => {
 };
 
 export default Youtube;
+

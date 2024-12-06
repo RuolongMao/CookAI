@@ -1,89 +1,74 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation, useParams} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Tooltip, OverlayTrigger, Tabs, Tab } from "react-bootstrap";
 import NearbyStores from "./NearbyStores";
 import Youtube from "./Youtube";
-
 import "../css/AiReponse.css";
 
 const AIResponse = ({ isLoggedIn }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const response = location.state?.response || null;
-  const imageUrl = location.state?.image_url || null;
-  const prompt = location.state?.prompt || null;
   const { ai_recipe } = useParams();
-  const hasFetched = useRef(false);
-  const [recipe, setRecipeData] = useState({});
 
+  const [recipe, setRecipeData] = useState(null);
   const [checkedIngredients, setCheckedIngredients] = useState({});
   const [liked, setLiked] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const username = localStorage.getItem("username");
-
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   const fetchRecipeData = async () => {
-    const response = await fetch("https://cookai-55f9.onrender.com/get_one", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ recipe_name: ai_recipe }),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setRecipeData(data);
-      console.log(data);
-    } else {
-      console.error("Failed to fetch recipe data");
+    try {
+      const response = await fetch("https://cookai-55f9.onrender.com/get_one", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe_name: ai_recipe }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRecipeData(data); // data中应该包含 recipe_name, image_url, details等
+      } else {
+        console.error("Failed to fetch recipe data");
+        navigate("/"); // 如果获取失败，跳转主页或其它逻辑
+      }
+    } catch (error) {
+      console.error("Error fetching recipe data:", error);
+      navigate("/");
     }
   };
 
-  // 如果 response 不存在，则自动返回主页
   useEffect(() => {
     if (ai_recipe) {
       fetchRecipeData();
     }
-    if (!recipe) {
-      if (!hasFetched.current) {
-        window.location.reload();
-        hasFetched.current = true;
-      }
-    }
-  }, [ai_recipe, recipe]);
+  }, [ai_recipe]);
 
-  // 解析 response 中的内容
-  const {
-    recipe_name,
-    nutrition_facts,
-    ingredients,
-    steps,
-    estimated_cost,
-    estimate_time,
-  } = response || {};
+  // 数据尚未加载完成，显示loading
+  if (!recipe) {
+    return <div>Loading recipe data...</div>;
+  }
+
+  const { recipe_name, image_url, details, est_cost } = recipe;
+
+  // 从 details 中解构需要的数据
+  const { nutrition_facts, ingredients, steps, estimate_time} =
+    details;
 
   const showAlertMessage = (message) => {
     setAlertMessage(message);
     setShowAlert(true);
 
-    // Hide the alert after 3 seconds
     setTimeout(() => {
       const alertElement = document.querySelector(".alert");
       if (alertElement) {
         alertElement.classList.add("alert-exit");
-
-        // Remove the alert from DOM after animation
         setTimeout(() => {
           setShowAlert(false);
-        }, 300); // Match this with the animation duration
+        }, 300);
       }
     }, 2000);
   };
 
-  // 分享功能
   const handleShare = async () => {
     const shareData = {
       title: recipe_name || "Check out this recipe!",
@@ -104,17 +89,12 @@ const AIResponse = ({ isLoggedIn }) => {
     }
   };
 
-  // 处理重新生成
   const handleRegenerate = () => {
-    if (!prompt) {
-      console.error("No prompt available to regenerate.");
-      return;
-    }
-    // 导航到 Loading 页面，并传递 prompt
-    navigate("/loading", { state: { prompt: prompt } });
+    // 如果需要Regenerate逻辑，这里需要有prompt
+    // 若不再使用prompt，则可以禁用此功能或实现其他逻辑
+    navigate("/");
   };
 
-  // 处理复选框勾选
   const handleCheckboxChange = (index) => {
     setCheckedIngredients((prevState) => ({
       ...prevState,
@@ -122,21 +102,16 @@ const AIResponse = ({ isLoggedIn }) => {
     }));
   };
 
-  // 处理点赞功能
   const handleToggleLike = () => {
     if (!isLoggedIn) {
-      // 如果用户未登录，跳转到登录页面
-      navigate("/signin", { state: { from: location.pathname } });
+      navigate("/signin", { state: { from: `/response/${ai_recipe}` } });
       return;
     }
 
     const newLikedState = !liked;
-
     if (newLikedState) {
-      // 用户想要点赞食谱，显示分享对话框
       setShowShareDialog(true);
     } else {
-      // 用户取消点赞
       setLiked(newLikedState);
       handleUnlikeRecipe();
     }
@@ -146,9 +121,7 @@ const AIResponse = ({ isLoggedIn }) => {
     showAlertMessage("You have unliked this recipe!");
     await fetch("https://cookai-55f9.onrender.com/delete", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ recipe_name: ai_recipe }),
     });
   };
@@ -158,23 +131,20 @@ const AIResponse = ({ isLoggedIn }) => {
     setShowShareDialog(false);
 
     const body = {
-      recipe_name: recipe.recipe_name,
+      recipe_name: recipe_name,
       user_name: username,
-      image_url: recipe.image_url,
-      details: recipe.details,
-      est_cost: recipe.est_cost,
+      image_url: image_url,
+      details: details,
+      est_cost: est_cost,
       publish: 1,
     };
 
     try {
       await fetch("https://cookai-55f9.onrender.com/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
       showAlertMessage(
         "Recipe saved to your favorites and shared successfully!"
       );
@@ -189,23 +159,20 @@ const AIResponse = ({ isLoggedIn }) => {
     setShowShareDialog(false);
 
     const body = {
-      recipe_name: recipe.recipe_name,
+      recipe_name: recipe_name,
       user_name: username,
-      image_url: recipe.image_url,
-      details: recipe.details,
-      est_cost: recipe.est_cost,
+      image_url: image_url,
+      details: details,
+      est_cost: est_cost,
       publish: 0,
     };
 
     try {
       await fetch("https://cookai-55f9.onrender.com/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
       showAlertMessage("Recipe saved to your favorites!");
     } catch (error) {
       showAlertMessage("Failed to save recipe.");
@@ -214,18 +181,16 @@ const AIResponse = ({ isLoggedIn }) => {
   };
 
   const handleGenerateClick = () => {
-    // Check if response exists and contains required data
-    if (!recipe.details || !recipe.recipe_name || !recipe.details.steps) {
+    if (!details || !recipe_name || !details.steps) {
       console.error("Missing required recipe data");
       return;
     }
 
-    // Pass the recipe data to the video page
     navigate("/video", {
       state: {
         response: {
-          recipe_name: recipe.recipe_name,
-          steps: recipe.details.steps,
+          recipe_name: recipe_name,
+          steps: details.steps,
         },
       },
     });
@@ -289,13 +254,13 @@ const AIResponse = ({ isLoggedIn }) => {
         </div>
       )}
 
-      {/* 主内容区域 */}
+      {/* 主内容 */}
       <div className="main-content flex-grow-1">
         <div className="row h-auto">
-          {/* 左边列 */}
+          {/* 左侧 */}
           <div className="col main-part-ai-left d-flex flex-column">
             <div className="row-ap-left1 flex-grow-1 ">
-              {/* 按钮部分 */}
+              {/* 按钮区 */}
               <div className="like-right-part d-flex">
                 <div className="button-group gap-3">
                   <OverlayTrigger
@@ -352,35 +317,35 @@ const AIResponse = ({ isLoggedIn }) => {
                       onClick={handleShare}
                       style={{ cursor: "pointer" }}
                     >
-                      <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
+                      <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5M3.5 6.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M13.5 12a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3" />
                     </svg>
                   </OverlayTrigger>
                 </div>
               </div>
 
-              {/* 图片部分 */}
+              {/* 图片 */}
               <div className="image-left-part-airesponse d-flex justify-content-center align-items-center">
-                {recipe?.image_url && (
+                {image_url && (
                   <img
-                    src={recipe?.image_url}
+                    src={image_url}
                     alt="Generated Recipe"
                     className="image"
                   />
                 )}
               </div>
 
-              {/* 标题部分 */}
+              {/* 标题 */}
               <div className="recipe_name-part-air">
-                {recipe?.recipe_name && (
+                {recipe_name && (
                   <p className="recipe_name text-center">
-                    {recipe?.recipe_name.toUpperCase()}
+                    {recipe_name.toUpperCase()}
                   </p>
                 )}
               </div>
             </div>
           </div>
 
-          {/* 右边列 */}
+          {/* 右侧 */}
           <div className="col main-part-ai-right d-flex flex-column">
             <div className="tabs-container flex-grow-1 d-flex flex-column">
               <Tabs
@@ -389,11 +354,11 @@ const AIResponse = ({ isLoggedIn }) => {
                 className="nav-tabs-custom"
               >
                 <Tab eventKey="overview" title="Overview">
-                  {/* Overview Content */}
                   <div className="tab-content flex-grow-1">
                     <div className="overview-content">
                       <h2 className="overview-content-title">Overview</h2>
                       <div className="estimate-air">
+                        {/* cost */}
                         <div className="row cost-airesponse">
                           <div className="col-1">
                             <svg
@@ -411,10 +376,11 @@ const AIResponse = ({ isLoggedIn }) => {
                           </div>
                           <div className="col-11 text-start">
                             <h2>Estimated Total Cost</h2>
-                            <p>{recipe?.est_cost}</p>
+                            <p>{est_cost}</p>
                           </div>
                         </div>
 
+                        {/* time */}
                         <div className="row time-airesponse">
                           <div className="col-1">
                             <svg
@@ -431,42 +397,43 @@ const AIResponse = ({ isLoggedIn }) => {
                           </div>
                           <div className="col-11 text-start">
                             <h2>Estimated Time</h2>
-                            <p>{recipe?.details?.estimate_time}</p>
+                            <p>{estimate_time}</p>
                           </div>
                         </div>
 
-                        <div className="row airesponse-nutrition-part">
-                          <div className="col-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="50"
-                              height="80"
-                              fill="currentColor"
-                              class="bi bi-clipboard-minus"
-                              viewBox="0 0 16 16"
-                              className="clip-board"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M5.5 9.5A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"
-                              />
-                              <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
-                              <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
-                            </svg>
-                          </div>
-
-                          <div className="col-11">
-                            <h2>Nutrition</h2>
-                            {recipe?.details?.nutrition_facts && (
+                        {/* Nutrition */}
+                        {nutrition_facts && (
+                          <div className="row airesponse-nutrition-part">
+                            <div className="col-1">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="50"
+                                height="80"
+                                fill="currentColor"
+                                class="bi bi-clipboard-minus"
+                                viewBox="0 0 16 16"
+                                className="clip-board"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M5.5 9.5A.5.5 0 0 1 6 9h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"
+                                />
+                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+                              </svg>
+                            </div>
+                            <div className="col-11">
+                              <h2>Nutrition</h2>
                               <div className="row justify-content-start nutrition-section-airesponse">
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
-                                      {recipe?.details.nutrition_facts.calories}
+                                      {nutrition_facts.calories}
                                     </div>
                                     <div className="card-name">Calories</div>
                                   </div>
                                 </div>
+
                                 <div className="col-auto">
                                   <div className="nutrition-card-air">
                                     <div className="card-circle">
@@ -511,71 +478,69 @@ const AIResponse = ({ isLoggedIn }) => {
                                     <div className="card-name">Sugar</div>
                                   </div>
                                 </div>
+                                {/* 继续渲染 fiber, protein, carbs, fats, sugar */}
                               </div>
-                            )}
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </Tab>
 
                 <Tab eventKey="ingredients" title="Ingredients">
-                  {/* Ingredients Content */}
                   <div className="tab-content flex-grow-1">
                     <div className="ingredients-part-airesponse">
                       <h2>Ingredients</h2>
                       <div className="ingredients-list-airesponse">
-                        {recipe?.details?.ingredients &&
-                          recipe?.details.ingredients.length > 0 ? (
+                        {ingredients && ingredients.length > 0 ? (
                           <ul>
-                            {recipe?.details.ingredients.map(
-                              (ingredient, index) => (
-                                <li key={index} className="ingredient-item">
-                                  <div className="form-check d-flex justify-content-between align-items-center">
-                                    <div>
-                                      <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        value=""
-                                        id={`ingredient-checkbox-${index}`}
-                                        checked={
-                                          checkedIngredients[index] || false
-                                        }
-                                        onChange={() =>
-                                          handleCheckboxChange(index)
-                                        }
-                                      />
-                                      <label
-                                        className={`form-check-label ${checkedIngredients[index]
-                                            ? "text-decoration-line-through"
-                                            : ""
-                                          }`}
-                                        htmlFor={`ingredient-checkbox-${index}`}
-                                      >
-                                        <span className="ingredient-name">
-                                          {ingredient.name}
-                                        </span>
-                                      </label>
-                                    </div>
-                                    <div>
-                                      <label
-                                        className={`form-check-label ${checkedIngredients[index]
-                                            ? "text-decoration-line-through"
-                                            : ""
-                                          }`}
-                                        htmlFor={`ingredient-checkbox-${index}`}
-                                      >
-                                        <span className="ingredient-info">
-                                          {ingredient.quantity} (
-                                          {ingredient.cost})
-                                        </span>
-                                      </label>
-                                    </div>
+                            {ingredients.map((ingredient, index) => (
+                              <li key={index} className="ingredient-item">
+                                <div className="form-check d-flex justify-content-between align-items-center">
+                                  <div>
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id={`ingredient-checkbox-${index}`}
+                                      checked={
+                                        checkedIngredients[index] || false
+                                      }
+                                      onChange={() =>
+                                        handleCheckboxChange(index)
+                                      }
+                                    />
+                                    <label
+                                      className={`form-check-label ${
+                                        checkedIngredients[index]
+                                          ? "text-decoration-line-through"
+                                          : ""
+                                      }`}
+                                      htmlFor={`ingredient-checkbox-${index}`}
+                                    >
+                                      <span className="ingredient-name">
+                                        {ingredient.name}
+                                      </span>
+                                    </label>
                                   </div>
-                                </li>
-                              )
-                            )}
+                                  <div>
+                                    <label
+                                      className={`form-check-label ${
+                                        checkedIngredients[index]
+                                          ? "text-decoration-line-through"
+                                          : ""
+                                      }`}
+                                      htmlFor={`ingredient-checkbox-${index}`}
+                                    >
+                                      <span className="ingredient-info">
+                                        {ingredient.quantity} ({ingredient.cost}
+                                        )
+                                      </span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </li>
+                            ))}
                           </ul>
                         ) : (
                           <p>No ingredients provided.</p>
@@ -589,15 +554,13 @@ const AIResponse = ({ isLoggedIn }) => {
                 </Tab>
 
                 <Tab eventKey="steps" title="Steps">
-                  {/* Steps Content */}
                   <div className="tab-content flex-grow-1">
                     <div className="steps-part-airesponse">
                       <h2>Steps</h2>
                       <div className="steps-list-part-airesponse">
-                        {recipe?.details?.steps &&
-                          recipe?.details.steps?.length > 0 ? (
+                        {steps && steps.length > 0 ? (
                           <ol>
-                            {recipe?.details.steps.map((step, index) => (
+                            {steps.map((step, index) => (
                               <li key={index}>
                                 <strong>{step.explanation}</strong> -{" "}
                                 {step.instruction}
@@ -611,24 +574,16 @@ const AIResponse = ({ isLoggedIn }) => {
                     </div>
                   </div>
                 </Tab>
-                {/* 
-                <Tab eventKey="stores" title="Nearby Stores">
-                  Nearby Stores Content
-                  <div className="tab-content flex-grow-1">
-                    <div className="nearby-stores-part"></div>
-                  </div>
-                </Tab> */}
 
-                {/* 添加 Video Tutorials 选项卡 */}
                 <Tab eventKey="video_tutorials" title="Video Tutorials">
                   <div className="tab-content flex-grow-1">
-                    <Youtube />
+                    <Youtube recipe_name={recipe_name} />
                     <div className="generate_video">
                       <div
                         className="generate_video_button"
                         onClick={handleGenerateClick}
                       >
-                        <svg
+                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="30"
                           height="25"
