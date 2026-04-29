@@ -15,14 +15,12 @@ import json
 from crud import dashboard_crud
 import schemas
 import models
-from typing import List, Optional
+from typing import Any, List, Optional
 import httpx
 import base64
 import requests
 import urllib.parse
 
-# Add these imports at the top of main.py
-from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
 import tempfile
 from pathlib import Path
 import shutil
@@ -33,10 +31,16 @@ from urllib.parse import quote_plus
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-#  Vi
-from moviepy.config import change_settings
-
 load_dotenv()
+
+ImageClip = None
+TextClip = None
+AudioFileClip = None
+concatenate_videoclips = None
+CompositeVideoClip = None
+change_settings = None
+MOVIEPY_V2 = False
+MOVIEPY_READY = False
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 FRONTEND_BUILD_DIR = PROJECT_ROOT / "my-app" / "build"
@@ -380,8 +384,6 @@ if os.name == "nt":  # for Windows
 else:  # for Unix-like systems
     FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
 
-change_settings({"FFMPEG_BINARY": FFMPEG_BINARY})
-
 # Add these new model classes
 class Scene(BaseModel):
     voiceover: str
@@ -399,9 +401,98 @@ class VideoResponse(BaseModel):
     content_type: str = "video/mp4"
     
 IMAGEMAGICK_BINARY = os.getenv('IMAGEMAGICK_BINARY', 'convert')
-change_settings({"IMAGEMAGICK_BINARY": IMAGEMAGICK_BINARY})
+
+
+def load_moviepy():
+    global ImageClip, TextClip, AudioFileClip
+    global concatenate_videoclips, CompositeVideoClip
+    global change_settings, MOVIEPY_V2, MOVIEPY_READY
+
+    if MOVIEPY_READY:
+        return
+
+    try:
+        # MoviePy v2.x
+        from moviepy import (
+            AudioFileClip as _AudioFileClip,
+            CompositeVideoClip as _CompositeVideoClip,
+            ImageClip as _ImageClip,
+            TextClip as _TextClip,
+            concatenate_videoclips as _concatenate_videoclips,
+        )
+        from moviepy.config import change_settings as _change_settings
+        MOVIEPY_V2 = True
+    except Exception:
+        # MoviePy v1.x
+        from moviepy.editor import (
+            AudioFileClip as _AudioFileClip,
+            CompositeVideoClip as _CompositeVideoClip,
+            ImageClip as _ImageClip,
+            TextClip as _TextClip,
+            concatenate_videoclips as _concatenate_videoclips,
+        )
+        from moviepy.config import change_settings as _change_settings
+        MOVIEPY_V2 = False
+
+    ImageClip = _ImageClip
+    TextClip = _TextClip
+    AudioFileClip = _AudioFileClip
+    concatenate_videoclips = _concatenate_videoclips
+    CompositeVideoClip = _CompositeVideoClip
+    change_settings = _change_settings
+    MOVIEPY_READY = True
+
+
+def with_duration(clip: Any, duration: float):
+    if hasattr(clip, "with_duration"):
+        return clip.with_duration(duration)
+    return clip.set_duration(duration)
+
+
+def with_position(clip: Any, position):
+    if hasattr(clip, "with_position"):
+        return clip.with_position(position)
+    return clip.set_position(position)
+
+
+def with_audio(clip: Any, audio_clip):
+    if hasattr(clip, "with_audio"):
+        return clip.with_audio(audio_clip)
+    return clip.set_audio(audio_clip)
+
+
+def make_text_clip(text: str, font_size: int, duration: Optional[float] = None):
+    if MOVIEPY_V2:
+        clip = TextClip(
+            text=text,
+            font_size=font_size,
+            color="white",
+            stroke_color="black",
+            stroke_width=1,
+            duration=duration,
+        )
+        return clip
+
+    clip = TextClip(
+        text,
+        fontsize=font_size,
+        color="white",
+        font="Helvetica-Bold",
+        stroke_color="black",
+        stroke_width=1,
+    )
+    if duration is not None:
+        clip = clip.set_duration(duration)
+    return clip
 
 def ensure_video_dependencies():
+    try:
+        load_moviepy()
+        change_settings({"FFMPEG_BINARY": FFMPEG_BINARY})
+        change_settings({"IMAGEMAGICK_BINARY": IMAGEMAGICK_BINARY})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"MoviePy is unavailable: {e}")
+
     if shutil.which(FFMPEG_BINARY) is None:
         raise HTTPException(status_code=500, detail=f"FFmpeg not found at '{FFMPEG_BINARY}'")
     if shutil.which(IMAGEMAGICK_BINARY) is None:
@@ -416,12 +507,14 @@ def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
     
     for word in words:
         test_line = current_line + " " + word if current_line else word
-        test_clip = TextClip(test_line, fontsize=fontsize, font='Helvetica-Bold')
+        test_clip = make_text_clip(test_line, font_size=fontsize)
         if test_clip.w > video_width:
             lines.append(current_line)
             current_line = word
         else:
             current_line = test_line
+        if hasattr(test_clip, "close"):
+            test_clip.close()
     
     if current_line:
         lines.append(current_line)
@@ -518,7 +611,7 @@ async def generate_video(request: VideoRequest):
                 duration = audio_clip.duration
 
                 # Create image clip
-                image_clip = ImageClip(scene.image_url, duration=duration)
+                image_clip = with_duration(ImageClip(scene.image_url), duration)
                 
                 # Add text overlay
                 narration = add_line_breaks(
@@ -527,18 +620,14 @@ async def generate_video(request: VideoRequest):
                     video_width=(image_clip.w-50)
                 )
                 
-                text_clip = (TextClip(narration, 
-                                    fontsize=64, 
-                                    color='white', 
-                                    font='Helvetica-Bold',
-                                    stroke_color='black',
-                                    stroke_width=1)
-                            .set_position(("center", 1100))
-                            .set_duration(duration))
+                text_clip = with_position(
+                    make_text_clip(narration, font_size=64, duration=duration),
+                    ("center", 1100),
+                )
 
                 # Combine clips
                 video_clip = CompositeVideoClip([image_clip, text_clip])
-                video_clip = video_clip.set_audio(audio_clip)
+                video_clip = with_audio(video_clip, audio_clip)
                 clips.append(video_clip)
 
             except Exception as scene_error:
