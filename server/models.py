@@ -7,9 +7,9 @@ class Recipes(Base):
     __tablename__ = "recipes"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_name = Column(String, nullable=False)
-    image_url = Column(String, unique=True, nullable=False)
-    recipe_name = Column(String, nullable=False)
+    user_name = Column(String(100), nullable=False)
+    image_url = Column(String(2048), unique=True, nullable=False)
+    recipe_name = Column(String(255), nullable=False)
     created_time = Column(Date, nullable=False)
     details = Column(JSON, nullable=False)
     est_cost = Column(Double, nullable=False)
