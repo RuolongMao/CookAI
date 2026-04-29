@@ -8,7 +8,7 @@ class Recipes(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_name = Column(String(100), nullable=False)
-    image_url = Column(String(2048), unique=True, nullable=False)
+    image_url = Column(String(2048), nullable=False)
     recipe_name = Column(String(255), nullable=False)
     created_time = Column(Date, nullable=False)
     details = Column(JSON, nullable=False)
