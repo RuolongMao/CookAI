@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import signpic from "../images/sign1.jpeg";
 import "../css/SignIn.css";
+import { apiUrl } from "../config/api";
 
 const SignIn = ({ onSignInSuccess }) => {
   const [username, setUsername] = useState("");
@@ -31,7 +32,7 @@ const SignIn = ({ onSignInSuccess }) => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     // 发送登录请求
-    const response = await fetch("http://127.0.0.1:8000/signin", {
+    const response = await fetch(apiUrl("/signin"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

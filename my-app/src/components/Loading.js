@@ -2,6 +2,7 @@ import React, { useEffect, useRef,useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import loading from "../images/loading.gif";
 import "../css/Loading.css";
+import { apiUrl } from "../config/api";
 
 const Loading = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Loading = () => {
     setIsEntering(true);
     if (!hasFetchedRef.current && prompt) {
       hasFetchedRef.current = true; // 标记请求已经发送
-      fetch("http://127.0.0.1:8000/query", {
+      fetch(apiUrl("/query"), {
         method: "POST",
         body: JSON.stringify({ prompt: prompt }),
         headers: {

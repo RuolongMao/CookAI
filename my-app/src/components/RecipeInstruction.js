@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import "../css/RecipeInstruction.css";
+import { apiUrl } from "../config/api";
 
 const RecipeInstruction = ({ isLoggedIn }) => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
         est_cost: estimated_cost,
       };
 
-      await fetch("http://127.0.0.1:8000/create", {
+      await fetch(apiUrl("/create"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +96,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
 
   const handleUnlikeRecipe = async () => {
     showAlertMessage("You have unliked this recipe!");
-    await fetch("http://127.0.0.1:8000/delete", {
+    await fetch(apiUrl("/delete"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +106,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
   };
 
   const fetchRecipeData = async () => {
-    const response = await fetch("https://cookai-55f9.onrender.com/get_one", {
+    const response = await fetch(apiUrl("/get_one"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -131,7 +132,7 @@ const RecipeInstruction = ({ isLoggedIn }) => {
 
     if (!newComment.trim()) return;
     console.log(newComment)
-    const response = await fetch("http://127.0.0.1:8000/comment", {
+    const response = await fetch(apiUrl("/comment"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

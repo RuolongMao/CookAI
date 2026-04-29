@@ -5,6 +5,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { Riple } from "react-loading-indicators";
 import { useNavigate, useLocation } from 'react-router-dom';
 import "../css/Community.css";
+import { apiUrl } from "../config/api";
 
 function Community({ isLoggedIn }) {
   const [recipes, setRecipes] = useState([]);
@@ -52,7 +53,7 @@ function Community({ isLoggedIn }) {
     async function fetchRecipes() {
       setIsLoading(true);
       try {
-        const response = await fetch('https://cookai-55f9.onrender.com/get');
+        const response = await fetch(apiUrl("/get"));
         const data = await response.json();
         const publishedRecipes = data.filter(recipe => recipe.publish === true);
         console.log('Fetched data:', data);
@@ -87,7 +88,7 @@ function Community({ isLoggedIn }) {
         est_cost: recipe.est_cost
       };
       
-      const response = await fetch("https://cookai-55f9.onrender.com/create", {
+      const response = await fetch(apiUrl("/create"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +115,7 @@ function Community({ isLoggedIn }) {
   
     setIsLoading(true); // 开始加载
     try {
-      const response = await fetch('http://localhost:8000/search', {
+      const response = await fetch(apiUrl("/search"), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recipe_name: searchTerm }),
@@ -178,7 +179,7 @@ function Community({ isLoggedIn }) {
 
   // Fetch filtered recipes from the backend
     try {
-      const response = await fetch('http://localhost:8000/filter', {
+      const response = await fetch(apiUrl("/filter"), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
-from fastapi.responses import StreamingResponse
-from fastapi.staticfiles import StaticFiles 
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import os
 import openai
 from dotenv import load_dotenv
@@ -14,6 +14,7 @@ from sqlalchemy.orm import sessionmaker, Session
 import json
 from crud import dashboard_crud
 import schemas
+import models
 from typing import List, Optional
 import httpx
 import base64
@@ -24,9 +25,9 @@ import urllib.parse
 from moviepy.editor import ImageClip, TextClip, AudioFileClip, concatenate_videoclips, CompositeVideoClip
 import tempfile
 from pathlib import Path
+import shutil
 import time
-import base64
-from io import BytesIO
+from urllib.parse import quote_plus
 
 # Add these imports at the top of main.py
 from googleapiclient.discovery import build
@@ -37,9 +38,29 @@ from moviepy.config import change_settings
 
 load_dotenv()
 
-# 设置MySQL连接
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:password@localhost/cookingai_users")
-engine = create_engine(DATABASE_URL)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+FRONTEND_BUILD_DIR = PROJECT_ROOT / "my-app" / "build"
+SERVER_STATIC_DIR = Path(__file__).resolve().parent / "static"
+LOCAL_VIDEO_PATH = SERVER_STATIC_DIR / "videos" / "download.mp4"
+
+
+def build_database_url() -> str:
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        if database_url.startswith("mysql://"):
+            return database_url.replace("mysql://", "mysql+pymysql://", 1)
+        return database_url
+
+    mysql_host = os.getenv("MYSQL_HOST", "localhost")
+    mysql_port = os.getenv("MYSQL_PORT", "3306")
+    mysql_database = os.getenv("MYSQL_DATABASE", "cookingai_users")
+    mysql_user = quote_plus(os.getenv("MYSQL_USER", "root"))
+    mysql_password = quote_plus(os.getenv("MYSQL_PASSWORD", "password"))
+    return f"mysql+pymysql://{mysql_user}:{mysql_password}@{mysql_host}:{mysql_port}/{mysql_database}"
+
+
+DATABASE_URL = build_database_url()
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -53,19 +74,40 @@ class User(Base):
     username = Column(String(100), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
 
-# 用户模型生成表格
-Base.metadata.create_all(bind=engine)
+def init_db(max_retries: int = 10, retry_interval_seconds: int = 3):
+    for attempt in range(1, max_retries + 1):
+        try:
+            Base.metadata.create_all(bind=engine)
+            models.Base.metadata.create_all(bind=engine)
+            return
+        except Exception as e:
+            if attempt == max_retries:
+                raise
+            print(f"Database init failed (attempt {attempt}/{max_retries}): {e}")
+            time.sleep(retry_interval_seconds)
 
 app = FastAPI()
 
+@app.on_event("startup")
+def on_startup():
+    init_db()
+
 # Configure CORS
+cors_origin_env = os.getenv("CORS_ORIGINS", "")
+allow_origins = [origin.strip() for origin in cors_origin_env.split(",") if origin.strip()]
+if not allow_origins:
+    allow_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=allow_origins,
+    allow_credentials=allow_origins != ["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if FRONTEND_BUILD_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(FRONTEND_BUILD_DIR / "static")), name="react-static")
 
 # 依赖库安装
 def get_db():
@@ -333,10 +375,12 @@ def add_comment(body: schemas.CommentAdd, db: Session = Depends(get_db)):
     return dashboard_crud.add_comment(db, body.recipe_name, body.username, body.comments)
 
 
-if os.name == 'nt':  # for Windows
-    change_settings({"FFMPEG_BINARY": "ffmpeg.exe"})
+if os.name == "nt":  # for Windows
+    FFMPEG_BINARY = "ffmpeg.exe"
 else:  # for Unix-like systems
-    change_settings({"FFMPEG_BINARY": "ffmpeg"})
+    FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
+
+change_settings({"FFMPEG_BINARY": FFMPEG_BINARY})
 
 # Add these new model classes
 class Scene(BaseModel):
@@ -357,9 +401,11 @@ class VideoResponse(BaseModel):
 IMAGEMAGICK_BINARY = os.getenv('IMAGEMAGICK_BINARY', 'convert')
 change_settings({"IMAGEMAGICK_BINARY": IMAGEMAGICK_BINARY})
 
-# You can verify ImageMagick installation by running:
-if os.system('which convert') != 0:
-    raise RuntimeError("ImageMagick not found. Please install it using 'brew install imagemagick'")
+def ensure_video_dependencies():
+    if shutil.which(FFMPEG_BINARY) is None:
+        raise HTTPException(status_code=500, detail=f"FFmpeg not found at '{FFMPEG_BINARY}'")
+    if shutil.which(IMAGEMAGICK_BINARY) is None:
+        raise HTTPException(status_code=500, detail=f"ImageMagick not found at '{IMAGEMAGICK_BINARY}'")
 
 # Add this utility function
 def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
@@ -385,6 +431,8 @@ def add_line_breaks(text: str, fontsize: int, video_width: int) -> str:
 @app.post("/generate_video", response_model=VideoResponse)
 async def generate_video(request: VideoRequest):
     try:
+        ensure_video_dependencies()
+
         # Create prompt for scene generation
         instruction = '''You are the director of a cooking tutorial video.
         Using the provided recipe steps, create a list of scenes, each including a voiceover script
@@ -420,6 +468,7 @@ async def generate_video(request: VideoRequest):
         # Generate images and audio for each scene
         clips = []
         temp_files = []  # Track temporary files for cleanup
+        final_video = None
 
         for scene in scenes.scenes[:2]:
             try:
@@ -521,7 +570,8 @@ async def generate_video(request: VideoRequest):
 
         finally:
             # Clean up resources
-            final_video.close()
+            if final_video is not None:
+                final_video.close()
             for clip in clips:
                 clip.close()
             
@@ -542,7 +592,7 @@ async def generate_video(request: VideoRequest):
 async def test_video_local():
     try:
         # Read the video file and convert to base64
-        with open("./static/videos/download.mp4", 'rb') as video_file:
+        with open(LOCAL_VIDEO_PATH, 'rb') as video_file:
             video_data = base64.b64encode(video_file.read()).decode('utf-8')
         
         return VideoResponse(video_data=video_data)
@@ -609,5 +659,26 @@ async def search_youtube(request: YoutubeVideoRequest):
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-    
 
+
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
+
+
+if FRONTEND_BUILD_DIR.exists():
+    @app.get("/", include_in_schema=False)
+    async def serve_frontend_root():
+        return FileResponse(FRONTEND_BUILD_DIR / "index.html")
+
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend_spa(full_path: str):
+        static_asset_path = FRONTEND_BUILD_DIR / full_path
+        if static_asset_path.exists() and static_asset_path.is_file():
+            return FileResponse(static_asset_path)
+        return FileResponse(FRONTEND_BUILD_DIR / "index.html")
+else:
+    @app.get("/")
+    async def root():
+        return {"message": "CookAI backend is running"}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Dashboard.css';
+import { apiUrl } from "../config/api";
 
 const Dashboard = () => {
   const [recipes, setRecipes] = useState([]);
@@ -16,7 +17,7 @@ const Dashboard = () => {
     const fetchUserRecipes = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('http://127.0.0.1:8000/dashboard', {
+        const response = await fetch(apiUrl("/dashboard"), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +51,7 @@ const Dashboard = () => {
   // Handle recipe deletion
   const handleDeleteRecipe = async (recipeName) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/delete', {
+      const response = await fetch(apiUrl("/delete"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

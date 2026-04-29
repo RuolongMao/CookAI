@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // import { Carousel } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Video.css";
+import { apiUrl } from "../config/api";
 // import bk4 from "../images/bk4.jpg";
 // import bk5 from "../images/bk5.jpg";
 // import bk6 from "../images/bk6.jpg";
@@ -35,7 +36,7 @@ const Video = () => {
 
         setRecipeName(recipeName || "Recipe");
 
-        const response = await fetch("http://127.0.0.1:8000/generate_video", {
+        const response = await fetch(apiUrl("/generate_video"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

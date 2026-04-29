@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../css/Register.css";
 import signpic from "../images/sign3.jpeg";
+import { apiUrl } from "../config/api";
 
 // 设置Register组件，接受prop方法/参数：onRegisterSuccess，注册成功后通知父组件
 const Register = ({ onRegisterSuccess }) => {
@@ -54,7 +55,7 @@ const Register = ({ onRegisterSuccess }) => {
     // }
 
     // 发送POST请求到后端
-    const response = await fetch("http://127.0.0.1:8000/register", {
+    const response = await fetch(apiUrl("/register"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

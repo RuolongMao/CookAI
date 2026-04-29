@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Youtube.css";
+import { apiUrl } from "../config/api";
 
 const Youtube = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const Youtube = () => {
 
         setRecipeName(recipe);
 
-        const response = await fetch("http://127.0.0.1:8000/search_youtube", {
+        const response = await fetch(apiUrl("/search_youtube"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -1,0 +1,13 @@
+.git
+.gitignore
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/*.pyo
+**/*.pyd
+my-app/node_modules
+my-app/build
+server/node_modules
+*.log
+README.md
+LICENSE

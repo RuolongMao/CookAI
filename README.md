@@ -1,5 +1,9 @@
 # CookAI
 
+## Render Deployment
+
+完整部署说明见：[RENDER_DEPLOY.md](./RENDER_DEPLOY.md)
+
 2024.10.6-7
 -- Front-End 部分
 
